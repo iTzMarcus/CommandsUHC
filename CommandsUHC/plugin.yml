@@ -1,0 +1,63 @@
+name: CommandsUHC
+version: 0.1
+author: TheTonyk
+description: UHC plugin for CommandsPVP by TheTonyk.
+prefix: UHC
+softdepend: [ProtocolLib, Pregenerator]
+main: com.thetonyk.UHC.Main
+
+commands:
+    gamemode:
+        description: Change gamemode of players.
+        usage: /gamemode
+        aliases: [gm]
+    rank:
+        description: Change ranks of players.
+        usage: /rank
+    world:
+        description: Manage worlds
+        usage: /wo"rld
+        aliases: [w]
+    pregen:
+        description: Pregenerate worlds
+        usage: /pregen
+    border:
+        description: Change size of world
+        usage: /border
+    team:
+        description: Manage teams
+        usage: /team
+    teleport:
+        description: Teleport players in world
+        usage: /teleport
+    invite:
+        description: Quick command for /team invite
+        usage: /invite
+    accept:
+        description: Quick command for /team accept
+        usage: /accept
+    pm:
+        description: Send new teams commands
+        usage: /pm
+    pmcoords:
+        description: Send new teams commands
+        usage: /pmcoords
+    pmores:
+        description: Send new teams commands
+        usage: /pmores
+    t:
+        description: Send messages to your team
+        usage: /t
+    tc:
+        description: Send coords to your team
+        usage: /tc
+    whitelist:
+        description: Manage the whitelist
+        usage: /whitelist
+        aliases: [wl, wh]
+    butcher:
+        description: Kill all mobs
+        usage: /butcher
+    helpop:
+        description: Request help to staff
+        usage: /helpop
