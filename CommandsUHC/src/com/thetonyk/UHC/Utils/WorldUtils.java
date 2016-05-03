@@ -5,13 +5,14 @@ import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 
-import com.thetonyk.UHC.Listener.MessengerListener;
+import com.thetonyk.UHC.MessengerListener;
 
 public class WorldUtils {
 
@@ -175,6 +176,20 @@ public class WorldUtils {
 		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + radius + "', 0, '" + MessengerListener.lastServer + "');");
 		
 		return newWorld;
+		
+	}
+	
+	public static int getHighestY (int x, int z, World world) {
+		
+		for (int y = 255; y >= 0; y--) {
+			
+			if (world.getBlockAt(x, y, z).getType() == Material.AIR) continue;
+				
+			return y;
+			
+		}
+		
+		return 255;
 		
 	}
 	

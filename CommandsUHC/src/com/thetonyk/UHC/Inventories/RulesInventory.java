@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Utils.ItemsUtils;
 
-public class RulesInventory {
+public class RulesInventory implements Listener {
 	
-	public static Inventory getRules(){
+	public static Inventory getRules() {
 		
 		Inventory inventory = Bukkit.createInventory(null, 9, "§8⫸ §4Rules");
 		
@@ -57,6 +60,15 @@ public class RulesInventory {
 		inventory.setItem(8, separator);
 		
 		return inventory;
+		
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		if (!event.getInventory().getTitle().equals("§8⫸ §4Rules")) return;
+		
+		event.setCancelled(true);
 		
 	}
 

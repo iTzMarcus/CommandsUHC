@@ -1,4 +1,4 @@
-package com.thetonyk.UHC.Listener;
+package com.thetonyk.UHC;
 
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;

@@ -9,7 +9,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Listener.MessengerListener;
 import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
@@ -27,15 +26,27 @@ import com.thetonyk.UHC.Commands.TeamCommand;
 import com.thetonyk.UHC.Commands.TeleportCommand;
 import com.thetonyk.UHC.Commands.WhitelistCommand;
 import com.thetonyk.UHC.Commands.WorldCommand;
-import com.thetonyk.UHC.Listener.ChatListener;
-import com.thetonyk.UHC.Listener.EnvironmentListener;
-import com.thetonyk.UHC.Listener.InventoryListener;
-import com.thetonyk.UHC.Listener.JoinListener;
-import com.thetonyk.UHC.Listener.LeaveListener;
-import com.thetonyk.UHC.Listener.PlayerListener;
+import com.thetonyk.UHC.Features.ChatCooldown;
+import com.thetonyk.UHC.Features.ChatIgnoreSettings;
+import com.thetonyk.UHC.Features.ChatSettings;
+import com.thetonyk.UHC.Features.HealthScore;
+import com.thetonyk.UHC.Features.HealthShoot;
+import com.thetonyk.UHC.Features.LobbyFly;
+import com.thetonyk.UHC.Features.LobbyItems;
+import com.thetonyk.UHC.Features.LobbyProtection;
+import com.thetonyk.UHC.Features.LoginPlayer;
+import com.thetonyk.UHC.Features.LoginWhitelist;
+import com.thetonyk.UHC.Features.LogoutPlayer;
+import com.thetonyk.UHC.Features.NaturalRegeneration;
+import com.thetonyk.UHC.Features.PregenStates;
+import com.thetonyk.UHC.Features.ScatterProtection;
+import com.thetonyk.UHC.Features.TeamsInvitations;
+import com.thetonyk.UHC.Features.TeamsNametags;
+import com.thetonyk.UHC.Inventories.InviteInventory;
+import com.thetonyk.UHC.Inventories.RulesInventory;
+import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.PermissionsUtils;
-import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
@@ -74,8 +85,8 @@ public class Main extends JavaPlugin {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			PlayerUtils.updateNametag(player.getName());
-			
+			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+			TeamsNametags.updateNametag(player);
 			PermissionsUtils.clearPermissions(player);
 			PermissionsUtils.setPermissions(player);
 			PermissionsUtils.updateBungeePermissions(player);
@@ -102,12 +113,26 @@ public class Main extends JavaPlugin {
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
-		manager.registerEvents(new JoinListener(), this);
-		manager.registerEvents(new LeaveListener(), this);
-		manager.registerEvents(new ChatListener(), this);
-		manager.registerEvents(new PlayerListener(), this);
-		manager.registerEvents(new InventoryListener(), this);
-		manager.registerEvents(new EnvironmentListener(), this);
+		manager.registerEvents(new ChatCooldown(), this);
+		manager.registerEvents(new ChatIgnoreSettings(), this);
+		manager.registerEvents(new ChatSettings(), this);
+		manager.registerEvents(new HealthScore(), this);
+		manager.registerEvents(new HealthShoot(), this);
+		manager.registerEvents(new LobbyFly(), this);
+		manager.registerEvents(new LobbyItems(), this);
+		manager.registerEvents(new LobbyProtection(), this);
+		manager.registerEvents(new LoginPlayer(), this);
+		manager.registerEvents(new LoginWhitelist(), this);
+		manager.registerEvents(new LogoutPlayer(), this);
+		manager.registerEvents(new NaturalRegeneration(), this);
+		manager.registerEvents(new PregenStates(), this);
+		manager.registerEvents(new ScatterProtection(), this);
+		manager.registerEvents(new TeamsInvitations(), this);
+		manager.registerEvents(new TeamsNametags(), this);
+		
+		manager.registerEvents(new InviteInventory(), this);
+		manager.registerEvents(new RulesInventory(), this);
+		manager.registerEvents(new TeamsInventory(), this);
 			
 		new BukkitRunnable() {
 			

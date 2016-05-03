@@ -9,14 +9,12 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.scoreboard.NameTagVisibility;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -68,20 +66,6 @@ public class PlayerUtils {
             player.removePotionEffect(activeEffect.getType());
             
         }
-		
-	}
-	
-	public static void leaveUpdatePlayer(Player player) {
-		
-		player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-		
-		for (Player online : Bukkit.getOnlinePlayers()) {
-			
-			if (online.getScoreboard().getTeam(player.getName()) == null) continue;
-				
-			online.getScoreboard().getTeam(player.getName()).unregister();
-			
-		}
 		
 	}
 	
@@ -162,78 +146,6 @@ public class PlayerUtils {
 		list = list + "§7.";
 		
 		return list;
-		
-	}
-	
-	public static void updateNametag(String player) {
-		
-		for (Player players : Bukkit.getOnlinePlayers()) {
-			
-			if (players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()) == null) {
-				
-				players.getScoreboard().registerNewTeam(Bukkit.getPlayer(player).getName());
-	
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setAllowFriendlyFire(true);
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setCanSeeFriendlyInvisibles(true);
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setDisplayName(player + " team");
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
-				
-			}
-			
-			if (TeamsUtils.getTeam(Bukkit.getPlayer(player).getName()) == null) {
-		
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setPrefix(getRank(Bukkit.getPlayer(player).getName()).getPrefix() + "§7");
-			
-			} else {
-				
-				players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setPrefix(getRank(Bukkit.getPlayer(player).getName()).getPrefix() + TeamsUtils.getTeamPrefix(Bukkit.getPlayer(player).getName()) + "§7");
-				
-			}
-			
-			players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).setSuffix("§f");
-			
-			players.getScoreboard().getTeam(Bukkit.getPlayer(player).getName()).addEntry(Bukkit.getPlayer(player).getName());
-			
-			if (Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()) == null) {
-				
-				Bukkit.getPlayer(player).getScoreboard().registerNewTeam(players.getName());
-				
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setAllowFriendlyFire(true);
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setCanSeeFriendlyInvisibles(true);
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setDisplayName(players.getName() + " team");
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
-				
-			}
-			
-			if (TeamsUtils.getTeam(Bukkit.getPlayer(player).getName()) == null) {
-				
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setPrefix(getRank(players.getName()).getPrefix() + "§7");
-			
-			} else {
-				
-				Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setPrefix(getRank(players.getName()).getPrefix() + TeamsUtils.getTeamPrefix(players.getName()) + "§7");
-				
-			}
-			
-			Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).setSuffix("§f");
-			
-			Bukkit.getPlayer(player).getScoreboard().getTeam(players.getName()).addEntry(players.getName());
-		
-		}
-		
-	}
-	
-	public static int getHighestY (int x, int z, World world) {
-		
-		for (int y = 255; y >= 0; y--) {
-			
-			if (world.getBlockAt(x, y, z).getType() == Material.AIR) continue;
-				
-			return y;
-			
-		}
-		
-		return 255;
 		
 	}
 	

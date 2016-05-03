@@ -6,15 +6,18 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.thetonyk.UHC.Listener.MessengerListener;
+import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 
-public class TeamsInventory {
+public class TeamsInventory implements Listener {
 	
 	public static Inventory getTeams(int page) {
 		
@@ -138,6 +141,37 @@ public class TeamsInventory {
 		if (page == 2) return inventory2;
 		
 		return null;
+		
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		if (!event.getInventory().getTitle().equals("§8⫸ §4Teams")) return;
+		
+		event.setCancelled(true);
+		
+		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+		
+		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§7Next §8⫸")) {
+			
+			Bukkit.getPlayer(event.getWhoClicked().getName()).openInventory(TeamsInventory.getTeams(2));
+			return;
+			
+		}
+		
+		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§8⫷ §7Previous")) {
+			
+			Bukkit.getPlayer(event.getWhoClicked().getName()).openInventory(TeamsInventory.getTeams(1));
+			return;
+			
+		}
+		
+		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§8⫸ §cClose")) {
+			
+			event.getWhoClicked().closeInventory();
+			
+		}
 		
 	}
 

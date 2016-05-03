@@ -12,7 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.thetonyk.UHC.Listener.MessengerListener;
+import com.thetonyk.UHC.MessengerListener;
+import com.thetonyk.UHC.Features.TeamsNametags;
 
 public class TeamsUtils {
 
@@ -64,7 +65,7 @@ public class TeamsUtils {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			PlayerUtils.updateNametag(player.getName());
+			TeamsNametags.updateNametag(player);
 			
 		}
 		
@@ -111,7 +112,9 @@ public class TeamsUtils {
 				DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
 				
 				players.put(player, teams.getString("name"));
-				PlayerUtils.updateNametag(player);
+				
+				if (Bukkit.getPlayer(player) != null) TeamsNametags.updateNametag(Bukkit.getPlayer(player));
+				
 				break;		
 				
 			}
@@ -143,7 +146,7 @@ public class TeamsUtils {
 			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + teams.getString("members") + player + ";' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
 			
 			players.put(player, teams.getString("name"));
-			PlayerUtils.updateNametag(player);
+			if (Bukkit.getPlayer(player) != null) TeamsNametags.updateNametag(Bukkit.getPlayer(player));
 			
 			teams.close();
 			
@@ -184,7 +187,7 @@ public class TeamsUtils {
 			
 			if (players.containsKey(player)) players.remove(player);
 			
-			PlayerUtils.updateNametag(player);
+			if (Bukkit.getPlayer(player) != null) TeamsNametags.updateNametag(Bukkit.getPlayer(player));
 			
 			teams.close();
 			
@@ -344,7 +347,7 @@ public class TeamsUtils {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			PlayerUtils.updateNametag(player.getName());
+			TeamsNametags.updateNametag(player);
 			
 		}
 		

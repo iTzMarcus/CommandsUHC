@@ -69,7 +69,7 @@ public class ScatterUtils {
 					
 				}
 				
-				Material block = new Location(world, x + 0.5, PlayerUtils.getHighestY(x, z, world), z + 0.5).getBlock().getType();
+				Material block = new Location(world, x + 0.5, WorldUtils.getHighestY(x, z, world), z + 0.5).getBlock().getType();
 				
 				switch (block) {
 				

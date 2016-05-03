@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import org.bukkit.Bukkit;
 
-import com.thetonyk.UHC.Listener.MessengerListener;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 
 public class Game {

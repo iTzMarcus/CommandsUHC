@@ -3,13 +3,16 @@ package com.thetonyk.UHC.Inventories;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Utils.ItemsUtils;
 
-public class InviteInventory {
+public class InviteInventory implements Listener {
 	
 	public static Inventory getInvite(Player invite) {
 		
@@ -26,6 +29,35 @@ public class InviteInventory {
 		inventory.setItem(4, separator);
 		
 		return inventory;
+		
+	}
+	
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		
+		if (!event.getInventory().getTitle().startsWith("§8⫸ §4Invite ")) return;
+		
+		event.setCancelled(true);
+		
+		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+			
+		if (!(event.getWhoClicked() instanceof Player)) return;
+		
+		if (event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§8⫸ §7Invite §6")) {
+					
+			String invite = event.getInventory().getTitle().substring(13);
+			((Player) event.getWhoClicked()).performCommand("team invite " + invite);
+			event.getWhoClicked().closeInventory();
+			return;
+				
+		}
+		
+		if (event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§8⫸ §cCancel")) {
+				
+			event.getWhoClicked().closeInventory();
+			return;
+				
+		}
 		
 	}
 
