@@ -93,6 +93,9 @@ public class Main extends JavaPlugin {
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
+		//Lowest Priority
+		manager.registerEvents(new LoginPlayer(), this);
+		
 		manager.registerEvents(new ChatCooldown(), this);
 		manager.registerEvents(new ChatIgnoreSettings(), this);
 		manager.registerEvents(new ChatSettings(), this);
@@ -103,7 +106,6 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new LobbyFly(), this);
 		manager.registerEvents(new LobbyItems(), this);
 		manager.registerEvents(new LobbyProtection(), this);
-		manager.registerEvents(new LoginPlayer(), this);
 		manager.registerEvents(new LoginWhitelist(), this);
 		manager.registerEvents(new LogoutPlayer(), this);
 		manager.registerEvents(new NaturalRegeneration(), this);
