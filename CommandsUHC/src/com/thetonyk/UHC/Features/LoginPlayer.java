@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Features;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,6 +16,19 @@ import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class LoginPlayer implements Listener {
+	
+	public LoginPlayer() {
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+			PermissionsUtils.clearPermissions(player);
+			PermissionsUtils.setPermissions(player);
+			PermissionsUtils.updateBungeePermissions(player);
+			
+		}
+		
+	}
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {

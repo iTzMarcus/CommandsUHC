@@ -1,7 +1,6 @@
 package com.thetonyk.UHC.Utils;
 
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -17,7 +16,6 @@ import com.thetonyk.UHC.Main;
 
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle;
@@ -48,17 +46,10 @@ public class DisplayUtils {
 		((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
 	}
 
-	public static void sendTab(Player player) {
-		
-		String name = player.getName();
-		int ping = ((CraftPlayer)player).getHandle().ping;
-		
-		double rawTps = MinecraftServer.getServer().recentTps[0];
-		DecimalFormat format = new DecimalFormat("##.##");
-		String tps = format.format(rawTps);
-		
-		IChatBaseComponent jsonHeader = ChatSerializer.a("{'text':'\n §7Welcome on the UHC, §a" + name + " §7! \n §b@CommandsPVP  §7⋯  §aTS: §bcommandspvp.com \n'}");
-		IChatBaseComponent jsonFooter = ChatSerializer.a("{'text':'\n §7Players: §a" + Bukkit.getOnlinePlayers().size() + "  §7⋯  Ping: §a" + ping + "ms  §7⋯  TPS: §a" + tps + " \n'}");
+	public static void sendTab(Player player, String header, String footer) {
+	
+		IChatBaseComponent jsonHeader = ChatSerializer.a("{'text':'" + header + "'}");
+		IChatBaseComponent jsonFooter = ChatSerializer.a("{'text':'" + footer + "'}");
 		
 		PacketPlayOutPlayerListHeaderFooter tabHeader = new PacketPlayOutPlayerListHeaderFooter(jsonHeader);
 		
@@ -71,7 +62,7 @@ public class DisplayUtils {
 			
 		} catch (Exception e) {
 			
-			Bukkit.getLogger().severe("§cError to set tab header & footer to " + name);
+			Bukkit.getLogger().severe("Error to set tab header & footer to " + player.getName());
 			
 		}
 		

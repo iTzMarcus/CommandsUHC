@@ -1,13 +1,9 @@
 package com.thetonyk.UHC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
@@ -41,12 +37,12 @@ import com.thetonyk.UHC.Features.NaturalRegeneration;
 import com.thetonyk.UHC.Features.PregenStates;
 import com.thetonyk.UHC.Features.ScatterProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
-import com.thetonyk.UHC.Features.TeamsNametags;
+import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Features.DisplayTab;
 import com.thetonyk.UHC.Inventories.InviteInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.DisplayUtils;
-import com.thetonyk.UHC.Utils.PermissionsUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
@@ -73,25 +69,9 @@ public class Main extends JavaPlugin {
 		Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new MessengerListener());
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "CommandsBungee");
 		
-		ByteArrayDataOutput out = ByteStreams.newDataOutput();
-		
-		out.writeUTF("GetServer");
-		
-		Bukkit.getServer().sendPluginMessage(Main.uhc, "BungeeCord", out.toByteArray());
-		
 		WorldUtils.loadAllWorlds();
 		DisplayUtils.redditHearts();
 		TeamsUtils.reload();
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-			TeamsNametags.updateNametag(player);
-			PermissionsUtils.clearPermissions(player);
-			PermissionsUtils.setPermissions(player);
-			PermissionsUtils.updateBungeePermissions(player);
-			
-		}
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
 		this.getCommand("rank").setExecutor(new RankCommand());
@@ -116,6 +96,8 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new ChatCooldown(), this);
 		manager.registerEvents(new ChatIgnoreSettings(), this);
 		manager.registerEvents(new ChatSettings(), this);
+		manager.registerEvents(new DisplayNametags(), this);
+		manager.registerEvents(new DisplayTab(), this);
 		manager.registerEvents(new HealthScore(), this);
 		manager.registerEvents(new HealthShoot(), this);
 		manager.registerEvents(new LobbyFly(), this);
@@ -128,25 +110,10 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new PregenStates(), this);
 		manager.registerEvents(new ScatterProtection(), this);
 		manager.registerEvents(new TeamsInvitations(), this);
-		manager.registerEvents(new TeamsNametags(), this);
 		
 		manager.registerEvents(new InviteInventory(), this);
 		manager.registerEvents(new RulesInventory(), this);
 		manager.registerEvents(new TeamsInventory(), this);
-			
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					
-					DisplayUtils.sendTab(player);
-					
-				}
-				
-			}
-			
-		}.runTaskTimer(Main.uhc, 0, 20);
 		
 	}
 	

@@ -12,7 +12,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Features.TeamsNametags;
+import com.thetonyk.UHC.Features.DisplayNametags;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
@@ -73,7 +73,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 		}
 			
 		PlayerUtils.setRank(player.getName(), rank);
-		if (player.isOnline()) TeamsNametags.updateNametag(player.getPlayer());
+		if (player.isOnline()) DisplayNametags.updateNametag(player.getPlayer());
 		
 		if (player.isOnline() && sender.getName() != player.getName()) {
 				

@@ -11,7 +11,17 @@ import org.bukkit.scoreboard.NameTagVisibility;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
-public class TeamsNametags implements Listener {
+public class DisplayNametags implements Listener {
+	
+	public DisplayNametags() {
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			DisplayNametags.updateNametag(player);
+			
+		}
+		
+	}
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
