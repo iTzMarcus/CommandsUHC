@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,7 +18,6 @@ import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
 
 public class RankCommand implements CommandExecutor, TabCompleter {
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 			
@@ -43,10 +41,8 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 			return true;
 				
 		}
-				
-		OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 		
-		if (!DatabaseUtils.exist("SELECT * FROM users WHERE uuid = '" + player.getUniqueId() + "'")) {
+		if (!DatabaseUtils.exist("SELECT * FROM users WHERE name = '" + args[0] + "'")) {
 			
 			sender.sendMessage(Main.PREFIX + "This player is not known on this server");
 			return true;
@@ -72,16 +68,16 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 			
 		}
 			
-		PlayerUtils.setRank(player.getName(), rank);
-		if (player.isOnline()) DisplayNametags.updateNametag(player.getPlayer());
+		PlayerUtils.setRank(args[0], rank);
+		if (Bukkit.getPlayer(args[0]) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(args[0]));
 		
-		if (player.isOnline() && sender.getName() != player.getName()) {
+		if (Bukkit.getPlayer(args[0]) != null && sender.getName() != Bukkit.getPlayer(args[0]).getName()) {
 				
-				player.getPlayer().sendMessage(Main.PREFIX + "Your rank was set to '§6" + rank.toString().toLowerCase() + "§7'.");
+			Bukkit.getPlayer(args[0]).getPlayer().sendMessage(Main.PREFIX + "Your rank was set to '§6" + rank.toString().toLowerCase() + "§7'.");
 			
 		}
 		
-		sender.sendMessage(Main.PREFIX + "The rank of '§6" + player.getName() + "§7' has been set to '§6" + rank.toString().toLowerCase() + "§7'.");
+		sender.sendMessage(Main.PREFIX + "The rank of '§6" + args[0] + "§7' has been set to '§6" + rank.toString().toLowerCase() + "§7'.");
 		
 		return true;
 		

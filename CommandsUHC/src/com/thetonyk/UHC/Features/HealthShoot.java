@@ -1,5 +1,8 @@
 package com.thetonyk.UHC.Features;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,27 +27,27 @@ public class HealthShoot implements Listener {
 			public void run() {
 				
 				double health = ((Player) event.getEntity()).getHealth();
-				double maxHealth = ((Player) event.getEntity()).getMaxHealth();
 				String display = "§4";
 				
-				for (int i = 0; i < Math.floor(health); i++) {
+				for (int i = 0; i < Math.floor((((Player) event.getEntity()).getHealth() / 2)); i++) {
 					
 					display += "❤";
-					health -= 1;
+					health -= 2;
 					
 				}
 				
-				if (health - Math.floor(health) > 0) display += "§c❤";
+				if (Math.floor(health) > 0) display += "§c❤";
 				
 				display += "§f";
 				
-				for (int i = 0; i < Math.floor(maxHealth - health); i++) {
+				for (int i = 0; i < Math.floor((((Player) event.getEntity()).getMaxHealth() / 2) - (((Player) event.getEntity()).getHealth() / 2)); i++) {
 					
 					display += "❤";
 					
 				}
 				
-				display +=  "§7⫸ §a" + ((((Player) event.getEntity()).getHealth()) / 2) * 10;
+				NumberFormat format = new DecimalFormat("##.#");
+				display += " §7⫸ §6" + format.format(((((Player) event.getEntity()).getHealth()) / 2) * 10) + "%";
 				DisplayUtils.sendActionBar((Player) (((Arrow) event.getDamager()).getShooter()), display);
 				
 			}

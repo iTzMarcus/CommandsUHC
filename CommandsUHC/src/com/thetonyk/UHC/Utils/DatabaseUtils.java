@@ -33,7 +33,7 @@ public class DatabaseUtils {
             
         } catch (ClassNotFoundException ex) {
         	
-            Main.uhc.getLogger().severe("[DatabaseUtils] §cUnable to load the JDBC Driver.");
+            Main.uhc.getLogger().severe("[DatabaseUtils] Unable to load the JDBC Driver.");
             
         }
         

@@ -32,6 +32,8 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
+		if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
+		
 		if (args.length > 0) {
 		
 			if (args[0].equalsIgnoreCase("invite")) {
