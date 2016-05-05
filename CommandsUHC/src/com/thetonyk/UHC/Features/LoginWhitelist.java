@@ -5,9 +5,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
-import com.thetonyk.UHC.Game;
-import com.thetonyk.UHC.Game.Status;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PermissionsUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class LoginWhitelist implements Listener {
 
@@ -25,7 +25,7 @@ public class LoginWhitelist implements Listener {
 			
 		}
 			
-		if (Game.getStatus() == Status.TELEPORT || Game.getStatus() == Status.PLAY || Game.getStatus() == Status.END) {
+		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
 			
 			event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cThe UHC has already begun.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
 			return;

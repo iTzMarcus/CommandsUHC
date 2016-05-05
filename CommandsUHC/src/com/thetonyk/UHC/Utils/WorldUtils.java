@@ -198,4 +198,26 @@ public class WorldUtils {
 		
 	}
 	
+	public static int getSize(String world) {
+		
+		int radius = 0;
+		
+		try {
+			
+			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name='" + world + "' AND server = '" + MessengerListener.lastServer + "';");
+			
+			if (worldDB.next()) radius = worldDB.getInt("size");
+			
+			worldDB.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[BorderCommand] Error to fetch informations of world " + world + " in DB.");
+			
+		}
+		
+		return radius;
+		
+	}
+	
 }

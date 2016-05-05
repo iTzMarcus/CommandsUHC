@@ -8,12 +8,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import com.thetonyk.UHC.Game;
-import com.thetonyk.UHC.Game.Status;
 import com.thetonyk.UHC.Utils.DisplayUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PermissionsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class LoginPlayer implements Listener {
 	
@@ -44,7 +44,7 @@ public class LoginPlayer implements Listener {
 		DisplayUtils.sendTitle(event.getPlayer(), "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName());
 		
-		if (Game.getStatus() == Status.TELEPORT || Game.getStatus() == Status.PLAY || Game.getStatus() == Status.END) return;
+		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;
 			
 		event.getPlayer().teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);

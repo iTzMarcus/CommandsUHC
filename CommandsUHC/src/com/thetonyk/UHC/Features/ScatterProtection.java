@@ -14,15 +14,15 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
-import com.thetonyk.UHC.Game;
-import com.thetonyk.UHC.Game.Status;
+import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class ScatterProtection implements Listener {
 
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		
@@ -31,7 +31,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 
@@ -40,7 +40,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		
@@ -49,7 +49,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		if (event.getAction() == Action.PHYSICAL) {
 			
@@ -92,7 +92,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onArmorStandInteract(PlayerArmorStandManipulateEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		
@@ -101,7 +101,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onHungerChange(FoodLevelChangeEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		event.setFoodLevel(20);
@@ -111,7 +111,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onBucketEmpty(PlayerBucketEmptyEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		event.getBlockClicked().getState().update(true, true);
@@ -121,7 +121,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onBucketFill(PlayerBucketFillEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 			
 		event.setCancelled(true);
 		event.getBlockClicked().getState().update(true, true);
@@ -131,7 +131,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onPlayerDamage(EntityDamageByEntityEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 		
 		event.setCancelled(true);
 		
@@ -140,7 +140,7 @@ public class ScatterProtection implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		
-		if (Game.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT) return;
 		
 		event.setCancelled(true);
 		

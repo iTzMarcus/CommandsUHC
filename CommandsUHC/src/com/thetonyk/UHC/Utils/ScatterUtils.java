@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -13,18 +14,32 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Events.TeleportEvent;
 
 public class ScatterUtils {
 	
-	public static Map<String, Location> getSpawns(World world, int size) {
+	public static Map<UUID, Location> getSpawns(World world, int size) {
 		
 		//Inspired by @LeonTG77
 		
-		Map<String, Location> locations = new HashMap<String, Location>();
+		Map<UUID, Location> locations = new HashMap<UUID, Location>();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			int minDistance = 150;
+			
+			if (TeamsUtils.getTeam(player.getName()) != null) {
+				
+				for (String member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(player.getName()))) {
+					
+					if (!locations.containsKey(PlayerUtils.getUUID(member))) continue;
+					
+					locations.put(player.getUniqueId(), locations.get(PlayerUtils.getUUID(member)));
+					break;
+					
+				}
+				
+			}
 			
 			for (int i = 0; i < 3000; i++) {
 				
@@ -40,7 +55,7 @@ public class ScatterUtils {
 						
 					}
 					
-				}
+				} 
 				
 				Random random = new Random();
 				
@@ -88,7 +103,7 @@ public class ScatterUtils {
 				if (!near && valid) {
 					
 					spawn.setY(200);
-					locations.put(player.getName(), spawn);
+					locations.put(player.getUniqueId(), spawn);
 					break;
 					
 				} else {
@@ -106,9 +121,9 @@ public class ScatterUtils {
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static void loadSpawns(Map<String, Location> locationsMap) {
+	public static void loadSpawns(Map<UUID, Location> locationsMap) {
 		
-		ArrayList<String> players = new ArrayList<String>(locationsMap.keySet());
+		ArrayList<UUID> players = new ArrayList<UUID>(locationsMap.keySet());
 		ArrayList<Location> locations = new ArrayList<Location>(locationsMap.values());
 			
 		new BukkitRunnable() {
@@ -118,10 +133,12 @@ public class ScatterUtils {
 			public void run() {
 				
 				Location location = locations.get(i);
-				String player = players.get(i);
+				UUID uuid = players.get(i);
 				
 				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
-					DisplayUtils.sendActionBar(playerOnline, "§7Generation of spawn of '§6" + player + "§7' §8(§a" + (i + 1) + "§7/§a" + locationsMap.size() + "§8)");
+					
+					DisplayUtils.sendActionBar(playerOnline, "§7Generation of spawn of '§6" + PlayerUtils.getName(PlayerUtils.getId(uuid)) + "§7' §8(§a" + (i + 1) + "§7/§a" + locationsMap.size() + "§8)");
+					
 				}
 				
 				Location loc1  = location.clone(), loc2  = location.clone(), loc3  = location.clone(), loc4 = location.clone(), loc5 = location.clone(), loc6 = location.clone();
@@ -180,29 +197,33 @@ public class ScatterUtils {
 					
 					cancel();
 					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							for (Player playerOnline : Bukkit.getOnlinePlayers()) {
+								
+								DisplayUtils.sendActionBar(playerOnline, "§a" + locationsMap.size() + "§7 spawns successfully generated.");
+								
+							}
+							
+							ScatterUtils.teleportPlayers(locationsMap);
+							
+						}
+						
+					}.runTaskLater(Main.uhc, 20);
+					
 				}
 				
 			}
 		
 		}.runTaskTimer(Main.uhc, 5, 5);
 		
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
-					DisplayUtils.sendActionBar(playerOnline, "§a" + locationsMap.size() + "§7 spawns successfully generated.");
-				}
-				
-			}
-			
-		}.runTaskLater(Main.uhc, 20);
-		
 	}
 	
-	public static void teleportPlayers(Map<String, Location> locationsMap) {
+	public static void teleportPlayers(Map<UUID, Location> locationsMap) {
 		
-		ArrayList<String> players = new ArrayList<String>(locationsMap.keySet());
+		ArrayList<UUID> players = new ArrayList<UUID>(locationsMap.keySet());
 		ArrayList<Location> locations = new ArrayList<Location>(locationsMap.values());
 		
 		new BukkitRunnable() {
@@ -213,13 +234,15 @@ public class ScatterUtils {
 				
 				Location location = locations.get(i);
 				location.setY(location.getY() + 0.5);
-				String name = players.get(i);
+				UUID uuid = players.get(i);
 				
 				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
-					DisplayUtils.sendActionBar(playerOnline, "§7Teleportation of '§6" + name + "§7' §8(§a" + (i + 1) + "§7/§a" + locationsMap.size() + "§8)");
+					
+					DisplayUtils.sendActionBar(playerOnline, "§7Teleportation of '§6" + PlayerUtils.getName(PlayerUtils.getId(uuid)) + "§7' §8(§a" + (i + 1) + "§7/§a" + locationsMap.size() + "§8)");
+					
 				}
 				
-				Player player = Bukkit.getPlayer(name);
+				Player player = Bukkit.getPlayer(uuid);
 				
 				if (player == null) {
 					
@@ -235,23 +258,27 @@ public class ScatterUtils {
 					
 					cancel();
 					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							for (Player playerOnline : Bukkit.getOnlinePlayers()) {
+								
+								DisplayUtils.sendActionBar(playerOnline, "§a" + locationsMap.size() + "§7 players successfully teleported.");
+								
+							}
+							
+							Bukkit.getPluginManager().callEvent(new TeleportEvent());
+							
+						}
+						
+					}.runTaskLater(Main.uhc, 20);
+					
 				}
 				
 			}
 		
-		}.runTaskTimer(Main.uhc, 5, 5);
-		
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
-					DisplayUtils.sendActionBar(playerOnline, "§a" + locationsMap.size() + "§7 players successfully teleported.");
-				}
-				
-			}
-			
-		}.runTaskLater(Main.uhc, 20);
+		}.runTaskTimer(Main.uhc, 25, 5);
 		
 	}
 	

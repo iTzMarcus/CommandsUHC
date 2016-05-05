@@ -193,6 +193,50 @@ public class PlayerUtils {
 		
 	}
 	
+	public static String getName (int id) {
+		
+		String name = null;
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT * FROM users WHERE id = '" + id + "';");
+			
+			if (req.next()) name = req.getString("name");
+				
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[PlayerUtils] Error to get name of player with id " + id + ".");
+
+		}
+		
+		return name;
+		
+	}
+	
+	public static UUID getUUID (String name) {
+		
+		UUID uuid = null;
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT * FROM users WHERE name = '" + name + "';");
+			
+			if (req.next()) uuid = UUID.fromString(req.getString("uuid"));
+			
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[PlayerUtils] Error to get UUID of player " + name + ".");
+			
+		}
+		
+		return uuid;
+		
+	}
+	
 	public static int getChatVisibility (Player player) {
 		
 		int chatVisibility = 0;

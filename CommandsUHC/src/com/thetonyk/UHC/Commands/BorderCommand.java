@@ -1,7 +1,5 @@
 package com.thetonyk.UHC.Commands;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,27 +50,7 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length == 1) {
 			
-			int radius;
-			
-			try {
-				
-				ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name='" + args[0] + "' AND server = '" + MessengerListener.lastServer + "';");
-				
-				worldDB.next();
-				
-				radius = worldDB.getInt("size");
-				
-				worldDB.close();
-				
-			} catch (SQLException exception) {
-				
-				Bukkit.getLogger().severe("[BorderCommand] Error to fetch informations of world " + args[0] + " in DB.");
-				sender.sendMessage(Main.PREFIX + "Error to fetch data of '§6" + args[1] + "§7'.");
-				return true;
-				
-			}
-			
-			sender.sendMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7': §a" + radius + "§7x§a" + radius + "§7.");
+			sender.sendMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7': §a" + WorldUtils.getSize(args[0]) + "§7x§a" + WorldUtils.getSize(args[0]) + "§7.");
 			return true;
 			
 		}

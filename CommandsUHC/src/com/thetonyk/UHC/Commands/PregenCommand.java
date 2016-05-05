@@ -1,7 +1,5 @@
 package com.thetonyk.UHC.Commands;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
@@ -76,27 +73,7 @@ public class PregenCommand implements CommandExecutor, TabCompleter{
 			
 		}
 		
-		int radius;
-		
-		try {
-			
-			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM worlds WHERE name='" + args[0] + "';");
-			
-			worldDB.next();
-			
-			radius = worldDB.getInt("size");
-			
-			worldDB.close();
-			
-		} catch (SQLException e) {
-			
-			Main.uhc.getLogger().severe("§7[PregenCommand] §cError to fetch informations of world §6" + args[0] + "§c in DB.");
-			sender.sendMessage(Main.PREFIX + "Error to fetch data of '§6" + args[1] + "§7'.");
-			return true;
-			
-		}
-		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + args[0] + " set " + radius / 2 + " " + radius / 2 + " 0 0");
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + args[0] + " set " + WorldUtils.getSize(args[0]) / 2 + " " + WorldUtils.getSize(args[0]) / 2 + " 0 0");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + args[0] + " fill 500");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator fill confirm");
 	

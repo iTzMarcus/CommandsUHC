@@ -18,7 +18,9 @@ import org.bukkit.command.TabCompleter;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class WorldCommand implements CommandExecutor, TabCompleter {
 	
@@ -252,6 +254,57 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			
 			Bukkit.getPlayer(sender.getName()).teleport(Bukkit.getWorld(args[1]).getSpawnLocation());
 			sender.sendMessage(Main.PREFIX + "You have been teleported to world '§6" + args[1] + "§7'.");
+			return true;
+						
+		}
+		else if (args[0].equalsIgnoreCase("game")) {
+			
+			if (args.length < 2) {
+				
+				sender.sendMessage(Main.PREFIX + "Usage: /world game <world>");
+				return true;
+				
+			}
+			
+			if (!WorldUtils.exist(args[1]) && !args[1].equalsIgnoreCase("lobby")) {
+				
+				sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' doesn't exist.");
+				return true;
+				
+			}
+			
+			if (args[1].equalsIgnoreCase("lobby")) {
+				
+				sender.sendMessage(Main.PREFIX + "You can't use the lobby world.");
+				return true;
+				
+			}
+							
+			if (Bukkit.getWorld(args[1]) == null) {
+					
+				sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' is not loaded.");
+				return true;
+				
+			}
+			
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+				
+				sender.sendMessage(Main.PREFIX + "You can't change the world during the game.");
+				return true;
+				
+			}
+			
+			GameUtils.setWorld(args[1]);
+			GameUtils.setStatus(Status.READY);
+			sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' is now the game world.");
+			return true;
+						
+		}	
+		else if (args[0].equalsIgnoreCase("reset")) {
+			
+			GameUtils.setWorld("");
+			GameUtils.setStatus(Status.NONE);
+			sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			return true;
 						
 		}

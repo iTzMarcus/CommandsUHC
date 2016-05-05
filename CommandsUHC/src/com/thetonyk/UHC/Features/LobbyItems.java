@@ -11,10 +11,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.thetonyk.UHC.Game;
-import com.thetonyk.UHC.Game.Status;
 import com.thetonyk.UHC.Inventories.RulesInventory;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class LobbyItems implements Listener {
 
@@ -61,7 +61,7 @@ public class LobbyItems implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (Game.getStatus() == Status.TELEPORT || Game.getStatus() == Status.PLAY || Game.getStatus() == Status.END) return;
+		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;
 			
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§7Click to see the rules.");
