@@ -6,6 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -129,6 +130,15 @@ public class ScatterProtection implements Listener {
 	
 	@EventHandler
 	public void onPlayerDamage(EntityDamageByEntityEvent event) {
+		
+		if (Game.getStatus() != Status.TELEPORT) return;
+		
+		event.setCancelled(true);
+		
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageEvent event) {
 		
 		if (Game.getStatus() != Status.TELEPORT) return;
 		

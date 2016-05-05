@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -229,6 +230,15 @@ public class LobbyProtection implements Listener {
 		
 		if (event.getAction() != InventoryAction.HOTBAR_SWAP) return;
 
+		event.setCancelled(true);
+		
+	}
+	
+	@EventHandler
+	public void onDamage(EntityDamageEvent event) {
+		
+		if (!event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		
 		event.setCancelled(true);
 		
 	}

@@ -51,6 +51,7 @@ commands:
     tc:
         description: Send coords to your team
         usage: /tc
+        aliases: [tl]
     whitelist:
         description: Manage the whitelist
         usage: /whitelist

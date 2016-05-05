@@ -138,6 +138,8 @@ public class WorldUtils {
 			while (worlds.next()) {
 				
 				loadWorld(worlds.getString("name"));
+				Bukkit.getWorld(worlds.getString("name")).setPVP(true);
+				Bukkit.getWorld(worlds.getString("name")).setTime(6000);
 				
 			}
 			
@@ -148,6 +150,9 @@ public class WorldUtils {
 			Bukkit.getLogger().severe("[WorldUtils] Error to fetch all worlds.");
 			
 		}
+		
+		Bukkit.getWorld("lobby").setPVP(false);
+		Bukkit.getWorld("lobby").setTime(6000);
 		
 	}
 	

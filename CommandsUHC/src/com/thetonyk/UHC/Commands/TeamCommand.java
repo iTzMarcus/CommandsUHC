@@ -59,6 +59,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
+				if (TeamsUtils.getTeam(sender.getName()) != null && TeamsUtils.getTeam(args[1]) != null && TeamsUtils.getTeam(sender.getName()).equalsIgnoreCase(TeamsUtils.getTeam(args[1]))) {
+					
+					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]) + "§7' is already in your team.");
+					return true;
+					
+				}
+				
 				if (TeamsUtils.getTeam(sender.getName()) == null) {
 					
 					if (TeamsUtils.getTeamsLeft() < 1) {
@@ -76,7 +83,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				Bukkit.getPlayer(args[1]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 				
-				ComponentBuilder message = Main.PREFIX_COMPONENT.append("To join his team, ").color(GRAY).append("accept the invitation").color(AQUA).italic(true);
+				ComponentBuilder message = Main.getPrefixComponent().append("To join his team, ").color(GRAY).append("accept the invitation").color(AQUA).italic(true);
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept the invitation of ").color(GRAY).append(sender.getName()).color(GREEN).append(".").color(GRAY).create()));
 				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team accept " + sender.getName()));
 				message.append(".").retain(FormatRetention.NONE).color(GRAY);
@@ -97,7 +104,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				if (TeamsUtils.getTeam(sender.getName()) != null) {
 					
-					ComponentBuilder message = Main.PREFIX_COMPONENT.append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
+					ComponentBuilder message = Main.getPrefixComponent().append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
 					message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click on this text to leave your team.").color(GRAY).create()));
 					message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team leave"));
 					message.append(".").retain(FormatRetention.NONE).color(GRAY);
@@ -170,7 +177,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			}
 			else if (args[0].equalsIgnoreCase("create")) {
 				
-				ComponentBuilder message = Main.PREFIX_COMPONENT.append("Create a team is useless, use ").color(GRAY).append("/invite").color(GOLD);
+				ComponentBuilder message = Main.getPrefixComponent().append("Create a team is useless, use ").color(GRAY).append("/invite").color(GOLD);
 				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invite"));
 				message.append(".").color(GRAY);
 				Bukkit.getPlayer(sender.getName()).spigot().sendMessage(message.create());
@@ -213,8 +220,8 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				for (String member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(name))) {
 					
-					if (Bukkit.getPlayer(member) != null && Bukkit.getPlayer(member).isOnline()) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + " §8- §7" + (int) ((Bukkit.getPlayer(member).getHealth()) / 2) * 10 + "§4♥\n");
-					else sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + " §8- §cOFFLINE\n");
+					if (Bukkit.getPlayer(member) != null && Bukkit.getPlayer(member).isOnline()) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §f" + (int) ((Bukkit.getPlayer(member).getHealth()) / 2) * 10 + "§4♥\n");
+					else sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §cOFFLINE\n");
 					
 				}
 				

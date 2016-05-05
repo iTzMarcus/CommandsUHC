@@ -101,20 +101,19 @@ public class TeamsUtils {
 	
 	public static void createTeam(String player) {
 		
+		int id = 0;
+		String name = null;
+		
 		try {
 			
 			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + MessengerListener.lastServer + "';");
 			
 			while (teams.next()) {
 				
-				if (teams.getInt("exist") != 0) return;
+				if (teams.getInt("exist") != 0) continue;
 	
-				DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
-				
-				players.put(player, teams.getString("name"));
-				
-				if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
-				
+				id = teams.getInt("id");
+				name = teams.getString("name");
 				break;		
 				
 			}
@@ -126,6 +125,12 @@ public class TeamsUtils {
 			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch all teams.");
 			
 		}
+		
+		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+		
+		players.put(player, name);
+		
+		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
 		
 	}
 	
@@ -139,14 +144,19 @@ public class TeamsUtils {
 	
 	public static void joinTeam(String player, String team) {
 		
+		String members = null;
+		int id = 0;
+		
 		try {
 			
 			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
-					
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + teams.getString("members") + player + ";' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
 			
-			players.put(player, teams.getString("name"));
-			if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+			if (teams.next()) {
+				
+				members = teams.getString("members");
+				id = teams.getInt("id");
+				
+			}
 			
 			teams.close();
 			
@@ -155,39 +165,31 @@ public class TeamsUtils {
 			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch team '" + team + "'.");
 			
 		}
+		
+		Bukkit.broadcastMessage("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+		
+		players.put(player, team);
+		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
 		
 	}
 	
 	public static void leaveTeam(String player) {
 		
 		String team = players.get(player).toString();
+		String members = null;
+		int id = 0;
 		
 		try {
 			
 			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
 				
-			if (teams.getString("members").split(";").length < 2) {
+			if (teams.next()) {
 				
-				DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
-				
-			} else {
-				
-				String[] members = teams.getString("members").split(";");
-				String newMembers = "";
-				
-				for (int i = 0; i < members.length; i++) {
-					
-					if (!members[i].equalsIgnoreCase(player)) newMembers = newMembers + members[i] + ";";
-					
-				}
-				
-				DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + teams.getInt("id") + "' AND server = '" + MessengerListener.lastServer + "';");
+				id = teams.getInt("id");
+				members = teams.getString("members");
 				
 			}
-			
-			if (players.containsKey(player)) players.remove(player);
-			
-			if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
 			
 			teams.close();
 			
@@ -196,6 +198,29 @@ public class TeamsUtils {
 			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch team '" + team + "'.");
 			
 		}
+		
+		if (members.split(";").length < 2) {
+			
+			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+			
+		} else {
+			
+			String[] membersList = members.split(";");
+			String newMembers = "";
+			
+			for (int i = 0; i < membersList.length; i++) {
+				
+				if (!membersList[i].equalsIgnoreCase(player)) newMembers = newMembers + membersList[i] + ";";
+				
+			}
+			
+			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+			
+		}
+		
+		if (players.containsKey(player)) players.remove(player);
+		
+		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
 		
 	}
 	

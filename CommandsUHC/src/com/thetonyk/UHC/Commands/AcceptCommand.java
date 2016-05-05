@@ -33,7 +33,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 			
 			if (TeamsUtils.getTeam(sender.getName()) != null) {
 				
-				ComponentBuilder message = Main.PREFIX_COMPONENT.append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
+				ComponentBuilder message = Main.getPrefixComponent().append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click on this text to leave your team.").color(GRAY).create()));
 				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team leave"));
 				message.append(".").retain(FormatRetention.NONE).color(GRAY);

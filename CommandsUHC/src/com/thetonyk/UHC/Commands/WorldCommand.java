@@ -246,6 +246,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			if (Bukkit.getWorld(args[1]) == null) {
 					
 				sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' is not loaded.");
+				return true;
 				
 			}
 			

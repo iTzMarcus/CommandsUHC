@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -13,11 +14,11 @@ import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
 
 public class PermissionsUtils {
 	
-	private static Map<String, PermissionAttachment> permissions = new HashMap<String, PermissionAttachment>();
+	private static Map<UUID, PermissionAttachment> permissions = new HashMap<UUID, PermissionAttachment>();
 	
 	public static void setPermissions(Player player) {
 		
-		if (!permissions.containsKey(player.getName())) permissions.put(player.getName(), player.addAttachment(Main.uhc));
+		if (!permissions.containsKey(player.getUniqueId())) permissions.put(player.getUniqueId(), player.addAttachment(Main.uhc));
 		
 		PermissionAttachment permission = permissions.get(player.getName());
 		Rank rank = PlayerUtils.getRank(player.getName());
@@ -70,9 +71,9 @@ public class PermissionsUtils {
 	
 	public static void clearPermissions(Player player) {
 		
-		if (!permissions.containsKey(player.getName())) return;
+		if (!permissions.containsKey(player.getUniqueId())) return;
 			
-		player.removeAttachment(permissions.get(player.getName()));
+		player.removeAttachment(permissions.get(player.getUniqueId()));
 		permissions.remove(player.getName());
 		
 	}

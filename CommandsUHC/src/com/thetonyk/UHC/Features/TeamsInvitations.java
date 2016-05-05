@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import com.thetonyk.UHC.Inventories.InviteInventory;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class TeamsInvitations implements Listener {
 
@@ -15,6 +16,8 @@ public class TeamsInvitations implements Listener {
 		if (!event.getPlayer().getWorld().getName().equals("lobby")) return;
 			
 		if (!(event.getRightClicked() instanceof Player)) return;
+		
+		if (TeamsUtils.getTeam(event.getPlayer().getName()) == null || TeamsUtils.getTeam(event.getRightClicked().getName()) == null || TeamsUtils.getTeam(event.getPlayer().getName()).equalsIgnoreCase(TeamsUtils.getTeam(event.getRightClicked().getName()))) return;
 				
 		event.getPlayer().openInventory(InviteInventory.getInvite((Player) event.getRightClicked()));
 		

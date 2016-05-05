@@ -51,7 +51,7 @@ public class DisplayNametags implements Listener {
 				players.getScoreboard().registerNewTeam(player.getName());
 				players.getScoreboard().getTeam(player.getName()).setAllowFriendlyFire(true);
 				players.getScoreboard().getTeam(player.getName()).setCanSeeFriendlyInvisibles(true);
-				players.getScoreboard().getTeam(player.getName()).setDisplayName(player + " team");
+				players.getScoreboard().getTeam(player.getName()).setDisplayName(player.getName());
 				players.getScoreboard().getTeam(player.getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
 				
 			}
@@ -65,7 +65,7 @@ public class DisplayNametags implements Listener {
 				player.getScoreboard().registerNewTeam(players.getName());
 				player.getScoreboard().getTeam(players.getName()).setAllowFriendlyFire(true);
 				player.getScoreboard().getTeam(players.getName()).setCanSeeFriendlyInvisibles(true);
-				player.getScoreboard().getTeam(players.getName()).setDisplayName(players.getName() + " team");
+				player.getScoreboard().getTeam(players.getName()).setDisplayName(players.getName());
 				player.getScoreboard().getTeam(players.getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
 				
 			}

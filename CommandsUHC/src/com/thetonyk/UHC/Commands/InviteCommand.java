@@ -64,7 +64,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 			
 			Bukkit.getPlayer(args[0]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 			
-			ComponentBuilder message = Main.PREFIX_COMPONENT.append("To join his team, ").color(GRAY).append("accept the invitation").color(AQUA).italic(true);
+			ComponentBuilder message = Main.getPrefixComponent().append("To join his team, ").color(GRAY).append("accept the invitation").color(AQUA).italic(true);
 			message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept the invitation of ").color(GRAY).append(sender.getName()).color(GREEN).append(".").color(GRAY).create()));
 			message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team accept " + sender.getName()));
 			message.append(".").retain(FormatRetention.NONE).color(GRAY);
