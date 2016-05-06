@@ -166,7 +166,6 @@ public class TeamsUtils {
 			
 		}
 		
-		Bukkit.broadcastMessage("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
 		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
 		
 		players.put(player, team);

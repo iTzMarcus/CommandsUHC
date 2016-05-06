@@ -66,6 +66,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 			sender.sendMessage(Main.PREFIX + "You joined the team of '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'.");
 			TeamsUtils.sendMessage(TeamsUtils.getTeam(args[0]), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
 			
+			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
 			TeamsUtils.joinTeam(sender.getName(), TeamsUtils.getTeam(args[0]));
 			TeamsUtils.invitations.get(args[0]).remove(sender.getName());
 			return true;

@@ -16,7 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.TeleportEvent;
 
-public class ScatterUtils {
+public class TeleportUtils {
 	
 	public static Map<UUID, Location> getSpawns(World world, int size) {
 		
@@ -38,6 +38,8 @@ public class ScatterUtils {
 					break;
 					
 				}
+				
+				if (locations.containsKey(player.getUniqueId())) break;
 				
 			}
 			
@@ -207,7 +209,7 @@ public class ScatterUtils {
 								
 							}
 							
-							ScatterUtils.teleportPlayers(locationsMap);
+							TeleportUtils.teleportPlayers(locationsMap);
 							
 						}
 						

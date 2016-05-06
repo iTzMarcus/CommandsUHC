@@ -304,6 +304,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			
 			GameUtils.setWorld("");
 			GameUtils.setStatus(Status.NONE);
+			GameUtils.setTeleported(false);
 			sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			return true;
 						

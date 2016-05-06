@@ -13,7 +13,7 @@ public class TeleportEvent extends Event {
 		
 	}
 	
-	public static HandlerList getHandlersList() {
+	public static HandlerList getHandlerList() {
 		
 		return handlers;
 		

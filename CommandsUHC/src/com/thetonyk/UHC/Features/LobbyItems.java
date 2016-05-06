@@ -20,8 +20,6 @@ public class LobbyItems implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
-	
-		if (!event.getPlayer().getWorld().getName().equals("lobby")) return;
 			
 		if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName()) return;
 				
@@ -34,8 +32,6 @@ public class LobbyItems implements Listener {
 	
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent event) {
-		
-		if (!event.getPlayer().getWorld().getName().equals("lobby")) return;
 		
 		if (event.getItemDrop() == null || !event.getItemDrop().getItemStack().hasItemMeta() || !event.getItemDrop().getItemStack().getItemMeta().hasDisplayName()) return;
 				

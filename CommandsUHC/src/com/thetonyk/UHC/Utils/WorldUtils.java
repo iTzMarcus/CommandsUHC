@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Utils;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -93,9 +94,11 @@ public class WorldUtils {
 
 		for (Player player : Bukkit.getWorld(world).getPlayers()) player.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		
+		File folder = Bukkit.getWorld(world).getWorldFolder();
+		
 		WorldUtils.unloadWorld(world);
 			
-		if (FileUtils.delete(Bukkit.getWorld(world).getWorldFolder())) {
+		if (FileUtils.delete(folder)) {
 			
 			DatabaseUtils.sqlInsert("DELETE FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + MessengerListener.lastServer + "';");
 			return;

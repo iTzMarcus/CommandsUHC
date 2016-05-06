@@ -35,7 +35,7 @@ import com.thetonyk.UHC.Features.LoginWhitelist;
 import com.thetonyk.UHC.Features.LogoutPlayer;
 import com.thetonyk.UHC.Features.NaturalRegeneration;
 import com.thetonyk.UHC.Features.PregenStates;
-import com.thetonyk.UHC.Features.ScatterProtection;
+import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
 import com.thetonyk.UHC.Features.DisplayNametags;
 import com.thetonyk.UHC.Features.DisplayTab;
@@ -109,12 +109,14 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new LogoutPlayer(), this);
 		manager.registerEvents(new NaturalRegeneration(), this);
 		manager.registerEvents(new PregenStates(), this);
-		manager.registerEvents(new ScatterProtection(), this);
+		manager.registerEvents(new TeleportProtection(), this);
 		manager.registerEvents(new TeamsInvitations(), this);
 		
 		manager.registerEvents(new InviteInventory(), this);
 		manager.registerEvents(new RulesInventory(), this);
 		manager.registerEvents(new TeamsInventory(), this);
+		
+		manager.registerEvents(new TeleportCommand(), this);
 		
 	}
 	

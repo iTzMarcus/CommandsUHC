@@ -60,6 +60,8 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
+			
 			TeamsUtils.invitations.get(sender.getName()).add(Bukkit.getPlayer(args[0]).getName());
 			
 			Bukkit.getPlayer(args[0]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");

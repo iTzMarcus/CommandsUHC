@@ -17,7 +17,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
-public class ScatterProtection implements Listener {
+public class TeleportProtection implements Listener {
 
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent event) {

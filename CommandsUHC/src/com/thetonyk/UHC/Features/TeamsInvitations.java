@@ -17,7 +17,7 @@ public class TeamsInvitations implements Listener {
 			
 		if (!(event.getRightClicked() instanceof Player)) return;
 		
-		if (TeamsUtils.getTeam(event.getPlayer().getName()) == null || TeamsUtils.getTeam(event.getRightClicked().getName()) == null || TeamsUtils.getTeam(event.getPlayer().getName()).equalsIgnoreCase(TeamsUtils.getTeam(event.getRightClicked().getName()))) return;
+		if (TeamsUtils.getTeam(event.getPlayer().getName()) != null && TeamsUtils.getTeam(event.getRightClicked().getName()) != null && TeamsUtils.getTeam(event.getPlayer().getName()).equalsIgnoreCase(TeamsUtils.getTeam(event.getRightClicked().getName()))) return;
 				
 		event.getPlayer().openInventory(InviteInventory.getInvite((Player) event.getRightClicked()));
 		

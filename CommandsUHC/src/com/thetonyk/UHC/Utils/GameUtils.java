@@ -61,7 +61,7 @@ public class GameUtils {
 			
 		}
 		
-		return world;
+		return world == "" ? null : world;
 		
 	}
 	

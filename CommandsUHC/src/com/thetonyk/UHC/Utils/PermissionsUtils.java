@@ -20,7 +20,7 @@ public class PermissionsUtils {
 		
 		if (!permissions.containsKey(player.getUniqueId())) permissions.put(player.getUniqueId(), player.addAttachment(Main.uhc));
 		
-		PermissionAttachment permission = permissions.get(player.getName());
+		PermissionAttachment permission = permissions.get(player.getUniqueId());
 		Rank rank = PlayerUtils.getRank(player.getName());
 		
 		if (rank == Rank.ADMIN) {
