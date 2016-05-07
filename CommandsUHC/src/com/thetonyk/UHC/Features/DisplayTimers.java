@@ -31,7 +31,7 @@ public class DisplayTimers {
 			
 			public void run() {
 				
-				if (time < 60) {
+				if (time < 45) {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						
@@ -65,7 +65,7 @@ public class DisplayTimers {
 					
 				}
 				
-				if (time == 60) {
+				if (time == 45) {
 					
 					Bukkit.getPluginManager().callEvent(new FinalHealEvent());
 					

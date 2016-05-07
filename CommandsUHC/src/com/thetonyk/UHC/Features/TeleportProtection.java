@@ -142,7 +142,7 @@ public class TeleportProtection implements Listener {
 		
 		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (DisplayTimers.time > 60) return;
+		if (DisplayTimers.time > 45) return;
 		
 		event.setCancelled(true);
 		
