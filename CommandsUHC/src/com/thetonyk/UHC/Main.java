@@ -26,6 +26,7 @@ import com.thetonyk.UHC.Commands.WorldCommand;
 import com.thetonyk.UHC.Features.ChatCooldown;
 import com.thetonyk.UHC.Features.ChatIgnoreSettings;
 import com.thetonyk.UHC.Features.ChatSettings;
+import com.thetonyk.UHC.Features.DeathRespawn;
 import com.thetonyk.UHC.Features.HealthScore;
 import com.thetonyk.UHC.Features.HealthShoot;
 import com.thetonyk.UHC.Features.LobbyFly;
@@ -102,6 +103,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new ChatCooldown(), this);
 		manager.registerEvents(new ChatIgnoreSettings(), this);
 		manager.registerEvents(new ChatSettings(), this);
+		manager.registerEvents(new DeathRespawn(), this);
 		manager.registerEvents(new DisplayNametags(), this);
 		manager.registerEvents(new DisplayTab(), this);
 		manager.registerEvents(new HealthScore(), this);

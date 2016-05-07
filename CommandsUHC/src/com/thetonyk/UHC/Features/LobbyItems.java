@@ -3,12 +3,16 @@ package com.thetonyk.UHC.Features;
 import java.util.ArrayList;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Inventories.RulesInventory;
@@ -59,12 +63,36 @@ public class LobbyItems implements Listener {
 		
 		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;
 			
+		giveItems(event.getPlayer());
+		
+	}
+	
+	@EventHandler
+	public void onChangeWorld(PlayerChangedWorldEvent event) {
+		
+		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		
+		giveItems(event.getPlayer());
+		
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onRespawn(PlayerRespawnEvent event) {
+		
+		if (!event.getRespawnLocation().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		
+		giveItems(event.getPlayer());
+		
+	}
+	
+	private void giveItems (Player player) {
+		
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§7Click to see the rules.");
 		ItemStack rules = ItemsUtils.createItem(Material.PAPER, "§b§lThe Rules §7(Right-Click)", 1, 0, lore);
 		rules = ItemsUtils.addGlow(rules);
 		
-		event.getPlayer().getInventory().setItem(4, rules);
+		player.getInventory().setItem(4, rules);
 		
 	}
 	
