@@ -27,7 +27,7 @@ public class PVPCommand implements CommandExecutor, TabCompleter{
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /pregen <world> <true|false>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <world> <true|false>");
 			return true;
 			
 		}
@@ -56,6 +56,7 @@ public class PVPCommand implements CommandExecutor, TabCompleter{
 		}
 		
 		Bukkit.getWorld(args[0]).setPVP(pvp);
+		sender.sendMessage(Main.PREFIX + "The PVP has been " + (pvp ? "enabled" : "disabled") + "§7in the world '§6" + Bukkit.getWorld(args[0]).getName() + "'.");
 		return true;
 		
 	}

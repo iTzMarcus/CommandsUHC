@@ -27,7 +27,7 @@ public class ButcherCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /butcher <world>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <world>");
 			return true;
 			
 		}

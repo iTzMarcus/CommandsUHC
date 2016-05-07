@@ -27,7 +27,7 @@ public class FeedCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /feed [player]");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " [player]");
 			return true;
 			
 		}

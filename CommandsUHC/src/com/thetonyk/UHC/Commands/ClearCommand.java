@@ -27,7 +27,7 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /clear [player] [xp]");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " [player] [xp]");
 			return true;
 			
 		}

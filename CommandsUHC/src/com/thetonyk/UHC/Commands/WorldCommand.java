@@ -38,11 +38,11 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 		if (args.length < 1) {
 			
 			sender.sendMessage(Main.PREFIX + "Usage of /world:");
-			sender.sendMessage("§8⫸ §6/world create §8- §7Create a world.");
-			sender.sendMessage("§8⫸ §6/world delete §8- §7Delete a world.");
-			sender.sendMessage("§8⫸ §6/world reload §8- §7Reload a world.");
-			sender.sendMessage("§8⫸ §6/world list §8- §7List all worlds.");
-			sender.sendMessage("§8⫸ §6/world tp §8- §7Teleport to a world.");
+			sender.sendMessage("§8⫸ §6/" + label + " create §8- §7Create a world.");
+			sender.sendMessage("§8⫸ §6/" + label + " delete §8- §7Delete a world.");
+			sender.sendMessage("§8⫸ §6/" + label + " reload §8- §7Reload a world.");
+			sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List all worlds.");
+			sender.sendMessage("§8⫸ §6/" + label + " tp §8- §7Teleport to a world.");
 			return true;
 			
 		}
@@ -51,7 +51,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			
 			if (args.length < 3) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world create <name> <size> [nether] [end] [seed]");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " create <name> <size> [nether] [end] [seed]");
 				return true;
 				
 			}
@@ -117,7 +117,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 						
 			if (args.length < 2) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world delete <world>");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " delete <world>");
 				return true;
 				
 			}
@@ -159,7 +159,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 						
 			if (args.length < 2) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world reload <world>");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " reload <world>");
 				return true;
 				
 			}
@@ -226,7 +226,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 						
 			if (args.length < 2) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world tp <world>");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " tp <world>");
 				return true;
 				
 			}
@@ -262,7 +262,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			
 			if (args.length < 2) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world game <world>");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " game <world>");
 				return true;
 				
 			}

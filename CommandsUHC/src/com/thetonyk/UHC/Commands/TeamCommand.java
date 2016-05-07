@@ -40,7 +40,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				if (args.length < 2) {
 					
-					sender.sendMessage(Main.PREFIX + "Usage: /team invite <player>");
+					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " invite <player>");
 					return true;
 					
 				}
@@ -97,7 +97,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				if (args.length < 2) {
 					
-					sender.sendMessage(Main.PREFIX + "Usage: /team accept <player>");
+					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " accept <player>");
 					return true;
 					
 				}
@@ -234,7 +234,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 					if (args.length < 2) {
 						
-						sender.sendMessage(Main.PREFIX + "Usage: /team add <player> [player]");
+						sender.sendMessage(Main.PREFIX + "Usage: /" + label + " add <player> [player]");
 						return true;
 						
 					}
@@ -287,7 +287,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 					if (args.length < 2) {
 						
-						sender.sendMessage(Main.PREFIX + "Usage: /team remove <player>");
+						sender.sendMessage(Main.PREFIX + "Usage: /" + label + " remove <player>");
 						return true;
 						
 					}
@@ -312,7 +312,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 					if (args.length < 2) {
 						
-						sender.sendMessage(Main.PREFIX + "Usage: /team delete <player>");
+						sender.sendMessage(Main.PREFIX + "Usage: /" + label + " delete <player>");
 						return true;
 						
 					}
@@ -359,19 +359,19 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 		}	
 			
 		sender.sendMessage(Main.PREFIX + "Usage of /team:");
-		sender.sendMessage("§8⫸ §6/team invite <player> §8- §7Invite a player in your team.");
-		sender.sendMessage("§8⫸ §6/team accept <player> §8- §7Accept your invitations.");
-		sender.sendMessage("§8⫸ §6/team leave §8- §7Leave your team.");
-		sender.sendMessage("§8⫸ §6/team list §8- §7List all teams.");
-		sender.sendMessage("§8⫸ §6/team info [player] §8- §7Informations about a team.");
+		sender.sendMessage("§8⫸ §6/" + label + " invite <player> §8- §7Invite a player in your team.");
+		sender.sendMessage("§8⫸ §6/" + label + " accept <player> §8- §7Accept your invitations.");
+		sender.sendMessage("§8⫸ §6/" + label + " leave §8- §7Leave your team.");
+		sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List all teams.");
+		sender.sendMessage("§8⫸ §6/" + label + " info [player] §8- §7Informations about a team.");
 		
 		if (sender.hasPermission("uhc.team.admin")) {
 			
-			sender.sendMessage("§8⫸ §6/team add <player> [player] §8- §7Add player to team of player.");
-			sender.sendMessage("§8⫸ §6/team remove <player> §8- §7Remove player from his team.");
-			sender.sendMessage("§8⫸ §6/team delete <player> §8- §7Delete team of the player.");
-			sender.sendMessage("§8⫸ §6/team clear §8- §7Delete all teams.");
-			sender.sendMessage("§8⫸ §6/team color §8- §7Re-color teams.");
+			sender.sendMessage("§8⫸ §6/" + label + " add <player> [player] §8- §7Add player to team of player.");
+			sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove player from his team.");
+			sender.sendMessage("§8⫸ §6/" + label + " delete <player> §8- §7Delete team of the player.");
+			sender.sendMessage("§8⫸ §6/" + label + " clear §8- §7Delete all teams.");
+			sender.sendMessage("§8⫸ §6/" + label + " color §8- §7Re-color teams.");
 			
 		}
 		

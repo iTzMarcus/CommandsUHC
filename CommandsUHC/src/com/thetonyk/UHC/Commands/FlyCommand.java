@@ -26,7 +26,7 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /fly <player>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <player>");
 			return true;
 			
 		}

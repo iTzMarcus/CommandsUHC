@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -34,6 +35,7 @@ public class PermissionsUtils {
 		permission.setPermission("uhc.timeleft", true);
 		permission.setPermission("uhc.team", true);
 		permission.setPermission("uhc.helpop", true);
+		permission.setPermission("uhc.health", true);
 		
 		if (rank == Rank.PLAYER || rank == Rank.WINNER) return;
 		
@@ -74,7 +76,16 @@ public class PermissionsUtils {
 		
 		if (!permissions.containsKey(player.getUniqueId())) return;
 			
-		player.removeAttachment(permissions.get(player.getUniqueId()));
+		try {
+			
+			player.removeAttachment(permissions.get(player.getUniqueId()));
+			
+		} catch (Exception exception) {
+			
+			Bukkit.getLogger().warning("Impossible to clear permissions of " + player.getName() + ".");
+			
+		}
+		
 		permissions.remove(player.getName());
 		
 	}

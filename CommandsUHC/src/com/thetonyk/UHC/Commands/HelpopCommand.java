@@ -33,7 +33,7 @@ public class HelpopCommand implements CommandExecutor {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /helpop <message>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <message>");
 			return true;
 		}
 		

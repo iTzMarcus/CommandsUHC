@@ -29,7 +29,7 @@ public class PregenCommand implements CommandExecutor, TabCompleter{
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /pregen <world|pause|cancel>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <world|pause|cancel>");
 			return true;
 			
 		}

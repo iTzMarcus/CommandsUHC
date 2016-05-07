@@ -38,7 +38,7 @@ public class LobbyItems implements Listener {
 			
 		}
 		
-		if (event.getItem().getItemMeta().getDisplayName().equals("§6§lTeams list §7(Right-Click)")) {
+		if (event.getItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);	
 			if (TeamsUtils.getTeamsLeft() == 75) {
@@ -60,7 +60,7 @@ public class LobbyItems implements Listener {
 		
 		if (event.getItemDrop() == null || !event.getItemDrop().getItemStack().hasItemMeta() || !event.getItemDrop().getItemStack().getItemMeta().hasDisplayName()) return;
 				
-		if (!event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)") && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams list §7(Right-Click)")) return;
+		if (!event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)") && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) return;
 			
 		event.setCancelled(true);
 		event.getPlayer().openInventory(RulesInventory.getRules());
@@ -80,7 +80,7 @@ public class LobbyItems implements Listener {
 			
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6§lTeams list §7(Right-Click)")) {
+		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);	
 			if (TeamsUtils.getTeamsLeft() == 75) {
@@ -135,7 +135,7 @@ public class LobbyItems implements Listener {
 		
 		lore = new ArrayList<String>();
 		lore.add("§7Click to see teams.");
-		ItemStack teams = ItemsUtils.createItem(Material.NAME_TAG, "§6§lTeams list §7(Right-Click)", 1, 0, lore);
+		ItemStack teams = ItemsUtils.createItem(Material.NAME_TAG, "§6§lTeams List §7(Right-Click)", 1, 0, lore);
 		teams = ItemsUtils.addGlow(teams);
 		
 		player.getInventory().setItem(8, teams);

@@ -29,6 +29,13 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 			
 			if (args[0].equalsIgnoreCase("add")) {
 				
+				if (args.length < 2) {
+					
+					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " add <player>");
+					return true;
+					
+				}
+				
 				Bukkit.getOfflinePlayer(args[1]).setWhitelisted(true);
 				Bukkit.broadcastMessage(Main.PREFIX + "The player '§6" + Bukkit.getOfflinePlayer(args[1]).getName() + "§7' has been whitelisted.");
 				return true;
@@ -36,6 +43,13 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 			}
 			
 			if (args[0].equalsIgnoreCase("remove")) {
+				
+				if (args.length < 2) {
+					
+					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " remove <player>");
+					return true;
+					
+				}
 				
 				if (!Bukkit.getOfflinePlayer(args[1]).isWhitelisted()) {
 					
@@ -150,13 +164,13 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 		}
 		
 		sender.sendMessage(Main.PREFIX + "Usage of /whitelist:");
-		sender.sendMessage("§8⫸ §6/whitelist add <player> §8- §7Add a player.");
-		sender.sendMessage("§8⫸ §6/whitelist remove <player> §8- §7Remove a player.");	
-		sender.sendMessage("§8⫸ §6/whitelist on|off §8- §7Enable/Disable the whitelist.");
-		sender.sendMessage("§8⫸ §6/whitelist all §8- §7Whitelist all players.");
-		sender.sendMessage("§8⫸ §6/whitelist clear §8- §7Clear the whitelist.");
-		sender.sendMessage("§8⫸ §6/whitelist status [player] §8- §7See status of whitelist.");
-		sender.sendMessage("§8⫸ §6/whitelist list §8- §7List whitelisted players.");
+		sender.sendMessage("§8⫸ §6/" + label + " add <player> §8- §7Add a player.");
+		sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove a player.");	
+		sender.sendMessage("§8⫸ §6/" + label + " on|off §8- §7Enable/Disable the whitelist.");
+		sender.sendMessage("§8⫸ §6/" + label + " all §8- §7Whitelist all players.");
+		sender.sendMessage("§8⫸ §6/" + label + " clear §8- §7Clear the whitelist.");
+		sender.sendMessage("§8⫸ §6/" + label + " status [player] §8- §7See status of whitelist.");
+		sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List whitelisted players.");
 		return true;
 		
 	}

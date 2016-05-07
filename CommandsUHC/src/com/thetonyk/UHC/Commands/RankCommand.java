@@ -30,7 +30,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /rank <player> <rank>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <player> <rank>");
 			return true;
 			
 		}

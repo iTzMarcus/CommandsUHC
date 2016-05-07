@@ -27,7 +27,7 @@ public class TCommand implements CommandExecutor {
 		
 		if (args.length == 0) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /t <message>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <message>");
 			return true;
 			
 		}

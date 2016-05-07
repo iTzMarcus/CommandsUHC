@@ -73,7 +73,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 			
 		}	
 			
-		sender.sendMessage(Main.PREFIX + "Usage: /accept <player>");
+		sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <player>");
 		return true;
 		
 	}

@@ -27,7 +27,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 			
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /gamemode <gamemode>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <gamemode>");
 			return true;
 			
 		}
@@ -53,7 +53,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 				
 			} catch (Exception exceptionString) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /gamemode <gamemode>");
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <gamemode>");
 				return true;
 				
 			}
@@ -62,7 +62,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 		
 		if (gamemode == null) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /gamemode <gamemode>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <gamemode>");
 			return true;
 			
 		}

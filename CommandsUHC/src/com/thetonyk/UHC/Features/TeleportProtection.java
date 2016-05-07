@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Features;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -139,6 +140,8 @@ public class TeleportProtection implements Listener {
 	
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
+		
+		if (!(event.getEntity() instanceof Player)) return;
 		
 		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
 		
