@@ -19,7 +19,7 @@ public class TimeleftCommand implements CommandExecutor {
 			
 		}
 		
-		if (!Bukkit.getScheduler().isCurrentlyRunning(DisplayTimers.timer.getTaskId())) {
+		if (DisplayTimers.timer == null) {
 			
 			sender.sendMessage(Main.PREFIX + "The game has not started.");
 			return true;
@@ -29,7 +29,7 @@ public class TimeleftCommand implements CommandExecutor {
 		Bukkit.broadcastMessage(Main.PREFIX + "Times left:");
 		Bukkit.broadcastMessage("§8⫸ §7Final Heal: §a" + DisplayTimers.getFormatedTime(60 - DisplayTimers.time) + "§7.");
 		Bukkit.broadcastMessage("§8⫸ §7PVP: §a" + DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftPVP()) + "§7.");
-		Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + DisplayTimers.getFormatedTime(60 - DisplayTimers.getTimeLeftMeetup()) + "§7.");
+		Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftMeetup()) + "§7.");
 		return true;
 		
 	}

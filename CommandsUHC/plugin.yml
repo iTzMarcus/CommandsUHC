@@ -69,3 +69,7 @@ commands:
         description: See the timers
         usage: /timeleft
         aliases: [time]
+    rules:
+        description: See the rules
+        usage: /rules
+        aliases: [uhc]

@@ -16,6 +16,7 @@ import com.thetonyk.UHC.Commands.PmcoordsCommand;
 import com.thetonyk.UHC.Commands.PmoresCommand;
 import com.thetonyk.UHC.Commands.PregenCommand;
 import com.thetonyk.UHC.Commands.RankCommand;
+import com.thetonyk.UHC.Commands.RulesCommand;
 import com.thetonyk.UHC.Commands.StartCommand;
 import com.thetonyk.UHC.Commands.TCommand;
 import com.thetonyk.UHC.Commands.TcCommand;
@@ -97,6 +98,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("helpop").setExecutor(new HelpopCommand());
 		this.getCommand("start").setExecutor(new StartCommand());
 		this.getCommand("timeleft").setExecutor(new TimeleftCommand());
+		this.getCommand("rules").setExecutor(new RulesCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

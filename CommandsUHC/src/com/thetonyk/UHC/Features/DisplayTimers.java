@@ -21,7 +21,12 @@ public class DisplayTimers {
 	
 	public static void startTimer() {
 		
-		if (timer != null && Bukkit.getScheduler().isCurrentlyRunning(timer.getTaskId())) timer.cancel();
+		if (timer != null) {
+			
+			timer.cancel();
+			timer = null;
+			
+		}
 		
 		time = 0;
 		pvpTime = 120;
@@ -126,7 +131,7 @@ public class DisplayTimers {
 			
 		}
 		
-		if (minutes > -1) {
+		if (minutes > 0) {
 			
 			if (minutes < 10) stringTime.append("0");
 			stringTime.append(minutes);
