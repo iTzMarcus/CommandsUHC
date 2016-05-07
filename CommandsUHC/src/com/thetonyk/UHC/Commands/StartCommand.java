@@ -166,7 +166,7 @@ public class StartCommand implements CommandExecutor {
 					
 					DisplayUtils.sendTitle(player, "", "§7Go§a! §7Go§a! §7Go§a!", 5, 30, 5);
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
-					
+					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);
 					PlayerUtils.clearEffects(player);
 					PlayerUtils.clearInventory(player);

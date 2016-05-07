@@ -43,7 +43,7 @@ public class DeathRespawn implements Listener {
 		event.setRespawnLocation(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		event.getPlayer().sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or spoil please.");
 		
-		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter: ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);
+		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);
 		text.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to see our ").color(GRAY).append("Twitter").color(GREEN).append(".").color(GRAY).create()));
 		text.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://twitter.com/commandspvp"));
 		text.append(" for next games.").retain(FormatRetention.NONE).color(GRAY);
