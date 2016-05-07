@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
 public class LobbyProtection implements Listener {
@@ -30,9 +31,26 @@ public class LobbyProtection implements Listener {
 	@EventHandler
 	public void onWeatherChange(WeatherChangeEvent event) {
 		
+		if (!event.toWeatherState()) return;
+		
 		if (!event.getWorld().getName().equalsIgnoreCase("lobby")) return;
 			
 		event.setCancelled(true);
+		event.getWorld().setStorm(false);
+		event.getWorld().setWeatherDuration(0);
+		
+	}
+	
+	@EventHandler
+	public void onThunderChange(ThunderChangeEvent event) {
+		
+		if (!event.toThunderState()) return;
+		
+		if (!event.getWorld().getName().equalsIgnoreCase("lobby")) return;
+			
+		event.setCancelled(true);
+		event.getWorld().setThundering(false);
+		event.getWorld().setThunderDuration(0);
 		
 	}
 	
@@ -50,7 +68,7 @@ public class LobbyProtection implements Listener {
 	
 		if (!event.getBlock().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 			
 		event.setCancelled(true);
 			
@@ -61,7 +79,7 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getBlock().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 			
 		event.setCancelled(true);
 		
@@ -72,7 +90,7 @@ public class LobbyProtection implements Listener {
 	
 		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 		
 		if (event.getAction() == Action.PHYSICAL) {
 				
@@ -117,7 +135,7 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 				
 		switch (event.getRightClicked().getType()) {
 		
@@ -136,7 +154,7 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 			
 		event.setCancelled(true);
 		
@@ -176,7 +194,7 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 			
 		event.setCancelled(true);
 		event.getBlockClicked().getState().update(true, true);
@@ -188,7 +206,7 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() != GameMode.CREATIVE) return;
+		if (event.getPlayer().hasPermission("global.build") && event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
 			
 		event.setCancelled(true);
 		event.getBlockClicked().getState().update(true, true);

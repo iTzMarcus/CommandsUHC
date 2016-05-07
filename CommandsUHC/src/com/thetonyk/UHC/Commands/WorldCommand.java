@@ -309,6 +309,9 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
 			GameUtils.setWorld("");
 			if (DisplayTimers.timer != null) DisplayTimers.timer.cancel();
+			DisplayTimers.time = 0;
+			DisplayTimers.pvpTime = 120;
+			DisplayTimers.meetupTime = 180;
 			sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			return true;
 						

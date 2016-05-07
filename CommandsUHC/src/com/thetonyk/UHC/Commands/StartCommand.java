@@ -17,6 +17,7 @@ import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeleportUtils;
+import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class StartCommand implements CommandExecutor {
 	
@@ -155,6 +156,8 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.broadcastMessage("§8⫸ §7Meetup: §a60 minutes§7.");
 				Bukkit.broadcastMessage(Main.PREFIX + "Good luck & Have Fun!");
 				
+				Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));
+				Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
 				GameUtils.setStatus(Status.PLAY);
 				DisplayTimers.startTimer();
 				start = false;

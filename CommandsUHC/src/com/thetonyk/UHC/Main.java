@@ -34,7 +34,9 @@ import com.thetonyk.UHC.Features.LobbyProtection;
 import com.thetonyk.UHC.Features.LoginPlayer;
 import com.thetonyk.UHC.Features.LoginWhitelist;
 import com.thetonyk.UHC.Features.LogoutPlayer;
+import com.thetonyk.UHC.Features.MeetupEnable;
 import com.thetonyk.UHC.Features.NaturalRegeneration;
+import com.thetonyk.UHC.Features.PVPEnable;
 import com.thetonyk.UHC.Features.PregenStates;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
@@ -109,8 +111,10 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new LobbyProtection(), this);
 		manager.registerEvents(new LoginWhitelist(), this);
 		manager.registerEvents(new LogoutPlayer(), this);
+		manager.registerEvents(new MeetupEnable(), this);
 		manager.registerEvents(new NaturalRegeneration(), this);
 		manager.registerEvents(new PregenStates(), this);
+		manager.registerEvents(new PVPEnable(), this);
 		manager.registerEvents(new TeleportProtection(), this);
 		manager.registerEvents(new TeamsInvitations(), this);
 		

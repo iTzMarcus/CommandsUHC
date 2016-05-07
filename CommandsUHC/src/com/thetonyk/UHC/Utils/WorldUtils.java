@@ -156,6 +156,9 @@ public class WorldUtils {
 		
 		Bukkit.getWorld("lobby").setPVP(false);
 		Bukkit.getWorld("lobby").setTime(6000);
+		Bukkit.getWorld("lobby").setWeatherDuration(0);
+		Bukkit.getWorld("lobby").setDifficulty(Difficulty.PEACEFUL);
+		
 		
 	}
 	
