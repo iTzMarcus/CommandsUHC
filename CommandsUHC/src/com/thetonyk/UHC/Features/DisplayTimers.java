@@ -35,7 +35,7 @@ public class DisplayTimers {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						
-						DisplayUtils.sendActionBar(player, "§7Final heal §8⫸ §a" + DisplayTimers.getFormatedTime(60 - time) + " §8| §7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
+						DisplayUtils.sendActionBar(player, "§7Final heal §8⫸ §a" + DisplayTimers.getFormatedTime(45 - time) + " §8| §7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
 						
 					}
 					

@@ -21,6 +21,7 @@ import com.thetonyk.UHC.Commands.TCommand;
 import com.thetonyk.UHC.Commands.TcCommand;
 import com.thetonyk.UHC.Commands.TeamCommand;
 import com.thetonyk.UHC.Commands.TeleportCommand;
+import com.thetonyk.UHC.Commands.TimeleftCommand;
 import com.thetonyk.UHC.Commands.WhitelistCommand;
 import com.thetonyk.UHC.Commands.WorldCommand;
 import com.thetonyk.UHC.Features.ChatCooldown;
@@ -95,6 +96,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("butcher").setExecutor(new ButcherCommand());
 		this.getCommand("helpop").setExecutor(new HelpopCommand());
 		this.getCommand("start").setExecutor(new StartCommand());
+		this.getCommand("timeleft").setExecutor(new TimeleftCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

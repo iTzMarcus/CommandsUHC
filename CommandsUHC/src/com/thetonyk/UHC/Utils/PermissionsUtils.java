@@ -31,6 +31,7 @@ public class PermissionsUtils {
 		}
 		
 		permission.setPermission("uhc.border", true);
+		permission.setPermission("uhc.timeleft", true);
 		permission.setPermission("uhc.team", true);
 		permission.setPermission("uhc.helpop", true);
 		

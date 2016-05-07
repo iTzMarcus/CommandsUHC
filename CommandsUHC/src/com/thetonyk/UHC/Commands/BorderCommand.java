@@ -13,6 +13,7 @@ import org.bukkit.command.TabCompleter;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class BorderCommand implements CommandExecutor, TabCompleter {
@@ -29,7 +30,14 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length == 0) {
 			
-			//Incoming border game size
+			if (GameUtils.getWorld() == null || Bukkit.getWorld(GameUtils.getWorld()) == null) {
+				
+				sender.sendMessage(Main.PREFIX + "The game is not ready.");
+				return true;
+				
+			}
+			
+			sender.sendMessage(Main.PREFIX + "Border size: §6" + Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§6" + Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7.");
 			return true;
 			
 		}

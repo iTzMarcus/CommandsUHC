@@ -152,8 +152,8 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.broadcastMessage(Main.PREFIX + "The game is starting now.");
 				Bukkit.broadcastMessage(Main.PREFIX + "Timers:");
 				Bukkit.broadcastMessage("§8⫸ §7Final Heal: §a45 seconds§7.");
-				Bukkit.broadcastMessage("§8⫸ §7PVP: §a15 minutes§7.");
-				Bukkit.broadcastMessage("§8⫸ §7Meetup: §a60 minutes§7.");
+				Bukkit.broadcastMessage("§8⫸ §7PVP: §a" + Math.floor(DisplayTimers.pvpTime / 60) + " minutes§7.");
+				Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + Math.floor(DisplayTimers.meetupTime / 60) + " minutes§7.");
 				Bukkit.broadcastMessage(Main.PREFIX + "Good luck & Have Fun!");
 				
 				Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));

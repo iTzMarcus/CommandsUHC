@@ -65,3 +65,7 @@ commands:
     start:
         description: Start the game
         usage: /start
+    timeleft:
+        description: See the timers
+        usage: /timeleft
+        aliases: [time]
