@@ -135,7 +135,7 @@ public class LobbyItems implements Listener {
 		
 		lore = new ArrayList<String>();
 		lore.add("§7Click to see teams.");
-		ItemStack teams = ItemsUtils.createItem(Material.PAPER, "§6§lTeams list §7(Right-Click)", 1, 0, lore);
+		ItemStack teams = ItemsUtils.createItem(Material.NAME_TAG, "§6§lTeams list §7(Right-Click)", 1, 0, lore);
 		teams = ItemsUtils.addGlow(teams);
 		
 		player.getInventory().setItem(8, teams);

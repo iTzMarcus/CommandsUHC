@@ -13,12 +13,12 @@ import org.bukkit.entity.Player;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 
-public class ClearCommand implements CommandExecutor, TabCompleter {
+public class HealCommand implements CommandExecutor, TabCompleter {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		if (!sender.hasPermission("uhc.clear")) {
+		if (!sender.hasPermission("uhc.heal")) {
 			
 			sender.sendMessage(Main.NO_PERMS);
     		return true;
@@ -27,23 +27,8 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /clear [player] [xp]");
+			sender.sendMessage(Main.PREFIX + "Usage: /feed [player]");
 			return true;
-			
-		}
-		
-		Boolean xp = false;
-		
-		if (args.length > 1) {
-			
-			if (!args[1].equalsIgnoreCase("true") && !args[1].equalsIgnoreCase("false")) {
-				
-				sender.sendMessage(Main.PREFIX + "The XP can only be '§6true§7' or '§6false§7'.");
-				return true;
-				
-			}
-			
-			xp = Boolean.parseBoolean(args[1]);
 			
 		}
 		
@@ -51,12 +36,11 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				
-				PlayerUtils.clearInventory(player);
-				if (xp) PlayerUtils.clearXp(player);
+				PlayerUtils.heal(player);
 				
 			}
 			
-			Bukkit.broadcastMessage(Main.PREFIX + "The inventories of all players are been cleared.");
+			Bukkit.broadcastMessage(Main.PREFIX + "All players have been healed.");
 			return true;
 			
 		}
@@ -76,12 +60,11 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (xp) PlayerUtils.clearXp(player);
-		PlayerUtils.clearInventory(player);
+		PlayerUtils.heal(player);
 		
-		if (sender.getName() != player.getName()) sender.sendMessage(Main.PREFIX + "The inventory of player '§6" + player.getName() + "§7' was cleared.");
+		if (sender.getName() != player.getName()) sender.sendMessage(Main.PREFIX + "The player '§6" + player.getName() + "§7' has been healed.");
 		
-		player.sendMessage(Main.PREFIX + "Your inventory was cleared.");
+		player.sendMessage(Main.PREFIX + "You have been healed.");
 		return true;
 		
 	}
@@ -89,7 +72,7 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (!sender.hasPermission("uhc.clear")) return null;
+		if (!sender.hasPermission("uhc.heal")) return null;
 		
 		List<String> complete = new ArrayList<String>();
 		
@@ -100,11 +83,6 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 				complete.add(player.getName());
 				
 			}
-			
-		} else if (args.length == 2) {
-			
-			complete.add("true");
-			complete.add("false");
 			
 		}
 		

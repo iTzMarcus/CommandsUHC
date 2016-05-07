@@ -9,10 +9,13 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
+import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
+import com.thetonyk.UHC.Commands.HealCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
+import com.thetonyk.UHC.Commands.PVPCommand;
 import com.thetonyk.UHC.Commands.PmCommand;
 import com.thetonyk.UHC.Commands.PmcoordsCommand;
 import com.thetonyk.UHC.Commands.PmoresCommand;
@@ -103,6 +106,9 @@ public class Main extends JavaPlugin {
 		this.getCommand("rules").setExecutor(new RulesCommand());
 		this.getCommand("fly").setExecutor(new FlyCommand());
 		this.getCommand("clear").setExecutor(new ClearCommand());
+		this.getCommand("feed").setExecutor(new FeedCommand());
+		this.getCommand("heal").setExecutor(new HealCommand());
+		this.getCommand("pvp").setExecutor(new PVPCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
