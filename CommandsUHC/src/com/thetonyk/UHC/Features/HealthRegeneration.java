@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 
-public class NaturalRegeneration implements Listener {
+public class HealthRegeneration implements Listener {
 
 	@EventHandler
 	public void onHeal(EntityRegainHealthEvent event) {
