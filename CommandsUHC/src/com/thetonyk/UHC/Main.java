@@ -13,6 +13,7 @@ import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
 import com.thetonyk.UHC.Commands.HealCommand;
+import com.thetonyk.UHC.Commands.HealthCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
 import com.thetonyk.UHC.Commands.PVPCommand;
@@ -109,6 +110,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("feed").setExecutor(new FeedCommand());
 		this.getCommand("heal").setExecutor(new HealCommand());
 		this.getCommand("pvp").setExecutor(new PVPCommand());
+		this.getCommand("health").setExecutor(new HealthCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
