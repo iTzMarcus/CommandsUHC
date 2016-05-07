@@ -53,8 +53,6 @@ public class LoginPlayer implements Listener {
 		PlayerUtils.feed(event.getPlayer());
 		PlayerUtils.heal(event.getPlayer());
 		PlayerUtils.clearEffects(event.getPlayer());
-		event.getPlayer().setExp(0);
-		event.getPlayer().setTotalExperience(0);
 		event.getPlayer().setMaxHealth(20.0);
 		
 	}

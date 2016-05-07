@@ -39,7 +39,7 @@ public class GamemodeCommand implements CommandExecutor, TabCompleter {
 			int gamemodeNumber = Integer.parseInt(args[0]);
 			
 			if (gamemodeNumber == 0) gamemodeNumber = 1;
-			if (gamemodeNumber == 1) gamemodeNumber = 0;
+			else if (gamemodeNumber == 1) gamemodeNumber = 0;
 			
 			gamemode = GameMode.values()[gamemodeNumber];
 			

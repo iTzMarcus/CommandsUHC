@@ -73,3 +73,9 @@ commands:
         description: See the rules
         usage: /rules
         aliases: [uhc]
+    fly:
+        description: Toggle fly of player
+        usage: /fly
+    clear:
+        description: Clear inventory and xp of a player
+        usage: /clear

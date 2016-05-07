@@ -8,6 +8,8 @@ import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
+import com.thetonyk.UHC.Commands.ClearCommand;
+import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
@@ -99,6 +101,8 @@ public class Main extends JavaPlugin {
 		this.getCommand("start").setExecutor(new StartCommand());
 		this.getCommand("timeleft").setExecutor(new TimeleftCommand());
 		this.getCommand("rules").setExecutor(new RulesCommand());
+		this.getCommand("fly").setExecutor(new FlyCommand());
+		this.getCommand("clear").setExecutor(new ClearCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
