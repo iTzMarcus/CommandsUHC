@@ -55,6 +55,7 @@ import com.thetonyk.UHC.Features.HealthFood;
 import com.thetonyk.UHC.Inventories.InviteInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
+import com.thetonyk.UHC.Utils.BiomesUtils;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -84,6 +85,7 @@ public class Main extends JavaPlugin {
 		WorldUtils.loadAllWorlds();
 		DisplayUtils.redditHearts();
 		TeamsUtils.reload();
+		BiomesUtils.removeOceansAndJungles();
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
 		this.getCommand("rank").setExecutor(new RankCommand());
@@ -150,6 +152,8 @@ public class Main extends JavaPlugin {
 	public void onDisable() {
 		
 		getLogger().info("UHC Plugin has been disabled.");
+		
+		BiomesUtils.resetBiomes();
 		
 		uhc = null;
 		
