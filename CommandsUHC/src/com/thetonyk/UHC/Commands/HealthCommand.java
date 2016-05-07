@@ -25,13 +25,6 @@ public class HealthCommand implements CommandExecutor, TabCompleter {
     		
 		}
 		
-		if (args.length < 1) {
-			
-			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " [player]");
-			return true;
-			
-		}
-		
 		Player player = Bukkit.getPlayer(sender.getName());
 		
 		if (args.length > 0) {
@@ -51,7 +44,7 @@ public class HealthCommand implements CommandExecutor, TabCompleter {
 		double maxHealth = (player.getMaxHealth() / 2) * 10;
 		double absorptionHealth = (((CraftPlayer) player).getHandle().getAbsorptionHearts() / 2) * 10;
 		
-		sender.sendMessage(Main.PREFIX + "'§6" + player.getName() + "§7': §a" + (int) health + "% §8(§7Max: §a" + (int) maxHealth + "%" + (absorptionHealth > 0 ? " §8| §7Absorption: §a" + (int) absorptionHealth + "%" : "") + "§8)");
+		sender.sendMessage(Main.PREFIX + "§6" + player.getName() + "§7: §a" + (int) health + "% §8(§7Max: §a" + (int) maxHealth + "%" + (absorptionHealth > 0 ? " §8| §7Absorption: §a" + (int) absorptionHealth + "%" : "") + "§8)");
 		return true;
 		
 	}
