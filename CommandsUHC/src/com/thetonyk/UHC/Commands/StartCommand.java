@@ -17,6 +17,7 @@ import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeleportUtils;
+import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class StartCommand implements CommandExecutor {
 	
@@ -162,6 +163,7 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.getWorld(GameUtils.getWorld()).setDifficulty(Difficulty.HARD);
 				Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(false, true);
 				Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
+				WorldUtils.butcher(Bukkit.getWorld(GameUtils.getWorld()));
 				GameUtils.setStatus(Status.PLAY);
 				DisplayTimers.startTimer();
 				start = false;
