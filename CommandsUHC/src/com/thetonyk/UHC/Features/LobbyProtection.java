@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryAction;
@@ -258,6 +259,15 @@ public class LobbyProtection implements Listener {
 		if (!event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
 		event.setCancelled(true);
+		
+	}
+	
+	@EventHandler
+	public void onCombust(EntityCombustEvent event) {
+		
+		if (!event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		
+		event.getEntity().setFireTicks(0);
 		
 	}
 	
