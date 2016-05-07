@@ -17,7 +17,6 @@ import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeleportUtils;
-import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class StartCommand implements CommandExecutor {
 	
@@ -77,7 +76,7 @@ public class StartCommand implements CommandExecutor {
 		}
 		
 		Bukkit.getWorld(GameUtils.getWorld()).setDifficulty(Difficulty.HARD);
-		Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
+		Bukkit.getWorld(GameUtils.getWorld()).setTime(6000);
 		
 		new BukkitRunnable() {
 			
@@ -156,7 +155,12 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + (int) Math.floor(DisplayTimers.meetupTime / 60) + " minutes§7.");
 				Bukkit.broadcastMessage(Main.PREFIX + "Good luck & Have Fun!");
 				
-				Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));
+				Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
+				Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
+				Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
+				Bukkit.getWorld(GameUtils.getWorld()).setGameRuleValue("doDaylightCycle", "true");
+				Bukkit.getWorld(GameUtils.getWorld()).setDifficulty(Difficulty.HARD);
+				Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(false, true);
 				Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
 				GameUtils.setStatus(Status.PLAY);
 				DisplayTimers.startTimer();

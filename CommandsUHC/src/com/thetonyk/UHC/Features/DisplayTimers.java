@@ -11,6 +11,7 @@ import com.thetonyk.UHC.Events.FinalHealEvent;
 import com.thetonyk.UHC.Events.MeetupEvent;
 import com.thetonyk.UHC.Events.PVPEvent;
 import com.thetonyk.UHC.Utils.DisplayUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 
 public class DisplayTimers {
 	
@@ -79,6 +80,8 @@ public class DisplayTimers {
 						PlayerUtils.feed(player);
 						PlayerUtils.heal(player);
 						player.setFireTicks(0);
+						
+						Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(true, true);
 						
 						DisplayUtils.sendTitle(player, "§aFinal heal", "§7Do not ask for others heals.", 5, 30, 5);
 						player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);

@@ -56,7 +56,6 @@ public class WorldUtils {
 		worldCreator.type(type);
 		
 		World newWorld = worldCreator.createWorld();
-		newWorld.setDifficulty(Difficulty.HARD);
 		newWorld.save();
 		
 		return;
@@ -141,8 +140,12 @@ public class WorldUtils {
 			while (worlds.next()) {
 				
 				loadWorld(worlds.getString("name"));
-				Bukkit.getWorld(worlds.getString("name")).setPVP(true);
+				
+				if (GameUtils.getWorld() != null && GameUtils.getWorld().equalsIgnoreCase(worlds.getString("namee"))) continue;
+				
+				Bukkit.getWorld(worlds.getString("name")).setPVP(false);
 				Bukkit.getWorld(worlds.getString("name")).setTime(6000);
+				Bukkit.getWorld(worlds.getString("name")).save();
 				
 			}
 			
@@ -156,8 +159,11 @@ public class WorldUtils {
 		
 		Bukkit.getWorld("lobby").setPVP(false);
 		Bukkit.getWorld("lobby").setTime(6000);
+		Bukkit.getWorld("lobby").setGameRuleValue("doDaylightCycle", "false");
+		Bukkit.getWorld("lobby").setSpawnFlags(false, false);
 		Bukkit.getWorld("lobby").setWeatherDuration(0);
 		Bukkit.getWorld("lobby").setDifficulty(Difficulty.PEACEFUL);
+		Bukkit.getWorld("lobby").save();
 		
 		
 	}
@@ -182,6 +188,8 @@ public class WorldUtils {
 		newWorld.getWorldBorder().setDamageAmount(1);
 		newWorld.getWorldBorder().setWarningDistance(15);
 		newWorld.getWorldBorder().setWarningTime(1);
+		newWorld.setGameRuleValue("doDaylightCycle", "false");
+		newWorld.setSpawnFlags(false, true);
 		newWorld.save();
 		
 		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + radius + "', 0, '" + MessengerListener.lastServer + "');");
