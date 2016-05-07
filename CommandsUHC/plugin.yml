@@ -62,3 +62,6 @@ commands:
     helpop:
         description: Request help to staff
         usage: /helpop
+    start:
+        description: Start the game
+        usage: /start

@@ -140,7 +140,9 @@ public class TeleportProtection implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		
-		if (GameUtils.getStatus() != Status.TELEPORT) return;
+		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
+		
+		if (DisplayTimers.time > 60) return;
 		
 		event.setCancelled(true);
 		

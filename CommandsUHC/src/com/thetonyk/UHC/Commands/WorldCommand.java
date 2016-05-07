@@ -17,6 +17,7 @@ import org.bukkit.command.TabCompleter;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.MessengerListener;
+import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -302,9 +303,12 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 		}	
 		else if (args[0].equalsIgnoreCase("reset")) {
 			
-			GameUtils.setWorld("");
 			GameUtils.setStatus(Status.NONE);
 			GameUtils.setTeleported(false);
+			Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));
+			Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
+			GameUtils.setWorld("");
+			if (DisplayTimers.timer != null) DisplayTimers.timer.cancel();
 			sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			return true;
 						

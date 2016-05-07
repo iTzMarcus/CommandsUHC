@@ -16,6 +16,7 @@ import com.thetonyk.UHC.Commands.PmcoordsCommand;
 import com.thetonyk.UHC.Commands.PmoresCommand;
 import com.thetonyk.UHC.Commands.PregenCommand;
 import com.thetonyk.UHC.Commands.RankCommand;
+import com.thetonyk.UHC.Commands.StartCommand;
 import com.thetonyk.UHC.Commands.TCommand;
 import com.thetonyk.UHC.Commands.TcCommand;
 import com.thetonyk.UHC.Commands.TeamCommand;
@@ -89,6 +90,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("whitelist").setExecutor(new WhitelistCommand());
 		this.getCommand("butcher").setExecutor(new ButcherCommand());
 		this.getCommand("helpop").setExecutor(new HelpopCommand());
+		this.getCommand("start").setExecutor(new StartCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

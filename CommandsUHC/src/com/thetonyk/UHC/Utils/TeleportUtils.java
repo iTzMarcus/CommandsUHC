@@ -284,4 +284,44 @@ public class TeleportUtils {
 		
 	}
 	
+	public static void removeSpawns(Map<UUID, Location> locations) {
+		
+		for (Location location : locations.values()) {
+			
+			Location loc1  = location.clone(), loc2  = location.clone(), loc3  = location.clone(), loc4 = location.clone();
+			loc1.add(1, -1, 1);
+			loc2.add(-1, -1, -1);
+			loc3.add(2, 3, 2);
+			loc4.add(-2, 0, -2);
+			
+			for (double x = loc2.getX(); x <= loc1.getX(); x++) {
+				
+				for (double y = loc2.getY(); y <= loc1.getY(); y++) {
+				
+					for (double z = loc2.getZ(); z <= loc1.getZ(); z++) {
+						
+						location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).setType(Material.AIR, true);
+						
+					}
+					
+				}
+			}
+			
+			for (double x = loc4.getX(); x <= loc3.getX(); x++) {
+				
+				for (double y = loc4.getY(); y <= loc3.getY(); y++) {
+				
+					for (double z = loc4.getZ(); z <= loc3.getZ(); z++) {
+						
+						location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).setType(Material.AIR, true);
+						
+					}
+					
+				}
+			}
+			
+		}
+		
+	}
+	
 }
