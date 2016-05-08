@@ -10,7 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import static net.md_5.bungee.api.ChatColor.*;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -30,6 +32,13 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 		}
 		
 		if (args.length > 0) {
+			
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+				
+				sender.sendMessage(Main.PREFIX + "The game has already started.");
+				return true;
+				
+			}
 			
 			if (TeamsUtils.getTeam(sender.getName()) != null) {
 				

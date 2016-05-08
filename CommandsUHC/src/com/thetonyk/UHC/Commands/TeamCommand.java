@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
+import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
 import static net.md_5.bungee.api.ChatColor.*;
@@ -37,6 +39,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 		if (args.length > 0) {
 		
 			if (args[0].equalsIgnoreCase("invite")) {
+				
+				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+					
+					sender.sendMessage(Main.PREFIX + "The game has already started.");
+					return true;
+					
+				}
 				
 				if (args.length < 2) {
 					
@@ -95,6 +104,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			}
 			else if (args[0].equalsIgnoreCase("accept")) {
 				
+				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+					
+					sender.sendMessage(Main.PREFIX + "The game has already started.");
+					return true;
+					
+				}
+				
 				if (args.length < 2) {
 					
 					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " accept <player>");
@@ -145,6 +161,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			}
 			else if (args[0].equalsIgnoreCase("leave")) {
 				
+				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+					
+					sender.sendMessage(Main.PREFIX + "The game has already started.");
+					return true;
+					
+				}
+				
 				if (TeamsUtils.getTeam(sender.getName()) == null) {
 					
 					sender.sendMessage(Main.PREFIX + "You are not in a team.");
@@ -176,6 +199,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			else if (args[0].equalsIgnoreCase("create")) {
+				
+				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+					
+					sender.sendMessage(Main.PREFIX + "The game has already started.");
+					return true;
+					
+				}
 				
 				ComponentBuilder message = Main.getPrefixComponent().append("Create a team is useless, use ").color(GRAY).append("/invite").color(GOLD);
 				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/invite"));
@@ -360,9 +390,15 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 		}	
 			
 		sender.sendMessage(Main.PREFIX + "Usage of /team:");
-		sender.sendMessage("§8⫸ §6/" + label + " invite <player> §8- §7Invite a player in your team.");
-		sender.sendMessage("§8⫸ §6/" + label + " accept <player> §8- §7Accept your invitations.");
-		sender.sendMessage("§8⫸ §6/" + label + " leave §8- §7Leave your team.");
+		
+		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY && GameUtils.getStatus() != Status.END) {
+			
+			sender.sendMessage("§8⫸ §6/" + label + " invite <player> §8- §7Invite a player in your team.");
+			sender.sendMessage("§8⫸ §6/" + label + " accept <player> §8- §7Accept your invitations.");
+			sender.sendMessage("§8⫸ §6/" + label + " leave §8- §7Leave your team.");
+			
+		}
+		
 		sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List all teams.");
 		sender.sendMessage("§8⫸ §6/" + label + " info [player] §8- §7Informations about a team.");
 		

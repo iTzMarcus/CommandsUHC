@@ -32,7 +32,11 @@ public class DeathRespawn implements Listener {
 				
 			}
 			
-		}.runTaskLater(Main.uhc, 5);
+		}.runTaskLater(Main.uhc, 2);
+		
+		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
+		
+		event.getEntity().setWhitelisted(false);
 		
 	}
 	

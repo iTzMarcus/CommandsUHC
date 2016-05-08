@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -16,7 +17,7 @@ import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class DeathMessage implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onDeath(PlayerDeathEvent event) {
 		
 		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) {
@@ -36,7 +37,7 @@ public class DeathMessage implements Listener {
 			
 			public void run() {
 				
-				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + (Bukkit.getWorld(GameUtils.getWorld()).getPlayers().size() - 1) + " §7players alive.");
+				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + Bukkit.getWhitelistedPlayers().size() + " §7players alive.");
 			
 			}
 			

@@ -63,23 +63,23 @@ public class DisplaySidebar implements Listener {
 		
 		if (TeamsUtils.getTeam(event.getEntity().getName()) != null &&TeamsUtils.getTeam(event.getEntity().getName()).equalsIgnoreCase(event.getEntity().getKiller().getName())) return;
 		
-		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
+		if (event.getEntity().getKiller().equals(event.getEntity())) return;
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			update(player);
-			
-		}
+		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
 		
 		new BukkitRunnable() {
 			
 			public void run() {
 				
-				update(event.getEntity());
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					update(player);
+					
+				}
 				
 			}
 			
-		}.runTaskLater(Main.uhc, 10);
+		}.runTaskLater(Main.uhc, 5);
 		
 	}
 	
@@ -110,7 +110,7 @@ public class DisplaySidebar implements Listener {
 		
 		for (UUID killer : kills.keySet()) {
 			
-			player.getScoreboard().getObjective("sidebar").getScore("  §8⫸ " + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(kills.get(killer));
+			player.getScoreboard().getObjective("sidebar").getScore("  §8⫸ " + (!Bukkit.getOfflinePlayer(killer).isWhitelisted() ? "§c☠ " : " ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(kills.get(killer));
 			
 		}
 		

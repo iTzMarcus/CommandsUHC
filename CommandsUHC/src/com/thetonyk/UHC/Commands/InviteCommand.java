@@ -8,7 +8,9 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import static net.md_5.bungee.api.ChatColor.*;
 
@@ -32,6 +34,13 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 		}
 		
 		if (args.length > 0) {
+			
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+				
+				sender.sendMessage(Main.PREFIX + "The game has already started.");
+				return true;
+				
+			}
 				
 			if (Bukkit.getPlayer(args[0]) == null) {
 				

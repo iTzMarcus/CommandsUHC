@@ -40,7 +40,7 @@ public class StartCommand implements CommandExecutor {
 			
 		}
 		
-		if (GameUtils.getStatus() == Status.NONE) {
+		if (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN) {
 			
 			sender.sendMessage(Main.PREFIX + "The game is not ready.");
 			return true;
