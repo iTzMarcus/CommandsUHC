@@ -22,6 +22,7 @@ public class BiomesUtils {
 		
 		BiomeBase.getBiomes()[21] = biomesCopy[23];
 		BiomeBase.getBiomes()[22] = biomesCopy[23];
+		BiomeBase.getBiomes()[149] = biomesCopy[151];
 		
 	}
 	

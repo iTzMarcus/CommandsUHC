@@ -1,6 +1,7 @@
 package com.thetonyk.UHC.Features;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -41,6 +42,8 @@ public class DeathRespawn implements Listener {
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
 		event.setRespawnLocation(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
+		event.getPlayer().setGameMode(GameMode.ADVENTURE);
+		event.getPlayer().setMaxHealth(20.0);
 		event.getPlayer().sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or spoil please.");
 		
 		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);

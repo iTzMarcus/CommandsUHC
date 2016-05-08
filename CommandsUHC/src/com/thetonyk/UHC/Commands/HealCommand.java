@@ -32,7 +32,7 @@ public class HealCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (args[0].equalsIgnoreCase("*")) {
+		if (args.length > 0 && args[0].equalsIgnoreCase("*")) {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				

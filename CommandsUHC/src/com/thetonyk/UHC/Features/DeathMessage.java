@@ -11,6 +11,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
+import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class DeathMessage implements Listener {
 
@@ -21,7 +23,14 @@ public class DeathMessage implements Listener {
 		
 		if (!GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
 		
-		event.setDeathMessage(Main.PREFIX + "§6" + event.getDeathMessage());
+		String victim = PlayerUtils.getRank(event.getEntity().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getName()) : "§7") + event.getEntity().getName() + "§6";
+		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getName()) : "§7") + event.getEntity().getKiller().getName() + "§6";		
+		
+		String message = Main.PREFIX + "§6" + event.getDeathMessage().substring(0, event.getDeathMessage().contains("using") ? event.getDeathMessage().indexOf("using") : event.getDeathMessage().length());
+		message.replaceAll(event.getEntity().getName(), victim);
+		if (killer != null) message.replaceAll(event.getEntity().getKiller().getName(), killer);
+		
+		event.setDeathMessage(message);
 		
 		new BukkitRunnable() {
 			
