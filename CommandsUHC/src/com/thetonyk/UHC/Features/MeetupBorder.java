@@ -14,7 +14,7 @@ public class MeetupBorder {
 		
 		Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(100, time);
 		
-		Bukkit.broadcastMessage(Main.PREFIX + "Border will now shrink to §6100§7x§6100 §7by §a3 §7m/s.");
+		Bukkit.broadcastMessage(Main.PREFIX + "Border will now shrink to §6100§7x§6100 §7by §a3§7m/s.");
 		
 	}
 	

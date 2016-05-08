@@ -21,7 +21,7 @@ import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class LogoutDQ implements Listener {
 
-	Map<UUID, BukkitRunnable> offlineTimers = new HashMap<UUID, BukkitRunnable>();
+	private static Map<UUID, BukkitRunnable> offlineTimers = new HashMap<UUID, BukkitRunnable>();
 	
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
@@ -37,9 +37,12 @@ public class LogoutDQ implements Listener {
 			public void run() {
 				
 				event.getPlayer().setWhitelisted(false);
-				Bukkit.broadcastMessage(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + "§7" + " died offline");
+				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + "§7" + " died offline");
+				DisplaySidebar.addPve();
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplaySidebar.update(player);
 					
 					if (PlayerUtils.getNosoundState(player) == 1) continue;
 					
@@ -81,6 +84,20 @@ public class LogoutDQ implements Listener {
 		
 		offlineTimers.get(event.getPlayer().getUniqueId()).cancel();
 		offlineTimers.put(event.getPlayer().getUniqueId(), null);
+		
+	}
+	
+	public static void reset() {
+		
+		for (UUID uuid : offlineTimers.keySet()) {
+			
+			if (offlineTimers.get(uuid) == null) continue;
+			
+			offlineTimers.get(uuid).cancel();
+			
+		}
+		
+		offlineTimers.clear();
 		
 	}
 	

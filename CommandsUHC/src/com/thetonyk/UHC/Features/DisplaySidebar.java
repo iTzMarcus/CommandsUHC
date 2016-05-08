@@ -54,19 +54,6 @@ public class DisplaySidebar implements Listener {
 		
 		if (!GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
 		
-		if (event.getEntity().getKiller() == null) {
-			
-			pve++;
-			return;
-			
-		}
-		
-		if (TeamsUtils.getTeam(event.getEntity().getName()) != null &&TeamsUtils.getTeam(event.getEntity().getName()).equalsIgnoreCase(event.getEntity().getKiller().getName())) return;
-		
-		if (event.getEntity().getKiller().equals(event.getEntity())) return;
-		
-		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
-		
 		new BukkitRunnable() {
 			
 			public void run() {
@@ -79,7 +66,20 @@ public class DisplaySidebar implements Listener {
 				
 			}
 			
-		}.runTaskLater(Main.uhc, 5);
+		}.runTaskLater(Main.uhc, 10);
+		
+		if (event.getEntity().getKiller() == null) {
+			
+			pve++;
+			return;
+			
+		}
+		
+		if (TeamsUtils.getTeam(event.getEntity().getName()) != null &&TeamsUtils.getTeam(event.getEntity().getName()).equalsIgnoreCase(event.getEntity().getKiller().getName())) return;
+		
+		if (event.getEntity().getKiller().equals(event.getEntity())) return;
+		
+		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
 		
 	}
 	
@@ -116,6 +116,12 @@ public class DisplaySidebar implements Listener {
 		
 		player.getScoreboard().getObjective("sidebar").getScore("  ").setScore(-1);
 		player.getScoreboard().getObjective("sidebar").getScore("  §b@CommandsPVP").setScore(-2);
+		
+	}
+	
+	public static void addPve() {
+		
+		pve++;
 		
 	}
 

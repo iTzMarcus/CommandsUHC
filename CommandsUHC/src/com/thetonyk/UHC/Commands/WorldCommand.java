@@ -18,6 +18,7 @@ import org.bukkit.command.TabCompleter;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Features.DisplayTimers;
+import com.thetonyk.UHC.Features.LogoutDQ;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -313,6 +314,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			DisplayTimers.time = 0;
 			DisplayTimers.pvpTime = 120;
 			DisplayTimers.meetupTime = 180;
+			LogoutDQ.reset();
 			sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			return true;
 						

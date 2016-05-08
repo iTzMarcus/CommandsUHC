@@ -41,11 +41,12 @@ public class LoginPlayer implements Listener {
 		PermissionsUtils.setPermissions(event.getPlayer());
 		PermissionsUtils.updateBungeePermissions(event.getPlayer());
 		
-		DisplayUtils.sendTitle(event.getPlayer(), "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName());
 		
 		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;
 			
+		DisplayUtils.sendTitle(event.getPlayer(), "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
+		
 		event.getPlayer().teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 		PlayerUtils.clearInventory(event.getPlayer());

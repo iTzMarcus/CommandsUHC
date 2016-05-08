@@ -73,6 +73,7 @@ public class TeleportCommand implements CommandExecutor, Listener {
 		
 		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
 		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
+		Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
 
 		new BukkitRunnable() {
 			

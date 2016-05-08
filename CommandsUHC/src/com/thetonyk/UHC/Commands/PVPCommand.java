@@ -56,7 +56,7 @@ public class PVPCommand implements CommandExecutor, TabCompleter{
 		}
 		
 		Bukkit.getWorld(args[0]).setPVP(pvp);
-		sender.sendMessage(Main.PREFIX + "The PVP has been " + (pvp ? "enabled" : "disabled") + "§7in the world '§6" + Bukkit.getWorld(args[0]).getName() + "'.");
+		sender.sendMessage(Main.PREFIX + "The PVP has been " + (pvp ? "enabled" : "disabled") + " §7in the world '§6" + Bukkit.getWorld(args[0]).getName() + "'.");
 		return true;
 		
 	}
