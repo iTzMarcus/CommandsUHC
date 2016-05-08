@@ -1,5 +1,8 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,7 +18,10 @@ public class ChatSettings implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onChat (AsyncPlayerChatEvent event) {
 		
-		for (Player receiver : event.getRecipients()) {
+		Set<Player> players = new HashSet<Player>();
+		players.addAll(event.getRecipients());
+		
+		for (Player receiver : players) {
 			
 			if (PlayerUtils.getChatVisibility(receiver) == 0) {
 				

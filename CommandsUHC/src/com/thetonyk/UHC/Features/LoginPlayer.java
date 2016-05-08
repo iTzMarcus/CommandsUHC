@@ -38,9 +38,6 @@ public class LoginPlayer implements Listener {
 		event.getPlayer().setNoDamageTicks(0);
 		event.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
 		
-		PermissionsUtils.setPermissions(event.getPlayer());
-		PermissionsUtils.updateBungeePermissions(event.getPlayer());
-		
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName());
 		
 		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;

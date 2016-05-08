@@ -68,7 +68,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
 			
 			try {
 				
-				damage = Short.parseShort(args[2]);
+				damage = Short.parseShort(args[3]);
 				
 			} catch (Exception exception) {
 				

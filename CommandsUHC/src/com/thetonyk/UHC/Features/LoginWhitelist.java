@@ -15,6 +15,7 @@ public class LoginWhitelist implements Listener {
 	public void onConnect(PlayerLoginEvent event) {
 		
 		PermissionsUtils.setPermissions(event.getPlayer());
+		PermissionsUtils.updateBungeePermissions(event.getPlayer());
 		
 		if (event.getResult() != Result.KICK_WHITELIST) return;
 			

@@ -110,7 +110,7 @@ public class DisplaySidebar implements Listener {
 		
 		for (UUID killer : kills.keySet()) {
 			
-			player.getScoreboard().getObjective("sidebar").getScore("  §8⫸ " + (!Bukkit.getOfflinePlayer(killer).isWhitelisted() ? "§c☠ " : " ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(kills.get(killer));
+			player.getScoreboard().getObjective("sidebar").getScore("  " + (!Bukkit.getOfflinePlayer(killer).isWhitelisted() ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(kills.get(killer));
 			
 		}
 		
