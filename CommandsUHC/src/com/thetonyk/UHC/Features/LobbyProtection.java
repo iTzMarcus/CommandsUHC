@@ -278,7 +278,7 @@ public class LobbyProtection implements Listener {
 				
 			}
 			
-		}.runTaskLater(Main.uhc, 1);
+		}.runTaskLater(Main.uhc, 5);
 		
 	}
 	

@@ -100,3 +100,6 @@ commands:
         description: See perfomances of the server
         usage: /lag
         aliases: [ram]
+    give:
+        description: Give somethings to a player
+        usage: /give

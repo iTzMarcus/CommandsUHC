@@ -13,6 +13,7 @@ import com.thetonyk.UHC.Commands.ClearCommand;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
+import com.thetonyk.UHC.Commands.GiveCommand;
 import com.thetonyk.UHC.Commands.HealCommand;
 import com.thetonyk.UHC.Commands.HealthCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
@@ -119,6 +120,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("health").setExecutor(new HealthCommand());
 		this.getCommand("nosound").setExecutor(new NosoundCommand());
 		this.getCommand("lag").setExecutor(new LagCommand());
+		this.getCommand("give").setExecutor(new GiveCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
