@@ -36,6 +36,7 @@ public class PermissionsUtils {
 		permission.setPermission("uhc.team", true);
 		permission.setPermission("uhc.helpop", true);
 		permission.setPermission("uhc.health", true);
+		permission.setPermission("uhc.lag", true);
 		
 		if (rank == Rank.PLAYER || rank == Rank.WINNER) return;
 		

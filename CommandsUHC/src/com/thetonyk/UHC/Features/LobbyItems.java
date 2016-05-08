@@ -32,9 +32,17 @@ public class LobbyItems implements Listener {
 		if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName()) return;
 				
 		if (event.getItem().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
-		
+			
 			event.setCancelled(true);	
 			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
+			if (GameUtils.getStatus() == Status.NONE) {
+				
+				event.getPlayer().sendMessage(Main.PREFIX + "The game is not ready.");
+				return;
+				
+			}
+			
 			event.getPlayer().openInventory(RulesInventory.getRules());
 			return;
 			
@@ -63,11 +71,38 @@ public class LobbyItems implements Listener {
 		
 		if (event.getItemDrop() == null || !event.getItemDrop().getItemStack().hasItemMeta() || !event.getItemDrop().getItemStack().getItemMeta().hasDisplayName()) return;
 				
-		if (!event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)") && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) return;
+		if (event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 			
-		event.setCancelled(true);
-		event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
-		event.getPlayer().openInventory(RulesInventory.getRules());
+			event.setCancelled(true);
+			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
+			if (GameUtils.getStatus() == Status.NONE) {
+				
+				event.getPlayer().sendMessage(Main.PREFIX + "The game is not ready.");
+				return;
+				
+			}
+			
+			event.getPlayer().openInventory(RulesInventory.getRules());
+			return;
+			
+		}
+		
+		if (event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
+			
+			event.setCancelled(true);
+			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			if (TeamsUtils.getTeamsLeft() == 75) {
+				
+				event.getPlayer().sendMessage(Main.PREFIX + "There are no teams.");
+				return;
+				
+			}
+			
+			event.getPlayer().openInventory(TeamsInventory.getTeams(1));
+			return;
+			
+		}
 		
 	}
 	
@@ -80,6 +115,14 @@ public class LobbyItems implements Listener {
 				
 			event.setCancelled(true);
 			((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
+			if (GameUtils.getStatus() == Status.NONE) {
+				
+				event.getWhoClicked().sendMessage(Main.PREFIX + "The game is not ready.");
+				return;
+				
+			}
+			
 			event.getWhoClicked().openInventory(RulesInventory.getRules());
 			return;
 			

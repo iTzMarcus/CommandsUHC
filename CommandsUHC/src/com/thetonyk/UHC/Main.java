@@ -17,6 +17,7 @@ import com.thetonyk.UHC.Commands.HealCommand;
 import com.thetonyk.UHC.Commands.HealthCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
+import com.thetonyk.UHC.Commands.LagCommand;
 import com.thetonyk.UHC.Commands.NosoundCommand;
 import com.thetonyk.UHC.Commands.PVPCommand;
 import com.thetonyk.UHC.Commands.PmCommand;
@@ -117,6 +118,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("pvp").setExecutor(new PVPCommand());
 		this.getCommand("health").setExecutor(new HealthCommand());
 		this.getCommand("nosound").setExecutor(new NosoundCommand());
+		this.getCommand("lag").setExecutor(new LagCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

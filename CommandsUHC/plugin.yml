@@ -62,6 +62,7 @@ commands:
     helpop:
         description: Request help to staff
         usage: /helpop
+        aliases: [ho]
     start:
         description: Start the game
         usage: /start
@@ -95,3 +96,7 @@ commands:
     nosound:
         description: Disable sounds
         usage: /nosound
+    lag:
+        description: See perfomances of the server
+        usage: /lag
+        aliases: [ram]
