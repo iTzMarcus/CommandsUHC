@@ -26,6 +26,9 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import com.thetonyk.UHC.Main;
 
 public class LobbyProtection implements Listener {
 
@@ -267,7 +270,15 @@ public class LobbyProtection implements Listener {
 		
 		if (!event.getEntity().getWorld().getName().equalsIgnoreCase("lobby")) return;
 		
-		event.getEntity().setFireTicks(0);
+		new BukkitRunnable() {
+			
+			public void run() {
+				
+				event.getEntity().setFireTicks(0);
+				
+			}
+			
+		}.runTaskLater(Main.uhc, 1);
 		
 	}
 	

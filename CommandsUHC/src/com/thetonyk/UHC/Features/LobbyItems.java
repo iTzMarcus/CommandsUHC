@@ -3,6 +3,7 @@ package com.thetonyk.UHC.Features;
 import java.util.ArrayList;
 
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,6 +34,7 @@ public class LobbyItems implements Listener {
 		if (event.getItem().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 		
 			event.setCancelled(true);	
+			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
 			event.getPlayer().openInventory(RulesInventory.getRules());
 			return;
 			
@@ -41,6 +43,7 @@ public class LobbyItems implements Listener {
 		if (event.getItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);	
+			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
 			if (TeamsUtils.getTeamsLeft() == 75) {
 				
 				event.getPlayer().sendMessage(Main.PREFIX + "There are no teams.");
@@ -63,6 +66,7 @@ public class LobbyItems implements Listener {
 		if (!event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)") && !event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) return;
 			
 		event.setCancelled(true);
+		event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
 		event.getPlayer().openInventory(RulesInventory.getRules());
 		
 	}
@@ -75,6 +79,7 @@ public class LobbyItems implements Listener {
 		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 				
 			event.setCancelled(true);
+			((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ORB_PICKUP, 1, 1);
 			event.getWhoClicked().openInventory(RulesInventory.getRules());
 			return;
 			
@@ -82,7 +87,8 @@ public class LobbyItems implements Listener {
 		
 		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
-			event.setCancelled(true);	
+			event.setCancelled(true);
+			((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ORB_PICKUP, 1, 1);
 			if (TeamsUtils.getTeamsLeft() == 75) {
 				
 				event.getWhoClicked().sendMessage(Main.PREFIX + "There are no teams.");

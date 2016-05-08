@@ -234,7 +234,7 @@ public class TeleportUtils {
 			
 			public void run() {
 				
-				Location location = locations.get(i);
+				Location location = locations.get(i).clone();
 				location.setY(location.getY() + 0.5);
 				UUID uuid = players.get(i);
 				
@@ -286,8 +286,6 @@ public class TeleportUtils {
 	
 	public static void removeSpawns(Map<UUID, Location> locations) {
 		
-		
-		
 		for (Location location : locations.values()) {
 			
 			Location loc1  = location.clone(), loc2  = location.clone(), loc3  = location.clone(), loc4 = location.clone();
@@ -302,6 +300,8 @@ public class TeleportUtils {
 				
 					for (double z = loc2.getZ(); z <= loc1.getZ(); z++) {
 						
+						if (location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).getType().equals(Material.AIR)) continue;
+						
 						location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).setType(Material.AIR, true);
 						
 					}
@@ -314,6 +314,8 @@ public class TeleportUtils {
 				for (double y = loc4.getY(); y <= loc3.getY(); y++) {
 				
 					for (double z = loc4.getZ(); z <= loc3.getZ(); z++) {
+						
+						if (location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).getType().equals(Material.AIR)) continue;
 						
 						location.getWorld().getBlockAt(new Location(location.getWorld(), x, y, z)).setType(Material.AIR, true);
 						
