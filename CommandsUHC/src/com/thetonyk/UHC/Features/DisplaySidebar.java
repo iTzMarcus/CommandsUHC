@@ -105,8 +105,8 @@ public class DisplaySidebar implements Listener {
 			
 		}
 		
-		player.getScoreboard().getObjective("sidebar").getScore("    ").setScore(pve + 1);
-		player.getScoreboard().getObjective("sidebar").getScore("  §6PVE §8⫸ §a" + pve).setScore(pve);
+		player.getScoreboard().getObjective("sidebar").getScore("    ").setScore(99);
+		player.getScoreboard().getObjective("sidebar").getScore("  §6PVE §8⫸ §a" + pve).setScore(98);
 		
 		for (UUID killer : kills.keySet()) {
 			
