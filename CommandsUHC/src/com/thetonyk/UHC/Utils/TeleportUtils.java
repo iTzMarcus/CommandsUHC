@@ -286,6 +286,8 @@ public class TeleportUtils {
 	
 	public static void removeSpawns(Map<UUID, Location> locations) {
 		
+		
+		
 		for (Location location : locations.values()) {
 			
 			Location loc1  = location.clone(), loc2  = location.clone(), loc3  = location.clone(), loc4 = location.clone();

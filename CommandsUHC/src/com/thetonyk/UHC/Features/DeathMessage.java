@@ -19,16 +19,16 @@ public class DeathMessage implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) {
+			
+			event.setDeathMessage(null);
+			return;
+			
+		}
 		
-		if (!GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
-		
-		String victim = PlayerUtils.getRank(event.getEntity().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getName()) : "§7") + event.getEntity().getName() + "§6";
-		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getName()) : "§7") + event.getEntity().getKiller().getName() + "§6";		
-		
-		String message = Main.PREFIX + "§6" + event.getDeathMessage().substring(0, event.getDeathMessage().contains("using") ? event.getDeathMessage().indexOf("using") : event.getDeathMessage().length());
-		message.replaceAll(event.getEntity().getName(), victim);
-		if (killer != null) message.replaceAll(event.getEntity().getKiller().getName(), killer);
+		String victim = PlayerUtils.getRank(event.getEntity().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getName()) : "§7") + event.getEntity().getName() + "§7";
+		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getName()) : "§7") + event.getEntity().getKiller().getName() + "§7";		
+		String message = Main.PREFIX + "§7" + event.getDeathMessage().substring(0, event.getDeathMessage().contains("using") ? event.getDeathMessage().indexOf("using") : event.getDeathMessage().length()).replaceAll(event.getEntity().getName(), victim).replaceAll(event.getEntity().getKiller() != null ? event.getEntity().getKiller().getName() : "", event.getEntity().getKiller() != null ? killer : "");
 		
 		event.setDeathMessage(message);
 		
