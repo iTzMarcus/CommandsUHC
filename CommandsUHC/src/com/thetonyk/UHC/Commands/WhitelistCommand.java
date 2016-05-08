@@ -18,7 +18,7 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 	@SuppressWarnings("deprecation")
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (!sender.hasPermission("global.whitelist")) {
+		if (!sender.hasPermission("global.whitelist") && !sender.hasPermission("uhc.whitelist.add")) {
 			
 			sender.sendMessage(Main.NO_PERMS);
 			return true;
@@ -103,61 +103,65 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 				return true;
 				
 			}
-				
-			if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
-				
-				Boolean setWhitelist = args[0].equalsIgnoreCase("on") ? true : false;
-				
-				if (args[0].equalsIgnoreCase("on") && Bukkit.hasWhitelist()) {
-					
-					sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
-					return true;
-					
-				}
-				
-				if (args[0].equalsIgnoreCase("off") && !Bukkit.hasWhitelist()) {
-					
-					sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
-					return true;
-					
-				}
-
-				Bukkit.setWhitelist(setWhitelist);
-				Bukkit.broadcastMessage(Main.PREFIX + "The whitelist is now §a" + args[0].toLowerCase() + "§7.");
-				return true;
-				
-			}
 			
-			if (args[0].equalsIgnoreCase("all")) {
-					
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					
-					player.setWhitelisted(true);
-					
-				}
+			if (sender.hasPermission("global.whitelist")) {
 				
-				Bukkit.broadcastMessage(Main.PREFIX + "All players has been whitelisted.");
-				return true;
-				
-			}
-			
-			if (args[0].equalsIgnoreCase("clear")) {
-				
-				if (Bukkit.getWhitelistedPlayers().size() <= 0) {
+				if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
 					
-					sender.sendMessage(Main.PREFIX + "There are no whitelised players.");
+					Boolean setWhitelist = args[0].equalsIgnoreCase("on") ? true : false;
+					
+					if (args[0].equalsIgnoreCase("on") && Bukkit.hasWhitelist()) {
+						
+						sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
+						return true;
+						
+					}
+					
+					if (args[0].equalsIgnoreCase("off") && !Bukkit.hasWhitelist()) {
+						
+						sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
+						return true;
+						
+					}
+	
+					Bukkit.setWhitelist(setWhitelist);
+					Bukkit.broadcastMessage(Main.PREFIX + "The whitelist is now §a" + args[0].toLowerCase() + "§7.");
 					return true;
 					
 				}
 				
-				for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+				if (args[0].equalsIgnoreCase("all")) {
+						
+					for (Player player : Bukkit.getOnlinePlayers()) {
+						
+						player.setWhitelisted(true);
+						
+					}
 					
-					player.setWhitelisted(false);
+					Bukkit.broadcastMessage(Main.PREFIX + "All players has been whitelisted.");
+					return true;
 					
 				}
 				
-				Bukkit.broadcastMessage(Main.PREFIX + "The whitelist has been cleared.");
-				return true;
+				if (args[0].equalsIgnoreCase("clear")) {
+					
+					if (Bukkit.getWhitelistedPlayers().size() <= 0) {
+						
+						sender.sendMessage(Main.PREFIX + "There are no whitelised players.");
+						return true;
+						
+					}
+					
+					for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+						
+						player.setWhitelisted(false);
+						
+					}
+					
+					Bukkit.broadcastMessage(Main.PREFIX + "The whitelist has been cleared.");
+					return true;
+					
+				}
 				
 			}
 			
@@ -165,12 +169,18 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 		
 		sender.sendMessage(Main.PREFIX + "Usage of /whitelist:");
 		sender.sendMessage("§8⫸ §6/" + label + " add <player> §8- §7Add a player.");
-		sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove a player.");	
-		sender.sendMessage("§8⫸ §6/" + label + " on|off §8- §7Enable/Disable the whitelist.");
-		sender.sendMessage("§8⫸ §6/" + label + " all §8- §7Whitelist all players.");
-		sender.sendMessage("§8⫸ §6/" + label + " clear §8- §7Clear the whitelist.");
+		sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove a player.");
 		sender.sendMessage("§8⫸ §6/" + label + " status [player] §8- §7See status of whitelist.");
 		sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List whitelisted players.");
+		
+		if (sender.hasPermission("global.whitelist")) {
+			
+			sender.sendMessage("§8⫸ §6/" + label + " on|off §8- §7Enable/Disable the whitelist.");
+			sender.sendMessage("§8⫸ §6/" + label + " all §8- §7Whitelist all players.");
+			sender.sendMessage("§8⫸ §6/" + label + " clear §8- §7Clear the whitelist.");
+			
+		}
+		
 		return true;
 		
 	}
@@ -186,11 +196,16 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 
 			complete.add("add");
 			complete.add("remove");
-			complete.add(Bukkit.hasWhitelist() ? "off" : "on");
-			complete.add("all");
-			complete.add("clear");
 			complete.add("status");
 			complete.add("list");
+			
+			if (sender.hasPermission("global.whitelist")) {
+				
+				complete.add(Bukkit.hasWhitelist() ? "off" : "on");
+				complete.add("all");
+				complete.add("clear");
+			
+			}
 			
 		} else if (args.length == 2) {
 			

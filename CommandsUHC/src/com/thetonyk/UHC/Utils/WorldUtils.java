@@ -142,7 +142,7 @@ public class WorldUtils {
 				
 				loadWorld(worlds.getString("name"));
 				
-				if (GameUtils.getWorld() != null && GameUtils.getWorld().equalsIgnoreCase(worlds.getString("namee"))) continue;
+				if (GameUtils.getWorld() != null && GameUtils.getWorld().equalsIgnoreCase(worlds.getString("name"))) continue;
 				
 				Bukkit.getWorld(worlds.getString("name")).setPVP(false);
 				Bukkit.getWorld(worlds.getString("name")).setTime(6000);

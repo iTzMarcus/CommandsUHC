@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
@@ -179,6 +180,7 @@ public class StartCommand implements CommandExecutor {
 					PlayerUtils.clearXp(player);
 					PlayerUtils.feed(player);
 					PlayerUtils.heal(player);
+					DisplaySidebar.update(player);
 					
 				}
 				

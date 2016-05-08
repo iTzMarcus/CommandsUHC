@@ -278,6 +278,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					}
 					
 					TeamsUtils.joinTeam(args[1], TeamsUtils.getTeam(args[2]));
+					if (!TeamsUtils.invitations.containsKey(args[1])) TeamsUtils.invitations.put(args[1], new ArrayList<String>());
 					TeamsUtils.invitations.get(args[1]).remove(sender.getName());
 					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' has been added to the team.");
 					return true;
@@ -302,7 +303,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					}
 					
 					TeamsUtils.leaveTeam(Bukkit.getPlayer(args[1]).getName());
-					TeamsUtils.invitations.remove(Bukkit.getPlayer(args[1]).getName());
+					TeamsUtils.invitations.remove(args[1]);
 					
 					sender.sendMessage(Main.PREFIX + "The player '§6" + name + "§7' has been removed from his team.");
 					return true;

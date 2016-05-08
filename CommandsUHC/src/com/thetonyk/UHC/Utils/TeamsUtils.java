@@ -97,6 +97,12 @@ public class TeamsUtils {
 			
 		}
 		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+		
+			DisplayNametags.updateNametag(player);
+			
+		}
+		
 	}
 	
 	public static void createTeam(String player) {

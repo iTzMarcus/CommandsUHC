@@ -3,6 +3,7 @@ package com.thetonyk.UHC;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Commands.AcceptCommand;
@@ -34,6 +35,7 @@ import com.thetonyk.UHC.Commands.WorldCommand;
 import com.thetonyk.UHC.Features.ChatCooldown;
 import com.thetonyk.UHC.Features.ChatIgnoreSettings;
 import com.thetonyk.UHC.Features.ChatSettings;
+import com.thetonyk.UHC.Features.DeathMessage;
 import com.thetonyk.UHC.Features.DeathRespawn;
 import com.thetonyk.UHC.Features.HealthScore;
 import com.thetonyk.UHC.Features.HealthShoot;
@@ -50,6 +52,7 @@ import com.thetonyk.UHC.Features.PregenStates;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
 import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTab;
 import com.thetonyk.UHC.Features.HealthFood;
 import com.thetonyk.UHC.Inventories.InviteInventory;
@@ -82,10 +85,8 @@ public class Main extends JavaPlugin {
 		Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new MessengerListener());
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "CommandsBungee");
 		
-		WorldUtils.loadAllWorlds();
-		DisplayUtils.redditHearts();
-		TeamsUtils.reload();
 		BiomesUtils.removeOceansAndJungles();
+		DisplayUtils.redditHearts();
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
 		this.getCommand("rank").setExecutor(new RankCommand());
@@ -122,8 +123,10 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new ChatCooldown(), this);
 		manager.registerEvents(new ChatIgnoreSettings(), this);
 		manager.registerEvents(new ChatSettings(), this);
+		manager.registerEvents(new DeathMessage(), this);
 		manager.registerEvents(new DeathRespawn(), this);
 		manager.registerEvents(new DisplayNametags(), this);
+		manager.registerEvents(new DisplaySidebar(), this);
 		manager.registerEvents(new DisplayTab(), this);
 		manager.registerEvents(new HealthScore(), this);
 		manager.registerEvents(new HealthShoot(), this);
@@ -145,6 +148,17 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new TeamsInventory(), this);
 		
 		manager.registerEvents(new TeleportCommand(), this);
+		
+		new BukkitRunnable() {
+			
+			public void run() {
+				
+				TeamsUtils.reload();
+				WorldUtils.loadAllWorlds();
+				
+			}
+			
+		}.runTaskLater(this, 2);
 		
 	}
 	

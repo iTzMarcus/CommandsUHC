@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class ChatSettings implements Listener {
 
@@ -33,7 +34,7 @@ public class ChatSettings implements Listener {
 			
 		}
 		
-		event.setFormat(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + "§7" + event.getPlayer().getName() + " §8⫸ §f%2$s");
+		event.setFormat(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + " §8⫸ §f%2$s");
 		
 	}
 	
