@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -279,6 +280,46 @@ public class PlayerUtils {
 		
 		return mentionsState;
 		
+	}
+	
+	public static int getNosoundState (Player player) {
+		
+		int nosound = 0;
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT nosound FROM settings WHERE id = " + PlayerUtils.getId(player.getUniqueId()) + ";");
+			
+			if (req.next()) nosound = req.getInt("nosound");
+			
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[PlayerUtils] Error to get nosound settings of player " + player.getName() + ".");
+			
+		}
+		
+		return nosound;
+		
+	}
+	
+	public static void setNosoundState (Player player) {
+		
+		int state = PlayerUtils.getNosoundState(player) == 1 ? 0 : 1;
+		
+		try {
+			
+			Statement sql = DatabaseUtils.getConnection().createStatement();
+			sql.executeUpdate("UPDATE settings SET nosound = " + state + " WHERE id = " + PlayerUtils.getId(player.getUniqueId()) + ";");
+			sql.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[PlayerUtils] Error to toggle nosound state of player " + player.getName() + ".");
+			
+		}
+	
 	}
 	
 	public static List<UUID> getIgnoredPlayers (UUID player) {

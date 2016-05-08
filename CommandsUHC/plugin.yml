@@ -92,3 +92,6 @@ commands:
         description: See health of a player
         usage: /health
         aliases: [h, life]
+    nosound:
+        description: Disable sounds
+        usage: /nosound
