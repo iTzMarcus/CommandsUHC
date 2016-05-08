@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.TeleportEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeleportUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -78,6 +79,8 @@ public class TeleportCommand implements CommandExecutor, Listener {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
 				}
@@ -99,6 +102,8 @@ public class TeleportCommand implements CommandExecutor, Listener {
 		Bukkit.broadcastMessage(Main.PREFIX + "All players have been teleported.");
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
 			
 			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			

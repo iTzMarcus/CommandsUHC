@@ -73,6 +73,9 @@ public class StartCommand implements CommandExecutor {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			DisplayUtils.sendTitle(player, "§45", "", 0, 20, 0);
+			
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			
 			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
 		}
@@ -87,6 +90,9 @@ public class StartCommand implements CommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
 					DisplayUtils.sendTitle(player, "§c4", "", 0, 20, 0);
+					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
 				}
@@ -102,6 +108,9 @@ public class StartCommand implements CommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
 					DisplayUtils.sendTitle(player, "§63", "", 0, 20, 0);
+					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					
 				}
@@ -117,6 +126,9 @@ public class StartCommand implements CommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
 					DisplayUtils.sendTitle(player, "§22", "", 0, 20, 0);
+					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
 				}
@@ -132,6 +144,9 @@ public class StartCommand implements CommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
 					DisplayUtils.sendTitle(player, "§a1", "", 0, 20, 0);
+					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
 				}
@@ -172,7 +187,6 @@ public class StartCommand implements CommandExecutor {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
 					DisplayUtils.sendTitle(player, "", "§7Go§a! §7Go§a! §7Go§a!", 5, 30, 5);
-					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);
 					PlayerUtils.clearEffects(player);
@@ -181,6 +195,10 @@ public class StartCommand implements CommandExecutor {
 					PlayerUtils.feed(player);
 					PlayerUtils.heal(player);
 					DisplaySidebar.update(player);
+					
+					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					
+					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					
 				}
 				

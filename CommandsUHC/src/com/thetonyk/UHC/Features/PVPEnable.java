@@ -10,6 +10,7 @@ import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.PVPEvent;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 
 public class PVPEnable implements Listener {
 
@@ -21,6 +22,9 @@ public class PVPEnable implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			DisplayUtils.sendTitle(player, "", "§aPVP §7enabled", 5, 30, 5);
+			
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			
 			player.playSound(player.getLocation(), Sound.ANVIL_BREAK, 1, 1);
 			
 		}

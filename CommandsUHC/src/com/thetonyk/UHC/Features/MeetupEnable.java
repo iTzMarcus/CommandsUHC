@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.MeetupEvent;
 import com.thetonyk.UHC.Utils.DisplayUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 
 public class MeetupEnable implements Listener {
 
@@ -18,6 +19,9 @@ public class MeetupEnable implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			DisplayUtils.sendTitle(player, "", "§aMeetup §7is now!", 5, 30, 5);
+			
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			
 			player.playSound(player.getLocation(), Sound.PISTON_EXTEND, 1, 1);
 			
 		}

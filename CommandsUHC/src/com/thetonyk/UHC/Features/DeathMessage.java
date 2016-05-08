@@ -44,6 +44,8 @@ public class DeathMessage implements Listener {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			
 			player.playSound(player.getLocation(), Sound.ZOMBIE_REMEDY, 1, 1);
 			
 		}

@@ -84,6 +84,9 @@ public class DisplayTimers {
 						Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(true, true);
 						
 						DisplayUtils.sendTitle(player, "§aFinal heal", "§7Do not ask for others heals.", 5, 30, 5);
+						
+						if (PlayerUtils.getNosoundState(player) == 1) continue;
+						
 						player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 						
 					}
