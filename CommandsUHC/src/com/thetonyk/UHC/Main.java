@@ -10,6 +10,7 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
+import com.thetonyk.UHC.Commands.DisplayServerList;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
@@ -136,6 +137,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new DeathRespawn(), this);
 		manager.registerEvents(new DisplayNametags(), this);
 		manager.registerEvents(new DisplaySidebar(), this);
+		manager.registerEvents(new DisplayServerList(), this);
 		manager.registerEvents(new DisplayTab(), this);
 		manager.registerEvents(new HealthScore(), this);
 		manager.registerEvents(new HealthShoot(), this);

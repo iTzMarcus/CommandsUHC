@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.MessengerListener;
 
@@ -16,6 +18,7 @@ public class GameUtils {
 	
 	public static Map<UUID, Map<String, String>> players = new HashMap<UUID, Map<String, String>>();
 	public static Map<UUID, Location> locations = null;
+	public static int slots = 100;
 	
 	public enum Status {
 		
@@ -119,6 +122,26 @@ public class GameUtils {
 			GameUtils.players.get(player.getUniqueId()).put("onGround", "false");
 			
 		}
+		
+	}
+	
+	public static int getPlayers() {
+		
+		int players = (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) ? Bukkit.getOnlinePlayers().size() : Bukkit.getWhitelistedPlayers().size();
+		
+		if (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) {
+			
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				
+				if (player.getGameMode() != GameMode.SPECTATOR) continue;
+				
+				players--;
+				
+			}
+			
+		}
+		
+		return players;
 		
 	}
 

@@ -3,7 +3,6 @@ package com.thetonyk.UHC.Utils;
 import java.lang.reflect.Field;
 
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -14,7 +13,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
@@ -98,19 +96,7 @@ public class DisplayUtils {
 				
 				if (event.getPacketType() != PacketType.Status.Server.OUT_SERVER_INFO) return;
 					
-				int players = (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) ? Bukkit.getOnlinePlayers().size() : Bukkit.getWhitelistedPlayers().size();
-			
-				if (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) {
-					
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						if (player.getGameMode() != GameMode.SPECTATOR) continue;
-						
-						players--;
-						
-					}
-					
-				}
+				int players = GameUtils.getPlayers();
 				
 				WrappedServerPing count = event.getPacket().getServerPings().read(0);
 				count.setPlayersOnline(players);

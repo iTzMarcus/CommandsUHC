@@ -17,23 +17,38 @@ public class LoginWhitelist implements Listener {
 		PermissionsUtils.setPermissions(event.getPlayer());
 		PermissionsUtils.updateBungeePermissions(event.getPlayer());
 		
-		if (event.getResult() != Result.KICK_WHITELIST) return;
-			
 		if (event.getPlayer().isOp() || event.getPlayer().hasPermission("global.bypasswhitelist")) {
 			
 			event.allow();
 			return;
 			
 		}
+		
+		if (event.getResult() == Result.KICK_WHITELIST) {
+				
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+				
+				event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cThe UHC has already begun.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+				return;
+				
+			}
+				
+			event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cNo scheduled UHC.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+		
+		}
+		
+		if (GameUtils.getPlayers() >= GameUtils.slots) {
 			
-		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+			if (event.getPlayer().isOp() || event.getPlayer().hasPermission("global.bypasswhitelist")) {
+				
+				event.allow();
+				return;
+				
+			}
 			
-			event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cThe UHC has already begun.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
-			return;
+			event.disallow(Result.KICK_FULL, "§8⫸ §7The server is currently full. §8⫷\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
 			
 		}
-			
-		event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cNo scheduled UHC.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
 		
 	}
 	
