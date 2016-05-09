@@ -2,12 +2,20 @@ package com.thetonyk.UHC.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 import com.thetonyk.UHC.MessengerListener;
 
 public class GameUtils {
+	
+	public static Map<UUID, Map<String, String>> players = new HashMap<UUID, Map<String, String>>();
+	public static Map<UUID, Location> locations = null;
 	
 	public enum Status {
 		
@@ -96,6 +104,21 @@ public class GameUtils {
 	public static void setTeleported(Boolean teleported) {
 		
 		DatabaseUtils.sqlInsert("UPDATE uhc SET teleported = '" + (teleported ? "1" : "0") + "' WHERE server = '" + MessengerListener.lastServer + "';");
+		
+	}
+	
+	public static void setupPlayers() {
+		
+		GameUtils.players.clear();
+		
+		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+			
+			GameUtils.players.put(player.getUniqueId(), new HashMap<String, String>());
+			GameUtils.players.get(player.getUniqueId()).put("death", "false");
+			GameUtils.players.get(player.getUniqueId()).put("teleported", "false");
+			GameUtils.players.get(player.getUniqueId()).put("onGround", "false");
+			
+		}
 		
 	}
 

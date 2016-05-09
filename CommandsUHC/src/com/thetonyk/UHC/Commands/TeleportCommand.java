@@ -1,10 +1,7 @@
 package com.thetonyk.UHC.Commands;
 
-import java.util.Map;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +22,6 @@ import com.thetonyk.UHC.Utils.WorldUtils;
 public class TeleportCommand implements CommandExecutor, Listener {
 	
 	private Boolean teleport = false;
-	public static Map<UUID, Location> locations = null;
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
@@ -64,12 +60,14 @@ public class TeleportCommand implements CommandExecutor, Listener {
 			
 		}
 		
-		locations = TeleportUtils.getSpawns(Bukkit.getWorld(GameUtils.getWorld()), WorldUtils.getSize(GameUtils.getWorld()));
+		GameUtils.setupPlayers();
+		
+		GameUtils.locations = TeleportUtils.getSpawns(Bukkit.getWorld(GameUtils.getWorld()), WorldUtils.getSize(GameUtils.getWorld()));
 		
 		GameUtils.setStatus(Status.TELEPORT);
 		teleport = true;
 		
-		TeleportUtils.loadSpawns(locations);
+		TeleportUtils.loadSpawns(GameUtils.locations);
 		
 		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
 		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);

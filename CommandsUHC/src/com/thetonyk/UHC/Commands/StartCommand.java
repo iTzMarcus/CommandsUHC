@@ -198,13 +198,15 @@ public class StartCommand implements CommandExecutor {
 					PlayerUtils.heal(player);
 					DisplaySidebar.update(player);
 					
+					
+					
 					if (PlayerUtils.getNosoundState(player) == 1) continue;
 					
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					
 				}
 				
-				TeleportUtils.removeSpawns(TeleportCommand.locations);
+				TeleportUtils.removeSpawns(GameUtils.locations);
 				
 			}
 			

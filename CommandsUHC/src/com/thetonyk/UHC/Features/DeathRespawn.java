@@ -37,6 +37,7 @@ public class DeathRespawn implements Listener {
 		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
 		
 		event.getEntity().setWhitelisted(false);
+		GameUtils.players.get(event.getEntity().getUniqueId()).put("death", "true");
 		
 	}
 	

@@ -42,6 +42,7 @@ import com.thetonyk.UHC.Features.DeathMessage;
 import com.thetonyk.UHC.Features.DeathRespawn;
 import com.thetonyk.UHC.Features.HealthScore;
 import com.thetonyk.UHC.Features.HealthShoot;
+import com.thetonyk.UHC.Features.LateTeleport;
 import com.thetonyk.UHC.Features.LobbyFly;
 import com.thetonyk.UHC.Features.LobbyItems;
 import com.thetonyk.UHC.Features.LobbyProtection;
@@ -139,6 +140,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new HealthShoot(), this);
 		manager.registerEvents(new HealthRegeneration(), this);
 		manager.registerEvents(new HealthFood(), this);
+		manager.registerEvents(new LateTeleport(), this);
 		manager.registerEvents(new LobbyFly(), this);
 		manager.registerEvents(new LobbyItems(), this);
 		manager.registerEvents(new LobbyProtection(), this);
@@ -166,7 +168,7 @@ public class Main extends JavaPlugin {
 				
 			}
 			
-		}.runTaskLater(this, 2);
+		}.runTaskLater(this, 5);
 		
 	}
 	

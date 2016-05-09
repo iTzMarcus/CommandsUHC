@@ -130,7 +130,7 @@ public class TeleportProtection implements Listener {
 	}
 	
 	@EventHandler
-	public void onPlayerDamage(EntityDamageByEntityEvent event) {
+	public void onEntityDamage(EntityDamageByEntityEvent event) {
 		
 		if (GameUtils.getStatus() != Status.TELEPORT) return;
 		
@@ -145,7 +145,20 @@ public class TeleportProtection implements Listener {
 		
 		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (DisplayTimers.time > 45) return;
+		if (DisplayTimers.time > 45 && Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("onGround"))) return;
+		
+		event.setCancelled(true);
+		
+	}
+	
+	@EventHandler
+	public void onPlayerDamage(EntityDamageByEntityEvent event) {
+		
+		if (!(event.getDamager() instanceof Player)) return;
+		
+		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
+		
+		if (DisplayTimers.time > 45 && Boolean.parseBoolean(GameUtils.players.get(event.getDamager().getUniqueId()).get("onGround"))) return;
 		
 		event.setCancelled(true);
 		

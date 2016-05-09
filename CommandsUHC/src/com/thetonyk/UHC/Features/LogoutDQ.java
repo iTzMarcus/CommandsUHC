@@ -46,8 +46,8 @@ public class LogoutDQ implements Listener {
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			
 			if (player.isOnline()) continue;
-				
-			startTimer(player.getPlayer());
+			
+			startTimer(player);
 			
 		}
 		
@@ -83,13 +83,14 @@ public class LogoutDQ implements Listener {
 		
 	}
 	
-	private static void startTimer(Player player) {
+	private static void startTimer(OfflinePlayer player) {
 		
 		BukkitRunnable counter = new BukkitRunnable() {
 		
 			public void run() {
 				
 				player.setWhitelisted(false);
+				GameUtils.players.get(player.getUniqueId()).put("death", "true");
 				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7") + player.getName() + "§7" + " died offline");
 				DisplaySidebar.addPve();
 				

@@ -237,6 +237,7 @@ public class TeleportUtils {
 				Location location = locations.get(i).clone();
 				location.setY(location.getY() + 0.5);
 				UUID uuid = players.get(i);
+				GameUtils.players.get(uuid).put("teleported", "true");
 				
 				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
 					
