@@ -92,6 +92,7 @@ public class Main extends JavaPlugin {
 		
 		BiomesUtils.removeOceansAndJungles();
 		DisplayUtils.redditHearts();
+		DisplayUtils.playersCount();
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
 		this.getCommand("rank").setExecutor(new RankCommand());
