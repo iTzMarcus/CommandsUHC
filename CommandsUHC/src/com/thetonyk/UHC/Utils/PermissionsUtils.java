@@ -54,15 +54,15 @@ public class PermissionsUtils {
 		
 		if (rank == Rank.ACTIVE_BUILDER) return;
 		
-		permission.setPermission("global.gamemode", false);
-		permission.setPermission("global.build", false);
-		permission.setPermission("parkour.jump", false);
+		permission.unsetPermission("global.gamemode");
+		permission.unsetPermission("global.build");
+		permission.unsetPermission("parkour.jump");
 		permission.setPermission("uhc.pregen", true);
 		permission.setPermission("uhc.whitelist.add", true);
 		
 		if (rank == Rank.HOST) return;
 		
-		permission.setPermission("uhc.pregen", false);
+		permission.unsetPermission("uhc.pregen");
 		
 		if (rank == Rank.MOD) return;
 		

@@ -22,7 +22,6 @@ public class LoginPlayer implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-			PermissionsUtils.clearPermissions(player);
 			PermissionsUtils.setPermissions(player);
 			PermissionsUtils.updateBungeePermissions(player);
 			

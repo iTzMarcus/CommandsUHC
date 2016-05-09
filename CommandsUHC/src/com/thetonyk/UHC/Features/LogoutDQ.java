@@ -1,10 +1,12 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,6 +16,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
@@ -22,6 +25,7 @@ import com.thetonyk.UHC.Utils.GameUtils.Status;
 public class LogoutDQ implements Listener {
 
 	private static Map<UUID, BukkitRunnable> offlineTimers = new HashMap<UUID, BukkitRunnable>();
+	private static Map<UUID, Long> offlineTime = new HashMap<UUID, Long>();
 	
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
@@ -32,12 +36,61 @@ public class LogoutDQ implements Listener {
 		
 		if (!event.getPlayer().isWhitelisted()) return;
 		
-		BukkitRunnable counter = new BukkitRunnable() {
+		startTimer(event.getPlayer());
+		
+	}
+	
+	@EventHandler
+	public void onStart(StartEvent event) {
+		
+		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 			
+			if (player.isOnline()) continue;
+				
+			startTimer(player.getPlayer());
+			
+		}
+		
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		
+		if (GameUtils.getStatus() != Status.PLAY) return;
+		
+		if (!event.getPlayer().isWhitelisted()) return;
+		
+		if (!offlineTimers.containsKey(event.getPlayer().getUniqueId()) || offlineTimers.get(event.getPlayer().getUniqueId()) == null) return;
+		
+		offlineTimers.get(event.getPlayer().getUniqueId()).cancel();
+		offlineTimers.put(event.getPlayer().getUniqueId(), null);
+		offlineTime.remove(event.getPlayer().getUniqueId());
+		
+	}
+	
+	public static void reset() {
+		
+		for (UUID uuid : offlineTimers.keySet()) {
+			
+			if (offlineTimers.get(uuid) == null) continue;
+			
+			offlineTimers.get(uuid).cancel();
+			
+		}
+		
+		offlineTimers.clear();
+		offlineTime.clear();
+		
+	}
+	
+	private static void startTimer(Player player) {
+		
+		BukkitRunnable counter = new BukkitRunnable() {
+		
 			public void run() {
 				
-				event.getPlayer().setWhitelisted(false);
-				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + "§7" + " died offline");
+				player.setWhitelisted(false);
+				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7") + player.getName() + "§7" + " died offline");
 				DisplaySidebar.addPve();
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
@@ -60,44 +113,30 @@ public class LogoutDQ implements Listener {
 					
 				}.runTaskLater(Main.uhc, 1);
 				
-				offlineTimers.put(event.getPlayer().getUniqueId(), null);
+				offlineTimers.put(player.getUniqueId(), null);
+				offlineTimers.remove(player.getUniqueId());
+				offlineTime.remove(player.getUniqueId());
 				
 			}
 			
 		};
 		
-		int time = DisplayTimers.getTimeLeftMeetup() > 0 ? 18000 : 6000;
+		int time = 0;
+		if (DisplayTimers.getTimeLeftMeetup() > 300) time = 18000;
+		else if (DisplayTimers.getTimeLeftMeetup() > 0) time = 12000;
+		else time = 600;
 		
-		offlineTimers.put(event.getPlayer().getUniqueId(), counter);
-		offlineTimers.get(event.getPlayer().getUniqueId()).runTaskLater(Main.uhc, time);
-		
+		offlineTime.put(player.getUniqueId(), new Date().getTime());
+		offlineTimers.put(player.getUniqueId(), counter);
+		offlineTimers.get(player.getUniqueId()).runTaskLater(Main.uhc, time);
+			
 	}
 	
-	@EventHandler
-	public void onJoin(PlayerJoinEvent event) {
+	public static int offlineSince(UUID uuid) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		if (!offlineTime.containsKey(uuid)) return 0;
 		
-		if (!event.getPlayer().isWhitelisted()) return;
-		
-		if (!offlineTimers.containsKey(event.getPlayer().getUniqueId()) || offlineTimers.get(event.getPlayer().getUniqueId()) == null) return;
-		
-		offlineTimers.get(event.getPlayer().getUniqueId()).cancel();
-		offlineTimers.put(event.getPlayer().getUniqueId(), null);
-		
-	}
-	
-	public static void reset() {
-		
-		for (UUID uuid : offlineTimers.keySet()) {
-			
-			if (offlineTimers.get(uuid) == null) continue;
-			
-			offlineTimers.get(uuid).cancel();
-			
-		}
-		
-		offlineTimers.clear();
+		return (int) (new Date().getTime() - offlineTime.get(uuid)) / 1000;
 		
 	}
 	

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Utils.DisplayUtils;
@@ -181,6 +182,7 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
 				WorldUtils.butcher(Bukkit.getWorld(GameUtils.getWorld()));
 				GameUtils.setStatus(Status.PLAY);
+				Bukkit.getPluginManager().callEvent(new StartEvent());
 				DisplayTimers.startTimer();
 				start = false;
 				
