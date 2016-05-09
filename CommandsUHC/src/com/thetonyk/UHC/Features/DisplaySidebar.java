@@ -50,9 +50,7 @@ public class DisplaySidebar implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
-		
-		if (!GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) return;
+		if (GameUtils.getStatus() != Status.PLAY || Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("death"))) return;
 		
 		new BukkitRunnable() {
 			

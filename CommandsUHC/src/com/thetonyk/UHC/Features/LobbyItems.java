@@ -149,7 +149,7 @@ public class LobbyItems implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return;
+		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && !Boolean.parseBoolean(GameUtils.players.get(event.getPlayer().getUniqueId()).get("death"))) return;
 			
 		giveItems(event.getPlayer());
 		

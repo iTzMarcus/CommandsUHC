@@ -20,7 +20,7 @@ public class DeathMessage implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getWorld().equalsIgnoreCase(event.getEntity().getWorld().getName())) {
+		if (GameUtils.getStatus() != Status.PLAY || Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("death"))) {
 			
 			event.setDeathMessage(null);
 			return;
@@ -50,6 +50,8 @@ public class DeathMessage implements Listener {
 			player.playSound(player.getLocation(), Sound.ZOMBIE_REMEDY, 1, 1);
 			
 		}
+		
+		GameUtils.players.get(event.getEntity().getUniqueId()).put("death", "true");
 		
 	}
 	

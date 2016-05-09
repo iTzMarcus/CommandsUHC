@@ -29,6 +29,8 @@ public class LobbyFly implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		
 		if (!event.getPlayer().hasPermission("global.fly")) return;
+		
+		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
 			
 		event.getPlayer().setAllowFlight(true);
 		
