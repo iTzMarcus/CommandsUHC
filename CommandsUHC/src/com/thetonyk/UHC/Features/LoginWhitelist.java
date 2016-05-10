@@ -1,6 +1,7 @@
 package com.thetonyk.UHC.Features;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -49,6 +50,15 @@ public class LoginWhitelist implements Listener {
 			event.disallow(Result.KICK_FULL, "§8⫸ §7The server is currently full. §8⫷\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
 			
 		}
+		
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onConnectMonitor(PlayerLoginEvent event) {
+		
+		if (event.getResult() == Result.ALLOWED) return;
+		
+		PermissionsUtils.clearPermissions(event.getPlayer());
 		
 	}
 	

@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -25,6 +26,8 @@ public class TeleportUtils {
 		Map<UUID, Location> locations = new HashMap<UUID, Location>();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			if (player.getGameMode() == GameMode.SPECTATOR) continue;
 			
 			int minDistance = 150;
 			
@@ -326,6 +329,12 @@ public class TeleportUtils {
 			}
 			
 		}
+		
+	}
+	
+	public static void teleport(Player player) {
+		
+		
 		
 	}
 	

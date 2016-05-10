@@ -1,6 +1,7 @@
 package com.thetonyk.UHC;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -172,6 +173,16 @@ public class Main extends JavaPlugin {
 			}
 			
 		}.runTaskLater(this, 5);
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			for (Player player2 : Bukkit.getOnlinePlayers()) {
+				
+				player.showPlayer(player2);
+				
+			}
+			
+		}
 		
 	}
 	

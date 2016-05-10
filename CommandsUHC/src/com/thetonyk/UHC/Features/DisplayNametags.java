@@ -60,6 +60,8 @@ public class DisplayNametags implements Listener {
 			players.getScoreboard().getTeam(player.getName()).setSuffix("§7");
 			players.getScoreboard().getTeam(player.getName()).addEntry(player.getName());
 			
+			if (players.equals(player)) continue;
+			
 			if (player.getScoreboard().getTeam(players.getName()) == null) {
 				
 				player.getScoreboard().registerNewTeam(players.getName());

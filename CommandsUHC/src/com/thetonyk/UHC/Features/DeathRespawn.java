@@ -2,9 +2,11 @@ package com.thetonyk.UHC.Features;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,6 +40,12 @@ public class DeathRespawn implements Listener {
 		
 		event.getEntity().setWhitelisted(false);
 		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			player.hidePlayer(event.getEntity());
+			
+		}
+		
 	}
 	
 	@EventHandler
@@ -56,6 +64,26 @@ public class DeathRespawn implements Listener {
 		text.append(" for next games.").retain(FormatRetention.NONE).color(GRAY);
 		
 		event.getPlayer().spigot().sendMessage(text.create());
+		
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		
+		if (GameUtils.getStatus() != Status.PLAY) return;
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			player.hidePlayer(event.getPlayer());
+			
+			if (!player.isWhitelisted() && player.getGameMode() != GameMode.SPECTATOR) {
+				
+				event.getPlayer().hidePlayer(player);
+				continue;
+				
+			}
+			
+		}
 		
 	}
 	

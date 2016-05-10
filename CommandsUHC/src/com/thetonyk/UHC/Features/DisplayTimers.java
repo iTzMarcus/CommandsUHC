@@ -17,8 +17,8 @@ public class DisplayTimers {
 	
 	public static BukkitRunnable timer = null;
 	public static int time = 0;
-	public static int pvpTime = 120;
-	public static int meetupTime = 180;
+	public static int pvpTime = 900;
+	public static int meetupTime = 3600;
 	
 	public static void startTimer() {
 		
@@ -30,8 +30,8 @@ public class DisplayTimers {
 		}
 		
 		time = 0;
-		pvpTime = 120;
-		meetupTime = 180;
+		pvpTime = 900;
+		meetupTime = 3600;
 		
 		timer = new BukkitRunnable() {
 			

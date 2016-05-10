@@ -58,6 +58,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 		} catch (Exception exception) {
 			
 			sender.sendMessage(Main.PREFIX + PlayerUtils.getRanks());
+			return true;
 			
 		}
 		

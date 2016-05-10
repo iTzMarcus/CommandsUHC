@@ -23,27 +23,31 @@ public class RulesInventory implements Listener {
 		ItemStack separator = ItemsUtils.createItem(Material.STAINED_GLASS_PANE, "§7UHC by CommandsPVP", 1, 7);
 		
 		lore.add(" ");
-		lore.add("§8⫸ §7Incoming");
+		lore.add("§8⫸ §7Not available during stress test.");
+		lore.add("§8⫸ §7Ask a staff member.");
 		lore.add(" ");
 		ItemStack health = ItemsUtils.createItem(Material.GOLDEN_APPLE, "§8⫸ §6Health & Food §8⫷", 1, 0, lore);
 		lore.clear();
 		
 		lore.add(" ");
-		lore.add("§8⫸ §7Incoming");
+		lore.add("§8⫸ §7Not available during stress test.");
+		lore.add("§8⫸ §7Ask a staff member.");
 		lore.add(" ");
 		ItemStack pvp = ItemsUtils.createItem(Material.DIAMOND_SWORD, "§8⫸ §6PVP/iPVP §8⫷", 1, 0, lore);
 		pvp = ItemsUtils.hideFlags(pvp);
 		lore.clear();
 		
 		lore.add(" ");
-		lore.add("§8⫸ §7Incoming");
+		lore.add("§8⫸ §7Not available during stress test.");
+		lore.add("§8⫸ §7Ask a staff member.");
 		lore.add(" ");
 		ItemStack mining = ItemsUtils.createItem(Material.DIAMOND_PICKAXE, "§8⫸ §6Mining §8⫷", 1, 0, lore);
 		mining = ItemsUtils.hideFlags(mining);
 		lore.clear();
 		
 		lore.add(" ");
-		lore.add("§8⫸ §7Incoming");
+		lore.add("§8⫸ §7Not available during stress test.");
+		lore.add("§8⫸ §7Ask a staff member.");
 		lore.add(" ");
 		ItemStack other = ItemsUtils.createItem(Material.SIGN, "§8⫸ §6Others §8⫷", 1, 0, lore);
 		lore.clear();

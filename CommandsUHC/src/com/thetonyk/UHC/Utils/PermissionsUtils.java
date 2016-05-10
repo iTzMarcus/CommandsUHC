@@ -87,7 +87,7 @@ public class PermissionsUtils {
 			
 		}
 		
-		permissions.remove(player.getName());
+		permissions.remove(player.getUniqueId());
 		
 	}
 	

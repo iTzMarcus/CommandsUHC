@@ -263,7 +263,7 @@ public class TeamsUtils {
 			
 			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + getTeam(player) + "' AND server = '" + MessengerListener.lastServer + "';");
 			
-			if (teams.next()) prefix = teams.getString("prefix") + "§r";
+			if (teams.next()) prefix = teams.getString("prefix");
 				
 			teams.close();
 			

@@ -41,7 +41,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 				
 				if (args.length < 3) {
 					
-					sender.sendMessage(Main.PREFIX + "Usage: /world create <name> <size> [seed]");
+					sender.sendMessage(Main.PREFIX + "Usage: /world create <name> <size> [nether] [end] [seed]");
 					return true;
 					
 				}
@@ -73,11 +73,17 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 				Boolean end = false;
 				long seed = new Random().nextLong();
 				
-				if (args.length > 3) seed = Long.parseLong(args[3]);
+				if (args.length > 3) nether = Boolean.parseBoolean(args[3]);
+				
+				if (args.length > 4) end = Boolean.parseBoolean(args[4]);
+				
+				if (args.length > 5) seed = Long.parseLong(args[5]);
 				
 				sender.sendMessage(Main.PREFIX + "Creation of world '§6" + name + "§7'...");
 				sender.sendMessage("§8⫸ §7Size: §a" + radius);
 				sender.sendMessage("§8⫸ §7Seed: §a" + seed);
+				sender.sendMessage("§8⫸ §7Nether: §a" + nether);
+				sender.sendMessage("§8⫸ §7End: §a" + end);
 				
 				WorldUtils.createWorld(name, Environment.NORMAL, seed, WorldType.NORMAL, radius);
 				
@@ -157,7 +163,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 							
 				try {
 					
-					ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM arena_worlds;");
+					ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds;");
 					
 					String world = null;
 					String color = "§7";
