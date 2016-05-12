@@ -160,7 +160,7 @@ public class GameUtils {
 			
 		}
 		
-		return new Gson().fromJson(players, new TypeToken<Map<UUID, Map<String, String>>>(){}.getType());
+		return players == "" ? new HashMap<UUID, Map<String, String>>() : new Gson().fromJson(players, new TypeToken<Map<UUID, Map<String, String>>>(){}.getType());
 		
 	}
 	
@@ -253,15 +253,43 @@ public class GameUtils {
 			
 		}
 		
-		return new Gson().fromJson(locations, new TypeToken<Map<UUID, Location>>(){}.getType());
+		if (locations == "") return new HashMap<UUID, Location>(); 
+		
+		Map<UUID, Map<String, Object>> serializedLocations = new Gson().fromJson(locations, new TypeToken<Map<UUID, Map<String, Object>>>(){}.getType());
+		Map<UUID, Location> unserializedLocations = new HashMap<UUID, Location>();
+		
+		for (Map.Entry<UUID, Map<String, Object>> location : serializedLocations.entrySet()) {
+			
+			Location newLocation = new Location(Bukkit.getWorld((String) location.getValue().get("world")), (double) location.getValue().get("x"), (double) location.getValue().get("y"), (double) location.getValue().get("z"));
+			
+			unserializedLocations.put(location.getKey(), newLocation);
+			
+		}
+		
+		return unserializedLocations;
 		
 	}
 	
 	public static void setLocations(Map<UUID, Location> locations) {
 		
+		Map<UUID, Map<String, Object>> serializedLocations = new HashMap<UUID, Map<String, Object>>();
+		
+		for (Map.Entry<UUID, Location> location : locations.entrySet()) {
+			
+			Map<String, Object> serializedLocation = new HashMap<String, Object>();
+			
+			serializedLocation.put("world", location.getValue().getWorld().getName());
+			serializedLocation.put("x", location.getValue().getX());
+			serializedLocation.put("y", location.getValue().getY());
+			serializedLocation.put("z", location.getValue().getZ());
+			
+			serializedLocations.put(location.getKey(), serializedLocation);
+			
+		}
+		
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 		
-		DatabaseUtils.sqlInsert("UPDATE uhc SET locations = '" + gson.toJson(locations) + "' WHERE server = '" + GameUtils.getServer() + "';");
+		DatabaseUtils.sqlInsert("UPDATE uhc SET locations = '" + gson.toJson(serializedLocations) + "' WHERE server = '" + GameUtils.getServer() + "';");
 		
 	}
 	
@@ -439,7 +467,7 @@ public class GameUtils {
 			
 		}
 		
-		return new Gson().fromJson(kills, new TypeToken<Map<UUID, Integer>>(){}.getType());
+		return kills == "" ? new HashMap<UUID, Integer>() : new Gson().fromJson(kills, new TypeToken<Map<UUID, Integer>>(){}.getType());
 		
 	}
 	
