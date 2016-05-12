@@ -38,7 +38,7 @@ public class LoginWhitelist implements Listener {
 		
 		}
 		
-		if (GameUtils.getPlayers() >= GameUtils.slots) {
+		if (GameUtils.getPlayersCount() >= GameUtils.getSlots()) {
 			
 			if (event.getPlayer().isOp() || event.getPlayer().hasPermission("global.bypasswhitelist")) {
 				

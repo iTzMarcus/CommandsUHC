@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Features.DisplayNametags;
 
 public class TeamsUtils {
@@ -59,7 +58,7 @@ public class TeamsUtils {
 			
 			String teamName = "UHC" + (i + 1);
 			
-			DatabaseUtils.sqlInsert("INSERT INTO uhc_teams (`id`, `name`, `prefix`, `exist`, `members`, `server`) VALUES ('" + (i + 1) + "', '" + teamName + "', '" + list.get(i) + "', 0, '', '" + MessengerListener.lastServer + "');");
+			DatabaseUtils.sqlInsert("INSERT INTO uhc_teams (`id`, `name`, `prefix`, `exist`, `members`, `server`) VALUES ('" + (i + 1) + "', '" + teamName + "', '" + list.get(i) + "', 0, '', '" + GameUtils.getServer() + "');");
 			
 		}
 		
@@ -75,7 +74,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';");
 			
 			while (teams.next()) {
 				
@@ -112,7 +111,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';");
 			
 			while (teams.next()) {
 				
@@ -132,7 +131,7 @@ public class TeamsUtils {
 			
 		}
 		
-		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
 		
 		players.put(player, name);
 		
@@ -155,7 +154,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (teams.next()) {
 				
@@ -172,7 +171,7 @@ public class TeamsUtils {
 			
 		}
 		
-		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
 		
 		players.put(player, team);
 		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
@@ -187,7 +186,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
 				
 			if (teams.next()) {
 				
@@ -206,7 +205,7 @@ public class TeamsUtils {
 		
 		if (members.split(";").length < 2) {
 			
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
 			
 		} else {
 			
@@ -219,7 +218,7 @@ public class TeamsUtils {
 				
 			}
 			
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + id + "' AND server = '" + MessengerListener.lastServer + "';");
+			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
 			
 		}
 		
@@ -235,7 +234,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';");
 			
 			while (teams.next()) {
 				
@@ -261,7 +260,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + getTeam(player) + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + getTeam(player) + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (teams.next()) prefix = teams.getString("prefix");
 				
@@ -283,7 +282,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (teams.next()) members = teams.getString("members");
 			
@@ -314,7 +313,7 @@ public class TeamsUtils {
 		
 		try {
 			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (teams.next()) members = teams.getString("members");
 			
@@ -371,7 +370,7 @@ public class TeamsUtils {
 		
 		for (int i = 0; i < list.size(); i++) {
 			
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET prefix = '" + list.get(i) + "' WHERE id = " + (i + 1) + " AND server = '" + MessengerListener.lastServer + "';");
+			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET prefix = '" + list.get(i) + "' WHERE id = " + (i + 1) + " AND server = '" + GameUtils.getServer() + "';");
 			
 		}
 		

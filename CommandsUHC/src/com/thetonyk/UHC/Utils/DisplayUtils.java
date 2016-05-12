@@ -96,7 +96,7 @@ public class DisplayUtils {
 				
 				if (event.getPacketType() != PacketType.Status.Server.OUT_SERVER_INFO) return;
 					
-				int players = GameUtils.getPlayers();
+				int players = GameUtils.getPlayersCount();
 				
 				WrappedServerPing count = event.getPacket().getServerPings().read(0);
 				count.setPlayersOnline(players);

@@ -1,6 +1,5 @@
 package com.thetonyk.UHC.Features;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -20,9 +19,6 @@ import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class DisplaySidebar implements Listener {
-	
-	private static int pve = 0;
-	private static Map<UUID, Integer> kills = new HashMap<UUID, Integer>();
 	
 	public DisplaySidebar() {
 		
@@ -50,7 +46,7 @@ public class DisplaySidebar implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("death"))) return;
+		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) return;
 		
 		new BukkitRunnable() {
 			
@@ -68,7 +64,7 @@ public class DisplaySidebar implements Listener {
 		
 		if (event.getEntity().getKiller() == null) {
 			
-			pve++;
+			addPVE();
 			return;
 			
 		}
@@ -77,7 +73,11 @@ public class DisplaySidebar implements Listener {
 		
 		if (event.getEntity().getKiller().equals(event.getEntity())) return;
 		
+		Map<UUID, Integer> kills = GameUtils.getKills();
+		
 		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
+		
+		GameUtils.setKills(kills);
 		
 	}
 	
@@ -104,11 +104,11 @@ public class DisplaySidebar implements Listener {
 		}
 		
 		player.getScoreboard().getObjective("sidebar").getScore("    ").setScore(99);
-		player.getScoreboard().getObjective("sidebar").getScore("  §6PVE §8⫸ §a" + pve).setScore(98);
+		player.getScoreboard().getObjective("sidebar").getScore("  §6PVE §8⫸ §a" + GameUtils.getPVE()).setScore(98);
 		
-		for (UUID killer : kills.keySet()) {
+		for (UUID killer : GameUtils.getKills().keySet()) {
 			
-			player.getScoreboard().getObjective("sidebar").getScore("  " + (!Bukkit.getOfflinePlayer(killer).isWhitelisted() ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(kills.get(killer));
+			player.getScoreboard().getObjective("sidebar").getScore("  " + (!GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
 			
 		}
 		
@@ -117,9 +117,9 @@ public class DisplaySidebar implements Listener {
 		
 	}
 	
-	public static void addPve() {
+	public static void addPVE() {
 		
-		pve++;
+		GameUtils.setPVE(GameUtils.getPVE() + 1);
 		
 	}
 

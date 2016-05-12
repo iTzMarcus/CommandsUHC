@@ -38,7 +38,7 @@ public class ChatSettings implements Listener {
 			if (!event.getMessage().contains(receiver.getName())) continue;
 			
 			event.getRecipients().remove(receiver);
-			receiver.sendMessage(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + "§7" + event.getPlayer().getName() + " §8⫸ §f" + event.getMessage().replaceAll(receiver.getName(), "§a§l" + receiver.getName() + "§r"));
+			receiver.sendMessage(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + "§7" + event.getPlayer().getName() + "§r §8⫸ §f" + event.getMessage().replaceAll(receiver.getName(), "§a§l" + receiver.getName() + "§r"));
 			receiver.playSound(receiver.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
 		}
@@ -47,7 +47,7 @@ public class ChatSettings implements Listener {
 			
 			for (Player player : Bukkit.getWorld("lobby").getPlayers()) {
 				
-				player.sendMessage("§6DeathChat §8|" + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + " §8⫸ §f" + event.getMessage());
+				player.sendMessage("§6DeathChat §8|" + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + "§r §8⫸ §f" + event.getMessage());
 				
 			}
 			
@@ -55,7 +55,7 @@ public class ChatSettings implements Listener {
 			
 		}
 		
-		event.setFormat(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + " §8⫸ §f%2$s");
+		event.setFormat(PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName() + "§r §8⫸ §f%2$s");
 		
 	}
 	

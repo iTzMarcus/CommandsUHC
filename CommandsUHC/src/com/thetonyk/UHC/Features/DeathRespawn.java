@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -36,7 +37,7 @@ public class DeathRespawn implements Listener {
 			
 		}.runTaskLater(Main.uhc, 2);
 		
-		if (GameUtils.getStatus() != Status.PLAY || Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("death"))) return;
+		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) return;
 		
 		event.getEntity().setWhitelisted(false);
 		
@@ -67,19 +68,20 @@ public class DeathRespawn implements Listener {
 		
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onJoin(PlayerJoinEvent event) {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
+		
+		if (!GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			player.hidePlayer(event.getPlayer());
 			
-			if (!player.isWhitelisted() && player.getGameMode() != GameMode.SPECTATOR) {
+			if (GameUtils.getDeath(player.getUniqueId())) {
 				
 				event.getPlayer().hidePlayer(player);
-				continue;
 				
 			}
 			

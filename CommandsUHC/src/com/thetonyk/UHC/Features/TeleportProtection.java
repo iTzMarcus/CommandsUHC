@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -130,35 +129,13 @@ public class TeleportProtection implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntityDamage(EntityDamageByEntityEvent event) {
-		
-		if (GameUtils.getStatus() != Status.TELEPORT) return;
-		
-		event.setCancelled(true);
-		
-	}
-	
-	@EventHandler
 	public void onDamage(EntityDamageEvent event) {
 		
 		if (!(event.getEntity() instanceof Player)) return;
 		
 		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (DisplayTimers.time > 45 && Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("onGround"))) return;
-		
-		event.setCancelled(true);
-		
-	}
-	
-	@EventHandler
-	public void onPlayerDamage(EntityDamageByEntityEvent event) {
-		
-		if (!(event.getDamager() instanceof Player)) return;
-		
-		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
-		
-		if (DisplayTimers.time > 45 && Boolean.parseBoolean(GameUtils.players.get(event.getDamager().getUniqueId()).get("onGround"))) return;
+		if (DisplayTimers.time > 45 && GameUtils.getOnGround(event.getEntity().getUniqueId())) return;
 		
 		event.setCancelled(true);
 		

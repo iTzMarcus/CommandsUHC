@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.MessengerListener;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -83,7 +82,7 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		DatabaseUtils.sqlInsert("UPDATE uhc_worlds SET size = '" + args[1] + "' WHERE name = '" + args[0] + "' AND server = '" + MessengerListener.lastServer + "';");
+		DatabaseUtils.sqlInsert("UPDATE uhc_worlds SET size = '" + args[1] + "' WHERE name = '" + args[0] + "' AND server = '" + GameUtils.getServer() + "';");
 			
 		if (Bukkit.getWorld(args[0]) != null) {
 			

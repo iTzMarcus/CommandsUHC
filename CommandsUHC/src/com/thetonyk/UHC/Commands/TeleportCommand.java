@@ -62,12 +62,12 @@ public class TeleportCommand implements CommandExecutor, Listener {
 		
 		GameUtils.setupPlayers();
 		
-		GameUtils.locations = TeleportUtils.getSpawns(Bukkit.getWorld(GameUtils.getWorld()), WorldUtils.getSize(GameUtils.getWorld()));
+		GameUtils.setLocations(TeleportUtils.getSpawns(Bukkit.getWorld(GameUtils.getWorld()), WorldUtils.getSize(GameUtils.getWorld())));
 		
 		GameUtils.setStatus(Status.TELEPORT);
 		teleport = true;
 		
-		TeleportUtils.loadSpawns(GameUtils.locations);
+		TeleportUtils.loadSpawns(GameUtils.getLocations());
 		
 		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
 		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);

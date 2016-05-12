@@ -14,8 +14,6 @@ import org.bukkit.WorldType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import com.thetonyk.UHC.MessengerListener;
-
 public class WorldUtils {
 
 	public static void loadWorld(String world) {
@@ -32,7 +30,7 @@ public class WorldUtils {
 		
 		try {
 			
-			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			worldDB.next();
 			
@@ -100,7 +98,7 @@ public class WorldUtils {
 			
 		if (FileUtils.delete(folder)) {
 			
-			DatabaseUtils.sqlInsert("DELETE FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + MessengerListener.lastServer + "';");
+			DatabaseUtils.sqlInsert("DELETE FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
 			return;
 			
 		}
@@ -116,7 +114,7 @@ public class WorldUtils {
 		
 		try {
 			
-			ResultSet name = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet name = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (name.next()) exist = true;
 			
@@ -136,7 +134,7 @@ public class WorldUtils {
 
 		try {
 			
-			ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE server = '" + MessengerListener.lastServer + "';");
+			ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE server = '" + GameUtils.getServer() + "';");
 			
 			while (worlds.next()) {
 				
@@ -193,7 +191,7 @@ public class WorldUtils {
 		newWorld.setSpawnFlags(false, true);
 		newWorld.save();
 		
-		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + radius + "', 0, '" + MessengerListener.lastServer + "');");
+		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + radius + "', 0, '" + GameUtils.getServer() + "');");
 		
 		return newWorld;
 		
@@ -219,7 +217,7 @@ public class WorldUtils {
 		
 		try {
 			
-			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name='" + world + "' AND server = '" + MessengerListener.lastServer + "';");
+			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name='" + world + "' AND server = '" + GameUtils.getServer() + "';");
 			
 			if (worldDB.next()) radius = worldDB.getInt("size");
 			

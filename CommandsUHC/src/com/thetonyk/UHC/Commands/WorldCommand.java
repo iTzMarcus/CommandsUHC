@@ -16,8 +16,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Features.DisplayTimers;
-import com.thetonyk.UHC.Features.LogoutDQ;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
@@ -286,20 +284,44 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			    } 
 			    else if (args[0].equalsIgnoreCase("reset")) {
 			      
-			      GameUtils.setStatus(Status.NONE);
-			      GameUtils.setTeleported(false);
-			      Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));
-			      Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
-			      GameUtils.setWorld("");
-			      if (DisplayTimers.timer != null) DisplayTimers.timer.cancel();
-			      DisplayTimers.timer = null;
-			      DisplayTimers.time = 0;
-			      DisplayTimers.pvpTime = 120;
-			      DisplayTimers.meetupTime = 180;
-			      LogoutDQ.reset();
+			      GameUtils.resetGame();
 			      sender.sendMessage(Main.PREFIX + "The game has been reseted.");
 			      return true;
 			            
+			    }
+			    else if (args[0].equalsIgnoreCase("slot")) {
+				      
+			    	if (args.length < 2) {
+						
+						sender.sendMessage(Main.PREFIX + "Usage: /" + label + " slot <number>");
+						return true;
+						
+					}
+			    	
+			    	int slot = 100;
+					
+					try {
+						
+						slot = Integer.parseInt(args[1]);
+						
+					} catch (Exception exception) {
+						
+						sender.sendMessage(Main.PREFIX + "Incorrect number.");
+						return true;
+						
+					}
+					
+					if (slot < 2 || slot > 200) {
+						
+						sender.sendMessage(Main.PREFIX + "Incorrect number.");
+						return true;
+						
+					}
+					
+					GameUtils.setSlots(slot);
+					sender.sendMessage(Main.PREFIX + "New slots: §a" + slot + "§7.");
+					return true;
+				            
 			    }
 		
 		}

@@ -1,7 +1,6 @@
 package com.thetonyk.UHC;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -11,7 +10,6 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
-import com.thetonyk.UHC.Commands.DisplayServerList;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
@@ -44,7 +42,7 @@ import com.thetonyk.UHC.Features.DeathMessage;
 import com.thetonyk.UHC.Features.DeathRespawn;
 import com.thetonyk.UHC.Features.HealthScore;
 import com.thetonyk.UHC.Features.HealthShoot;
-import com.thetonyk.UHC.Features.LateTeleport;
+import com.thetonyk.UHC.Features.TeleportLate;
 import com.thetonyk.UHC.Features.LobbyFly;
 import com.thetonyk.UHC.Features.LobbyItems;
 import com.thetonyk.UHC.Features.LobbyProtection;
@@ -59,18 +57,25 @@ import com.thetonyk.UHC.Features.PregenStates;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
 import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Features.DisplayServerList;
 import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTab;
+import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Features.HealthFood;
 import com.thetonyk.UHC.Inventories.InviteInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.BiomesUtils;
 import com.thetonyk.UHC.Utils.DisplayUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import static net.md_5.bungee.api.ChatColor.*;
+
+import java.util.UUID;
+
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
 public class Main extends JavaPlugin {
@@ -89,12 +94,14 @@ public class Main extends JavaPlugin {
 		uhc = this;
 		
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-		Bukkit.getMessenger().registerIncomingPluginChannel(this, "BungeeCord", new MessengerListener());
 		Bukkit.getMessenger().registerOutgoingPluginChannel(this, "CommandsBungee");
 		
 		BiomesUtils.removeOceansAndJungles();
 		DisplayUtils.redditHearts();
 		DisplayUtils.playersCount();
+		
+		getConfig().options().copyDefaults(true);
+		saveConfig();
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
 		this.getCommand("rank").setExecutor(new RankCommand());
@@ -144,7 +151,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new HealthShoot(), this);
 		manager.registerEvents(new HealthRegeneration(), this);
 		manager.registerEvents(new HealthFood(), this);
-		manager.registerEvents(new LateTeleport(), this);
+		manager.registerEvents(new TeleportLate(), this);
 		manager.registerEvents(new LobbyFly(), this);
 		manager.registerEvents(new LobbyItems(), this);
 		manager.registerEvents(new LobbyProtection(), this);
@@ -170,19 +177,28 @@ public class Main extends JavaPlugin {
 				TeamsUtils.reload();
 				WorldUtils.loadAllWorlds();
 				
+				if (GameUtils.getStatus() != Status.PLAY) return;
+				
+				for (UUID player : GameUtils.getPlayers().keySet()) {
+					
+					if (GameUtils.getDeath(player)) continue;
+					
+					if (Bukkit.getPlayer(player) != null && Bukkit.getPlayer(player).isOnline()) {
+						
+						DisplaySidebar.update(Bukkit.getPlayer(player));
+						continue;
+						
+					}
+					
+					LogoutDQ.startTimer(Bukkit.getOfflinePlayer(player));
+					
+				}
+				
+				DisplayTimers.startTimer();
+				
 			}
 			
 		}.runTaskLater(this, 5);
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			for (Player player2 : Bukkit.getOnlinePlayers()) {
-				
-				player.showPlayer(player2);
-				
-			}
-			
-		}
 		
 	}
 	

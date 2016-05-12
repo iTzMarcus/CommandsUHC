@@ -34,7 +34,7 @@ public class LogoutDQ implements Listener {
 		
 		if (!GameUtils.getWorld().equalsIgnoreCase(event.getPlayer().getWorld().getName()))
 		
-		if (!event.getPlayer().isWhitelisted()) return;
+		if (GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
 		
 		startTimer(event.getPlayer());
 		
@@ -43,11 +43,13 @@ public class LogoutDQ implements Listener {
 	@EventHandler
 	public void onStart(StartEvent event) {
 		
-		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+		for (UUID player : GameUtils.getPlayers().keySet()) {
 			
-			if (player.isOnline()) continue;
+			if (GameUtils.getDeath(player)) continue;
 			
-			startTimer(player);
+			if (Bukkit.getPlayer(player) != null && Bukkit.getPlayer(player).isOnline()) continue;
+			
+			startTimer(Bukkit.getOfflinePlayer(player));
 			
 		}
 		
@@ -58,7 +60,7 @@ public class LogoutDQ implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (!event.getPlayer().isWhitelisted()) return;
+		if (GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
 		
 		if (!offlineTimers.containsKey(event.getPlayer().getUniqueId()) || offlineTimers.get(event.getPlayer().getUniqueId()) == null) return;
 		
@@ -83,16 +85,16 @@ public class LogoutDQ implements Listener {
 		
 	}
 	
-	private static void startTimer(OfflinePlayer player) {
+	public static void startTimer(OfflinePlayer player) {
 		
 		BukkitRunnable counter = new BukkitRunnable() {
 		
 			public void run() {
 				
 				player.setWhitelisted(false);
-				GameUtils.players.get(player.getUniqueId()).put("death", "true");
+				GameUtils.setDeath(player.getUniqueId(), true);
 				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7") + player.getName() + "§7" + " died offline");
-				DisplaySidebar.addPve();
+				DisplaySidebar.addPVE();
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
@@ -108,7 +110,7 @@ public class LogoutDQ implements Listener {
 					
 					public void run() {
 						
-						Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + Bukkit.getWhitelistedPlayers().size() + " §7players alive.");
+						Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives() + " §7players alive.");
 					
 					}
 					

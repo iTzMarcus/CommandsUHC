@@ -25,6 +25,8 @@ import net.md_5.bungee.api.chat.HoverEvent;
 
 public class TeamCommand implements CommandExecutor, TabCompleter {
 	
+	private int size = 2;
+	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
 		if (!sender.hasPermission("uhc.team")) {
@@ -88,6 +90,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
+				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(sender.getName())).size() >= size) {
+					
+					sender.sendMessage(Main.PREFIX + "Your team is already full.");
+					return true;
+					
+				}
+				
 				TeamsUtils.invitations.get(sender.getName()).add(Bukkit.getPlayer(args[1]).getName());
 				
 				Bukkit.getPlayer(args[1]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
@@ -147,6 +156,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				if (TeamsUtils.getTeam(args[1]) == null) {
 					
 					sender.sendMessage(Main.PREFIX + "This invitation was canceled.");
+					return true;
+					
+				}
+				
+				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(args[1])).size() >= size) {
+					
+					sender.sendMessage(Main.PREFIX + "This team is already full.");
 					return true;
 					
 				}
@@ -381,6 +397,37 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					TeamsUtils.setColors();
 					
 					Bukkit.broadcastMessage(Main.PREFIX + "Teams colors randomized.");
+					return true;
+					
+				}
+				else if (args[0].equalsIgnoreCase("size")) {
+					
+					if (args.length < 2) {
+						
+						sender.sendMessage(Main.PREFIX + "Usage: /" + label + " size <number>");
+						return true;
+						
+					}
+					
+					try {
+						
+						size = Integer.parseInt(args[1]);
+						
+					} catch (Exception exception) {
+						
+						sender.sendMessage(Main.PREFIX + "Incorrect number.");
+						return true;
+						
+					}
+					
+					if (size < 2 || size > 10) {
+						
+						sender.sendMessage(Main.PREFIX + "Incorrect number.");
+						return true;
+						
+					}
+					
+					Bukkit.broadcastMessage(Main.PREFIX + "New team size: §a" + size + "§7.");
 					return true;
 					
 				}

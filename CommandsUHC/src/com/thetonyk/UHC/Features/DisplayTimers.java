@@ -16,9 +16,9 @@ import com.thetonyk.UHC.Utils.GameUtils;
 public class DisplayTimers {
 	
 	public static BukkitRunnable timer = null;
-	public static int time = 0;
-	public static int pvpTime = 900;
-	public static int meetupTime = 3600;
+	public static int time = GameUtils.getTime();
+	public static int pvpTime = GameUtils.getPVP();
+	public static int meetupTime = GameUtils.getMeetup();
 	
 	public static void startTimer() {
 		
@@ -30,12 +30,12 @@ public class DisplayTimers {
 		}
 		
 		time = 0;
-		pvpTime = 900;
-		meetupTime = 3600;
 		
 		timer = new BukkitRunnable() {
 			
 			public void run() {
+				
+				if (time % 60 == 60) GameUtils.setTime(time);
 				
 				if (time < 45) {
 					

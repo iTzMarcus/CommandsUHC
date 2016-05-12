@@ -20,7 +20,7 @@ public class DeathMessage implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || Boolean.parseBoolean(GameUtils.players.get(event.getEntity().getUniqueId()).get("death"))) {
+		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) {
 			
 			event.setDeathMessage(null);
 			return;
@@ -37,7 +37,7 @@ public class DeathMessage implements Listener {
 			
 			public void run() {
 				
-				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + Bukkit.getWhitelistedPlayers().size() + " §7players alive.");
+				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives() + " §7players alive.");
 			
 			}
 			
@@ -51,7 +51,7 @@ public class DeathMessage implements Listener {
 			
 		}
 		
-		GameUtils.players.get(event.getEntity().getUniqueId()).put("death", "true");
+		GameUtils.setDeath(event.getEntity().getUniqueId(), true);
 		
 	}
 	

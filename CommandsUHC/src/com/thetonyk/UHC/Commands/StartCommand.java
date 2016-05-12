@@ -81,9 +81,6 @@ public class StartCommand implements CommandExecutor {
 			
 		}
 		
-		Bukkit.getWorld(GameUtils.getWorld()).setDifficulty(Difficulty.HARD);
-		Bukkit.getWorld(GameUtils.getWorld()).setTime(6000);
-		
 		new BukkitRunnable() {
 			
 			public void run() {
@@ -198,15 +195,13 @@ public class StartCommand implements CommandExecutor {
 					PlayerUtils.heal(player);
 					DisplaySidebar.update(player);
 					
-					
-					
 					if (PlayerUtils.getNosoundState(player) == 1) continue;
 					
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					
 				}
 				
-				TeleportUtils.removeSpawns(GameUtils.locations);
+				TeleportUtils.removeSpawns(GameUtils.getLocations());
 				
 			}
 			

@@ -1,4 +1,4 @@
-package com.thetonyk.UHC.Commands;
+package com.thetonyk.UHC.Features;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +11,7 @@ public class DisplayServerList implements Listener {
 	@EventHandler
 	public void onPing(ServerListPingEvent event) {
 		
-		event.setMaxPlayers(GameUtils.slots);
+		event.setMaxPlayers(GameUtils.getSlots());
 		
 	}
 

@@ -42,7 +42,7 @@ public class TeleportUtils {
 					
 				}
 				
-				if (locations.containsKey(player.getUniqueId())) break;
+				if (locations.containsKey(player.getUniqueId())) continue;
 				
 			}
 			
@@ -240,7 +240,7 @@ public class TeleportUtils {
 				Location location = locations.get(i).clone();
 				location.setY(location.getY() + 0.5);
 				UUID uuid = players.get(i);
-				GameUtils.players.get(uuid).put("teleported", "true");
+				GameUtils.setTeleported(uuid, true);
 				
 				for (Player playerOnline : Bukkit.getOnlinePlayers()) {
 					

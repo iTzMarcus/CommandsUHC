@@ -19,7 +19,7 @@ import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
-public class LateTeleport implements Listener {
+public class TeleportLate implements Listener {
 	
 	List<UUID> players = new ArrayList<UUID>();
 	BukkitRunnable start = null;
@@ -40,9 +40,9 @@ public class LateTeleport implements Listener {
 			
 			public void run() {
 				
-				for (UUID uuid : players) {
+				for (UUID uuid : new ArrayList<UUID>(players)) {
 					
-					GameUtils.players.get(uuid).put("onGround", "true");
+					GameUtils.setOnGround(uuid, true);;
 					players.remove(uuid);
 					
 				}
@@ -62,7 +62,7 @@ public class LateTeleport implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (Boolean.parseBoolean(GameUtils.players.get(event.getPlayer().getUniqueId()).get("onGround"))) return;
+		if (GameUtils.getOnGround(event.getPlayer().getUniqueId())) return;
 		
 		if (start != null) {
 		
@@ -91,13 +91,13 @@ public class LateTeleport implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (Boolean.parseBoolean(GameUtils.players.get(event.getPlayer().getUniqueId()).get("onGround"))) return;
+		if (GameUtils.getOnGround(event.getPlayer().getUniqueId())) return;
 		
 		timers.put(event.getPlayer().getUniqueId(), new BukkitRunnable() {
 			
 			public void run() {
 				
-				GameUtils.players.get(event.getPlayer().getUniqueId()).put("onGround", "true");
+				GameUtils.setOnGround(event.getPlayer().getUniqueId(), true);;
 				timers.put(event.getPlayer().getUniqueId(), null);
 				timers.remove(event.getPlayer().getUniqueId());
 				
