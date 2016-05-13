@@ -55,6 +55,7 @@ import com.thetonyk.UHC.Features.MeetupWarning;
 import com.thetonyk.UHC.Features.HealthRegeneration;
 import com.thetonyk.UHC.Features.PVPEnable;
 import com.thetonyk.UHC.Features.PregenStates;
+import com.thetonyk.UHC.Features.SpecPlayer;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
 import com.thetonyk.UHC.Features.DisplayNametags;
@@ -163,6 +164,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new MeetupWarning(), this);
 		manager.registerEvents(new PregenStates(), this);
 		manager.registerEvents(new PVPEnable(), this);
+		manager.registerEvents(new SpecPlayer(), this);
 		manager.registerEvents(new TeleportProtection(), this);
 		manager.registerEvents(new TeamsInvitations(), this);
 		

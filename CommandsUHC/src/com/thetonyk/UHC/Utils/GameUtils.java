@@ -2,7 +2,9 @@ package com.thetonyk.UHC.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -129,6 +131,7 @@ public class GameUtils {
 			players.get(player.getUniqueId()).put("death", "false");
 			players.get(player.getUniqueId()).put("teleported", "false");
 			players.get(player.getUniqueId()).put("onGround", "false");
+			players.get(player.getUniqueId()).put("spectate", "false");
 			
 		}
 		
@@ -198,6 +201,8 @@ public class GameUtils {
 	
 	public static Boolean getDeath(UUID uuid) {
 		
+		if (!getPlayers().containsKey(uuid) || !getPlayer(uuid).containsKey("death")) return false;
+		
 		return Boolean.parseBoolean(getPlayer(uuid).get("death"));
 		
 	}
@@ -214,6 +219,8 @@ public class GameUtils {
 	}
 	
 	public static Boolean getTeleported(UUID uuid) {
+		
+		if (!getPlayers().containsKey(uuid) || !getPlayer(uuid).containsKey("teleported")) return false;
 		
 		return Boolean.parseBoolean(getPlayer(uuid).get("teleported"));
 		
@@ -233,7 +240,29 @@ public class GameUtils {
 	
 	public static Boolean getOnGround(UUID uuid) {
 		
+		if (!getPlayers().containsKey(uuid) || !getPlayer(uuid).containsKey("onGround")) return false;
+		
 		return Boolean.parseBoolean(getPlayer(uuid).get("onGround"));
+		
+	}
+	
+	public static void setSpectate(UUID uuid, Boolean spectate) {
+		
+		Map<UUID, Map<String, String>> players = getPlayers();
+		
+		if (!players.containsKey(uuid)) return;
+		
+		players.get(uuid).put("spectate", spectate.toString());
+		
+		setPlayers(players);
+		
+	}
+	
+	public static Boolean getSpectate(UUID uuid) {
+		
+		if (!getPlayers().containsKey(uuid) || !getPlayer(uuid).containsKey("spectate")) return false;
+		
+		return Boolean.parseBoolean(getPlayer(uuid).get("spectate"));
 		
 	}
 	
@@ -489,7 +518,7 @@ public class GameUtils {
 	
 	public static int getPlayersCount() {
 		
-		int players = (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) ? Bukkit.getOnlinePlayers().size() : getAlives();
+		int players = (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) ? Bukkit.getOnlinePlayers().size() : getAlives().size();
 		
 		if (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) {
 			
@@ -507,19 +536,19 @@ public class GameUtils {
 		
 	}
 	
-	public static int getAlives() {
+	public static List<UUID> getAlives() {
 		
-		int count = 0;
+		List<UUID> alives = new ArrayList<UUID>();
 		
 		for (UUID player : getPlayers().keySet()) {
 			
-			if (getDeath(player)) continue;
+			if (getDeath(player) || getSpectate(player)) continue;
 			
-			count++;
+			alives.add(player);
 			
 		}
 		
-		return count;
+		return alives;
 		
 	}
 	

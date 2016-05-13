@@ -45,6 +45,9 @@ public class DeathRespawn implements Listener {
 			
 			player.hidePlayer(event.getEntity());
 			
+			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) event.getEntity().showPlayer(player);
+			else event.getEntity().hidePlayer(player);
+			
 		}
 		
 	}
@@ -73,17 +76,23 @@ public class DeathRespawn implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			player.showPlayer(event.getPlayer());
+			
+			if (!GameUtils.getDeath(player.getUniqueId())) event.getPlayer().showPlayer(player);
+			else event.getPlayer().hidePlayer(player);
+			
+		}
+		
 		if (!GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			player.hidePlayer(event.getPlayer());
 			
-			if (GameUtils.getDeath(player.getUniqueId())) {
-				
-				event.getPlayer().hidePlayer(player);
-				
-			}
+			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) event.getPlayer().showPlayer(player);
+			else event.getPlayer().hidePlayer(player);
 			
 		}
 		

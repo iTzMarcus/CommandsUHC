@@ -46,7 +46,7 @@ public class LoginPlayer implements Listener {
 		
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getName()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getName()) : "§7") + event.getPlayer().getName());
 		
-		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && !GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
+		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && (!GameUtils.getDeath(event.getPlayer().getUniqueId()) || GameUtils.getSpectate(event.getPlayer().getUniqueId()))) return;
 			
 		DisplayUtils.sendTitle(event.getPlayer(), "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
 		

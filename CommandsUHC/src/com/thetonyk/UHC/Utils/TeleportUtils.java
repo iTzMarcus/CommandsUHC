@@ -83,7 +83,7 @@ public class TeleportUtils {
 				
 				Boolean valid = true;
 				
-				if (world.getHighestBlockYAt(x, z) < 60) {
+				if (WorldUtils.getHighestY(x, z, world) < 60) {
 					
 					valid = false;
 					
