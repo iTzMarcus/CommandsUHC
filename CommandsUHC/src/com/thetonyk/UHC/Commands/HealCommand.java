@@ -84,6 +84,8 @@ public class HealCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			complete.add("*");
+			
 		}
 		
 		List<String> tabCompletions = new ArrayList<String>();

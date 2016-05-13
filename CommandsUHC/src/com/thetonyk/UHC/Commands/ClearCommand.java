@@ -94,6 +94,8 @@ public class ClearCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			complete.add("*");
+			
 		} else if (args.length == 2) {
 			
 			complete.add("true");

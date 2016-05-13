@@ -64,7 +64,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
 		
 		short damage = 0;
 		
-		if (args.length > 2) {
+		if (args.length > 3) {
 			
 			try {
 				
@@ -160,9 +160,7 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-		} else if (args.length == 2) {
-			
-			
+			complete.add("*");
 			
 		}
 		

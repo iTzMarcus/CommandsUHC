@@ -11,11 +11,13 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Features.LogoutDQ;
 
@@ -563,6 +565,20 @@ public class GameUtils {
 			player.setMaxHealth(20.0);
 			
 		}
+		
+		new BukkitRunnable() {
+			
+			public void run() {
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplaySidebar.update(player);
+					
+				}
+				
+			}
+			
+		}.runTaskLater(Main.uhc, 10);
 		
 	}
 

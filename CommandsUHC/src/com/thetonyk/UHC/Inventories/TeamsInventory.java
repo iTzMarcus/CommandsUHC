@@ -16,6 +16,7 @@ import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class TeamsInventory implements Listener {
 	
@@ -95,7 +96,7 @@ public class TeamsInventory implements Listener {
 					
 					for (String player : teams.getString("members").split(";")) {
 						
-						lore.add("§8⫸ " + PlayerUtils.getRank(player).getPrefix() + "§7" + player);
+						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(player) != null) ? TeamsUtils.getTeamPrefix(player) : "§7") + player);
 						
 					}
 					

@@ -51,6 +51,7 @@ public class ChatSettings implements Listener {
 				
 			}
 			
+			event.setCancelled(true);
 			return;
 			
 		}

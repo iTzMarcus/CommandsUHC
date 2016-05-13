@@ -32,8 +32,6 @@ public class LogoutDQ implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY) return;
 		
-		if (!GameUtils.getWorld().equalsIgnoreCase(event.getPlayer().getWorld().getName()))
-		
 		if (GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
 		
 		startTimer(event.getPlayer());
@@ -92,6 +90,12 @@ public class LogoutDQ implements Listener {
 			public void run() {
 				
 				player.setWhitelisted(false);
+				offlineTimers.put(player.getUniqueId(), null);
+				offlineTimers.remove(player.getUniqueId());
+				offlineTime.remove(player.getUniqueId());
+				
+				if (GameUtils.getDeath(player.getUniqueId())) return;
+				
 				GameUtils.setDeath(player.getUniqueId(), true);
 				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7") + player.getName() + "§7" + " died offline");
 				DisplaySidebar.addPVE();
@@ -115,10 +119,6 @@ public class LogoutDQ implements Listener {
 					}
 					
 				}.runTaskLater(Main.uhc, 1);
-				
-				offlineTimers.put(player.getUniqueId(), null);
-				offlineTimers.remove(player.getUniqueId());
-				offlineTime.remove(player.getUniqueId());
 				
 			}
 			

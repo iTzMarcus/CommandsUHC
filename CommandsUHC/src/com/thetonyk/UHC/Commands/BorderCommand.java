@@ -36,7 +36,7 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			sender.sendMessage(Main.PREFIX + "Border size: §6" + Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§6" + Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7.");
+			sender.sendMessage(Main.PREFIX + "Border size: §6" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§6" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7.");
 			return true;
 			
 		}
@@ -57,7 +57,7 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length == 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7': §a" + WorldUtils.getSize(args[0]) + "§7x§a" + WorldUtils.getSize(args[0]) + "§7.");
+			sender.sendMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7': §a" + (int) WorldUtils.getSize(args[0]) + "§7x§a" + (int) WorldUtils.getSize(args[0]) + "§7.");
 			return true;
 			
 		}

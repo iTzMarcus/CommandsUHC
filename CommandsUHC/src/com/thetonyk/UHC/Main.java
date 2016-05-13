@@ -51,6 +51,7 @@ import com.thetonyk.UHC.Features.LoginWhitelist;
 import com.thetonyk.UHC.Features.LogoutDQ;
 import com.thetonyk.UHC.Features.LogoutPlayer;
 import com.thetonyk.UHC.Features.MeetupEnable;
+import com.thetonyk.UHC.Features.MeetupWarning;
 import com.thetonyk.UHC.Features.HealthRegeneration;
 import com.thetonyk.UHC.Features.PVPEnable;
 import com.thetonyk.UHC.Features.PregenStates;
@@ -159,6 +160,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new LogoutDQ(), this);
 		manager.registerEvents(new LogoutPlayer(), this);
 		manager.registerEvents(new MeetupEnable(), this);
+		manager.registerEvents(new MeetupWarning(), this);
 		manager.registerEvents(new PregenStates(), this);
 		manager.registerEvents(new PVPEnable(), this);
 		manager.registerEvents(new TeleportProtection(), this);

@@ -27,19 +27,19 @@ public class PVPCommand implements CommandExecutor, TabCompleter{
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <world> <true|false>");
+			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <world> <on|off>");
 			return true;
 			
 		}
 			
-		if (!args[1].equalsIgnoreCase("true") && !args[1].equalsIgnoreCase("false")) {
+		if (!args[1].equalsIgnoreCase("on") && !args[1].equalsIgnoreCase("off")) {
 			
-			sender.sendMessage(Main.PREFIX + "The PVP can only be '§6true§7' or '§6false§7'.");
+			sender.sendMessage(Main.PREFIX + "The PVP can only be '§6on§7' or '§6off§7'.");
 			return true;
 			
 		}
 		
-		Boolean pvp = Boolean.parseBoolean(args[1]);
+		Boolean pvp = args[1].equalsIgnoreCase("on") ? true : false;
 		
 		if (!WorldUtils.exist(args[0])) {
 			
@@ -78,8 +78,8 @@ public class PVPCommand implements CommandExecutor, TabCompleter{
 			
 		} else if (args.length == 2) {
 			
-			complete.add("true");
-			complete.add("false");
+			complete.add("on");
+			complete.add("off");
 			
 		}
 		

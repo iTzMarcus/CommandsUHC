@@ -102,6 +102,8 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				
+				if (player.getName().equalsIgnoreCase(sender.getName())) continue;
+				
 				complete.add(player.getName());
 				
 			}

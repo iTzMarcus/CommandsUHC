@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.MeetupEvent;
 import com.thetonyk.UHC.Utils.DisplayUtils;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 
 public class MeetupEnable implements Listener {
@@ -32,6 +33,10 @@ public class MeetupEnable implements Listener {
 		Bukkit.broadcastMessage(Main.PREFIX + "The meetup is now!");
 		Bukkit.broadcastMessage(Main.PREFIX + "Go to the middle of the map.");
 		
+		Bukkit.getWorld(GameUtils.getWorld()).setTime(6000);
+		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
+		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
+		Bukkit.getWorld(GameUtils.getWorld()).setGameRuleValue("doDaylightCycle", "false");
 		MeetupBorder.startShrink();
 		
 	}

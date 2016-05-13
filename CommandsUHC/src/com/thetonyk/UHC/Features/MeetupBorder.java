@@ -10,6 +10,8 @@ public class MeetupBorder {
 
 	public static void startShrink() {
 		
+		Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize());
+		
 		int time = (WorldUtils.getSize(GameUtils.getWorld()) - 100) / 3;
 		
 		Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(100, time);

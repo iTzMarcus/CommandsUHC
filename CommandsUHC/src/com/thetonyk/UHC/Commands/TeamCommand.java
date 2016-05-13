@@ -65,14 +65,14 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				if (!Bukkit.getPlayer(args[1]).isOnline()) {
 					
-					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]) + "§7' is not online.");
+					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' is not online.");
 					return true;
 					
 				}
 				
 				if (TeamsUtils.getTeam(sender.getName()) != null && TeamsUtils.getTeam(args[1]) != null && TeamsUtils.getTeam(sender.getName()).equalsIgnoreCase(TeamsUtils.getTeam(args[1]))) {
 					
-					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]) + "§7' is already in your team.");
+					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' is already in your team.");
 					return true;
 					
 				}
@@ -493,7 +493,16 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 		} else if (args.length == 2) {
 			
-			if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("accept") || args[0].equalsIgnoreCase("info")) {
+			if (args[0].equalsIgnoreCase("accept")) {
+				
+				for (String player : TeamsUtils.invitations.keySet()) {
+					
+					if (TeamsUtils.invitations.get(player).contains(sender.getName())) complete.add(player);
+					
+				}
+				
+			}
+			else if (args[0].equalsIgnoreCase("invite") || args[0].equalsIgnoreCase("info")) {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					

@@ -29,8 +29,6 @@ public class DisplayTimers {
 			
 		}
 		
-		time = 0;
-		
 		timer = new BukkitRunnable() {
 			
 			public void run() {
@@ -41,6 +39,8 @@ public class DisplayTimers {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						
+						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
+						
 						DisplayUtils.sendActionBar(player, "§7Final heal §8⫸ §a" + DisplayTimers.getFormatedTime(45 - time) + " §8| §7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
 						
 					}
@@ -48,6 +48,8 @@ public class DisplayTimers {
 				} else if (time < pvpTime) {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
+						
+						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
 						
 						DisplayUtils.sendActionBar(player, "§7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
 						
@@ -57,6 +59,8 @@ public class DisplayTimers {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
 						
+						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
+						
 						DisplayUtils.sendActionBar(player, "§7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
 						
 					}
@@ -64,6 +68,8 @@ public class DisplayTimers {
 				} else {
 					
 					for (Player player : Bukkit.getOnlinePlayers()) {
+						
+						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
 						
 						DisplayUtils.sendActionBar(player, "§8⫸ §6Go to the middle of the map §8⫷");
 						
