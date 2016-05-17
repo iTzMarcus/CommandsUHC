@@ -37,7 +37,7 @@ public class DeathMessage implements Listener {
 			
 			public void run() {
 				
-				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives() + " §7players alive.");
+				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
 			
 			}
 			

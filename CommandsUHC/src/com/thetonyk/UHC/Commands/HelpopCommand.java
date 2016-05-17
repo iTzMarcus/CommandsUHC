@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.thetonyk.UHC.Main;
 
 import static net.md_5.bungee.api.ChatColor.*;
+
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -55,13 +57,14 @@ public class HelpopCommand implements CommandExecutor {
 		ComponentBuilder text = new ComponentBuilder("Help ").color(GREEN).bold(true).append("⫸ ").color(DARK_GRAY).bold(false).append(message.toString()).color(GRAY);
 		text.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to send private message to ").color(GRAY).append(sender.getName()).color(GREEN).append(".").color(GRAY).create()));
 		text.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName() + " "));
+		BaseComponent[] createdText = text.create();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			if (player.hasPermission("uhc.helpop.see") && !sender.getName().equalsIgnoreCase(player.getName())) {
 				
 				player.sendMessage("§a§lHelp §8⫸ §7From: '§6" + sender.getName() + "§7'");
-				player.spigot().sendMessage(text.create());
+				player.spigot().sendMessage(createdText);
 				player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 				
 			}

@@ -135,9 +135,21 @@ public class GameUtils {
 			
 		}
 		
-		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+		GameUtils.setPlayers(players);
 		
-		DatabaseUtils.sqlInsert("UPDATE uhc SET players = '" + gson.toJson(players) + "' WHERE server = '" + GameUtils.getServer() + "';");
+	}
+	
+	public static void addPlayer(UUID player) {
+		
+		Map<UUID, Map<String, String>> players = GameUtils.getPlayers();
+		
+		players.put(player, new HashMap<String, String>());
+		players.get(player).put("death", "false");
+		players.get(player).put("teleported", "false");
+		players.get(player).put("onGround", "false");
+		players.get(player).put("spectate", "false");
+		
+		GameUtils.setPlayers(players);
 		
 	}
 	
@@ -321,6 +333,16 @@ public class GameUtils {
 		Gson gson = new GsonBuilder().disableHtmlEscaping().create();
 		
 		DatabaseUtils.sqlInsert("UPDATE uhc SET locations = '" + gson.toJson(serializedLocations) + "' WHERE server = '" + GameUtils.getServer() + "';");
+		
+	}
+	
+	public static void addLocation(UUID uuid, Location location) {
+		
+		Map<UUID, Location> locations = GameUtils.getLocations();
+		
+		locations.put(uuid, location);
+		
+		GameUtils.setLocations(locations);
 		
 	}
 	

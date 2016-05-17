@@ -1,7 +1,12 @@
 package com.thetonyk.UHC.Commands;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,9 +20,9 @@ import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.TeleportEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeleportUtils;
-import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class TeleportCommand implements CommandExecutor, Listener {
 	
@@ -46,13 +51,6 @@ public class TeleportCommand implements CommandExecutor, Listener {
 			
 		}
 		
-		if (GameUtils.getTeleported()) {
-			
-			sender.sendMessage(Main.PREFIX + "You have already teleported players.");
-			return true;
-			
-		}
-		
 		if (teleport) {
 			
 			sender.sendMessage(Main.PREFIX + "You have already started the teleportation.");
@@ -60,36 +58,198 @@ public class TeleportCommand implements CommandExecutor, Listener {
 			
 		}
 		
-		GameUtils.setupPlayers();
+		if (args.length > 0) {
+			
+			if (Bukkit.getPlayer(args[0]) == null) {
+				
+				sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
+				return true;
+				
+			}
+			
+			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'...");
+			Bukkit.getPlayer(args[0]).setWhitelisted(true);
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(Bukkit.getPlayer(args[0]).getUniqueId());
+			
+			if (TeamsUtils.getTeam(Bukkit.getPlayer(args[0]).getName()) != null) {
+				
+				for (String mate : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(Bukkit.getPlayer(args[0]).getName()))) {
+					
+					if (Bukkit.getPlayer(mate) == null || Bukkit.getPlayer(mate).equals(Bukkit.getPlayer(args[0]))) continue;
+					
+					Bukkit.getPlayer(args[0]).teleport(Bukkit.getPlayer(mate));
+					return true;
+					
+				}
+				
+			}
+			
+			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
+				
+				UUID uuid = Bukkit.getPlayer(args[0]).getUniqueId();
+
+				@Override
+				public String getKey() {
+					
+					return "uuid";
+					
+				}
+
+				@Override
+				public UUID getValue() {
+					
+					return this.uuid;
+					
+				}
+
+				@Override
+				public UUID setValue(UUID uuid) {
+				
+					this.uuid = uuid;
+					return this.uuid;
+					
+				}
+				
+			};
+			
+			List<Map.Entry<String, ?>> player = new ArrayList<Map.Entry<String, ?>>();
+			player.add(uuid);
+			
+			TeleportUtils.loadSpawnsAndTeleport(player);
+			return true;
+			
+		}
 		
-		GameUtils.setLocations(TeleportUtils.getSpawns(Bukkit.getWorld(GameUtils.getWorld()), WorldUtils.getSize(GameUtils.getWorld())));
+		if (GameUtils.getTeleported()) {
+			
+			sender.sendMessage(Main.PREFIX + "You have already teleported players.");
+			return true;
+			
+		}
 		
 		GameUtils.setStatus(Status.TELEPORT);
+		GameUtils.setupPlayers();
+		Bukkit.setWhitelist(true);
 		teleport = true;
 		
-		TeleportUtils.loadSpawns(GameUtils.getLocations());
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			
+			if (online.isWhitelisted()) continue;
+			
+			online.setWhitelisted(true);
+			
+		}
+		
+		int teams = 0;
+		int solo = 0;
+		List<Map.Entry<String, ?>> teleport = new ArrayList<Map.Entry<String, ?>>();
+		
+		for (OfflinePlayer whitelisted : Bukkit.getWhitelistedPlayers()) {
+			
+			List<String> teamsDone = new ArrayList<String>();
+			
+			for (Map.Entry<String, ?> entry : teleport) {
+				
+				if (!entry.getKey().equalsIgnoreCase("team")) continue;
+				
+				teamsDone.add((String) entry.getValue());
+				
+			}
+			
+			if (TeamsUtils.getTeam(whitelisted.getName()) != null) {
+				
+				if (teamsDone.contains(TeamsUtils.getTeam(whitelisted.getName()))) continue;
+				
+				Map.Entry<String, String> team = new Map.Entry<String, String>() {
+					
+					String team = TeamsUtils.getTeam(whitelisted.getName());
+
+					@Override
+					public String getKey() {
+						
+						return "team";
+						
+					}
+
+					@Override
+					public String getValue() {
+						
+						return this.team;
+						
+					}
+
+					@Override
+					public String setValue(String team) {
+					
+						this.team = team;
+						return this.team;
+						
+					}
+					
+				};
+				
+				teleport.add(team);
+				teams++;
+				continue;
+				
+			}
+			
+			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
+				
+				UUID uuid = whitelisted.getUniqueId();
+
+				@Override
+				public String getKey() {
+					
+					return "uuid";
+					
+				}
+
+				@Override
+				public UUID getValue() {
+					
+					return this.uuid;
+					
+				}
+
+				@Override
+				public UUID setValue(UUID uuid) {
+				
+					this.uuid = uuid;
+					return this.uuid;
+					
+				}
+				
+			};
+			
+			teleport.add(uuid);
+			solo++;
+			
+		}
+		
+		new BukkitRunnable() {
+		
+			public void run() {
+			
+				TeleportUtils.loadSpawnsAndTeleport(teleport);
+			
+			}
+		
+		}.runTaskLater(Main.uhc, 10);
 		
 		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
 		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
 		Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
-
-		new BukkitRunnable() {
+		
+		Bukkit.broadcastMessage(Main.PREFIX + "Started to teleport §a" + teams + "§7 teams and §a" + solo + "§7 solos...");
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			public void run() {
-		
-				Bukkit.broadcastMessage(Main.PREFIX + "Started teleportation of players...");
-				
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
-					
-					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
-					
-				}
-		
-			}
-		
-		}.runTaskLater(Main.uhc, 20);
+			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
+		}
 			
 		return true;
 		

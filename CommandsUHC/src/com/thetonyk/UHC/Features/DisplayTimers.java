@@ -29,6 +29,8 @@ public class DisplayTimers {
 			
 		}
 		
+		time = GameUtils.getTime();
+		
 		timer = new BukkitRunnable() {
 			
 			public void run() {

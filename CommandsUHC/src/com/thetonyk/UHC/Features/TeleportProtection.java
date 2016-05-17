@@ -18,7 +18,7 @@ import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class TeleportProtection implements Listener {
-
+	
 	@EventHandler
 	public void onChunkUnload(ChunkUnloadEvent event) {
 		

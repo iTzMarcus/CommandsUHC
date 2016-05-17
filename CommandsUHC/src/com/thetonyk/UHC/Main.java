@@ -65,6 +65,7 @@ import com.thetonyk.UHC.Features.DisplayTab;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Features.HealthFood;
 import com.thetonyk.UHC.Inventories.InviteInventory;
+import com.thetonyk.UHC.Inventories.PlayerInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.BiomesUtils;
@@ -169,6 +170,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new TeamsInvitations(), this);
 		
 		manager.registerEvents(new InviteInventory(), this);
+		manager.registerEvents(new PlayerInventory(), this);
 		manager.registerEvents(new RulesInventory(), this);
 		manager.registerEvents(new TeamsInventory(), this);
 		

@@ -30,6 +30,7 @@ public class DisplayNametags implements Listener {
 		
 	}
 	
+	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
