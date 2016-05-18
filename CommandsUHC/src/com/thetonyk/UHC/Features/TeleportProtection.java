@@ -133,7 +133,12 @@ public class TeleportProtection implements Listener {
 		
 		if (!(event.getEntity() instanceof Player)) return;
 		
-		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) return;
+		if (GameUtils.getStatus() != Status.TELEPORT && GameUtils.getStatus() != Status.PLAY) {
+			
+			event.setCancelled(true);
+			return;
+			
+		}
 		
 		if (DisplayTimers.time > 45 && GameUtils.getOnGround(event.getEntity().getUniqueId())) return;
 		

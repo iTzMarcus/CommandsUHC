@@ -11,6 +11,7 @@ import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,7 +25,7 @@ import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeleportUtils;
 
-public class TeleportCommand implements CommandExecutor, Listener {
+public class TeleportCommand implements CommandExecutor, TabCompleter, Listener {
 	
 	private Boolean teleport = false;
 	
@@ -60,62 +61,78 @@ public class TeleportCommand implements CommandExecutor, Listener {
 		
 		if (args.length > 0) {
 			
-			if (Bukkit.getPlayer(args[0]) == null) {
-				
-				sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
-				return true;
-				
-			}
+			List<UUID> players = new ArrayList<UUID>();
+			String playersMessage = null;
 			
-			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'...");
-			Bukkit.getPlayer(args[0]).setWhitelisted(true);
-			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(Bukkit.getPlayer(args[0]).getUniqueId());
-			
-			if (TeamsUtils.getTeam(Bukkit.getPlayer(args[0]).getName()) != null) {
+			for (int i = 0; i < args.length; i++) {
 				
-				for (String mate : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(Bukkit.getPlayer(args[0]).getName()))) {
+				if (Bukkit.getPlayer(args[i]) == null) {
 					
-					if (Bukkit.getPlayer(mate) == null || Bukkit.getPlayer(mate).equals(Bukkit.getPlayer(args[0]))) continue;
-					
-					Bukkit.getPlayer(args[0]).teleport(Bukkit.getPlayer(mate));
+					sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
 					return true;
 					
 				}
 				
+				if (i == 0) {
+					
+					playersMessage = "'§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
+					continue;
+					
+				}
+				
+				if (i == (args.length - 1)) {
+					
+					playersMessage += " and '§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
+					continue;
+					
+				}
+				
+				playersMessage += ", '§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
+				
 			}
 			
-			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
-				
-				UUID uuid = Bukkit.getPlayer(args[0]).getUniqueId();
-
-				@Override
-				public String getKey() {
-					
-					return "uuid";
-					
-				}
-
-				@Override
-				public UUID getValue() {
-					
-					return this.uuid;
-					
-				}
-
-				@Override
-				public UUID setValue(UUID uuid) {
-				
-					this.uuid = uuid;
-					return this.uuid;
-					
-				}
-				
-			};
+			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting " + playersMessage + "...");
 			
-			List<Map.Entry<String, ?>> player = new ArrayList<Map.Entry<String, ?>>();
-			player.add(uuid);
+			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
 			
-			TeleportUtils.loadSpawnsAndTeleport(player);
+			for (UUID player : players) {
+				
+				Bukkit.getPlayer(player).setWhitelisted(true);
+				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(Bukkit.getPlayer(player).getUniqueId());
+			
+				Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
+				
+					UUID uuid = Bukkit.getPlayer(args[0]).getUniqueId();
+	
+					@Override
+					public String getKey() {
+						
+						return "uuid";
+						
+					}
+	
+					@Override
+					public UUID getValue() {
+						
+						return this.uuid;
+						
+					}
+	
+					@Override
+					public UUID setValue(UUID uuid) {
+					
+						this.uuid = uuid;
+						return this.uuid;
+						
+					}
+				
+				};
+				
+				uuids.add(uuid);
+				
+			}
+			
+			TeleportUtils.loadSpawnsAndTeleport(uuids);
 			return true;
 			
 		}
@@ -252,6 +269,43 @@ public class TeleportCommand implements CommandExecutor, Listener {
 		}
 			
 		return true;
+		
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+		
+		if (!sender.hasPermission("uhc.teleport")) return null;
+		
+		List<String> complete = new ArrayList<String>();
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			complete.add(player.getName());
+			
+		}
+		
+		List<String> tabCompletions = new ArrayList<String>();
+		
+		if (args[args.length - 1].isEmpty()) {
+			
+			for (String type : complete) {
+				
+				tabCompletions.add(type);
+				
+			}
+			
+		} else {
+			
+			for (String type : complete) {
+				
+				if (type.toLowerCase().startsWith(args[args.length - 1].toLowerCase())) tabCompletions.add(type);
+				
+			}
+			
+		}
+		
+		return tabCompletions;
 		
 	}
 	

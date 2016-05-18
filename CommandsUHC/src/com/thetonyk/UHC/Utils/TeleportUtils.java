@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -16,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.TeleportEvent;
+import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class TeleportUtils {
@@ -139,11 +141,7 @@ public class TeleportUtils {
 										
 										if (GameUtils.getStatus() != Status.TELEPORT) {
 											
-											for (Map.Entry<UUID, Location> entry : saveLocations.entrySet()) {
-												
-												GameUtils.addLocation(entry.getKey(), entry.getValue());
-												
-											}
+											
 											
 											new BukkitRunnable() {
 												
@@ -151,6 +149,20 @@ public class TeleportUtils {
 													
 													TeleportUtils.removeSpawns(saveLocations);
 													
+													for (Map.Entry<UUID, Location> entry : saveLocations.entrySet()) {
+														
+														GameUtils.addLocation(entry.getKey(), entry.getValue());
+														
+														Bukkit.getPlayer(entry.getKey()).closeInventory();
+														Bukkit.getPlayer(entry.getKey()).setGameMode(GameMode.SURVIVAL);
+														PlayerUtils.clearEffects(Bukkit.getPlayer(entry.getKey()));
+														PlayerUtils.clearInventory(Bukkit.getPlayer(entry.getKey()));
+														PlayerUtils.clearXp(Bukkit.getPlayer(entry.getKey()));
+														PlayerUtils.feed(Bukkit.getPlayer(entry.getKey()));
+														PlayerUtils.heal(Bukkit.getPlayer(entry.getKey()));
+														DisplaySidebar.update(Bukkit.getPlayer(entry.getKey()));
+														
+													}
 													
 												}
 												
