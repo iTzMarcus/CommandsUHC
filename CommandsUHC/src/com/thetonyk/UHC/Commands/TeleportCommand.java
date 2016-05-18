@@ -176,13 +176,13 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 				
 			}
 			
-			if (TeamsUtils.getTeam(whitelisted.getName()) != null) {
+			if (TeamsUtils.getTeam(whitelisted.getUniqueId()) != null) {
 				
-				if (teamsDone.contains(TeamsUtils.getTeam(whitelisted.getName()))) continue;
+				if (teamsDone.contains(TeamsUtils.getTeam(whitelisted.getUniqueId()))) continue;
 				
 				Map.Entry<String, String> team = new Map.Entry<String, String>() {
 					
-					String team = TeamsUtils.getTeam(whitelisted.getName());
+					String team = TeamsUtils.getTeam(whitelisted.getUniqueId());
 
 					@Override
 					public String getKey() {

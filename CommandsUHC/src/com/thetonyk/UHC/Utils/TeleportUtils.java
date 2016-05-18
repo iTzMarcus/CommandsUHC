@@ -220,11 +220,9 @@ public class TeleportUtils {
 									
 									if (locationsList.get(i).getKey().getKey().equalsIgnoreCase("team")) {
 
-										for (String mate : TeamsUtils.getTeamMembers((String) locationsList.get(i).getKey().getValue())) {
+										for (UUID mate : TeamsUtils.getTeamMembers((String) locationsList.get(i).getKey().getValue())) {
 											
-											if (mate.length() < 1) continue;
-											
-											saveLocations.put(PlayerUtils.getUUID(mate), locationsList.get(i).getValue());
+											saveLocations.put(mate, locationsList.get(i).getValue());
 											
 											if (Bukkit.getPlayer(mate) == null) continue;
 											

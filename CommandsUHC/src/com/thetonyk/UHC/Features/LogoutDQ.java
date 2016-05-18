@@ -97,7 +97,7 @@ public class LogoutDQ implements Listener {
 				if (GameUtils.getDeath(player.getUniqueId())) return;
 				
 				GameUtils.setDeath(player.getUniqueId(), true);
-				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7") + player.getName() + "§7" + " died offline");
+				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7") + player.getName() + "§7" + " died offline");
 				DisplaySidebar.addPVE();
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,8 +17,8 @@ import com.thetonyk.UHC.Features.DisplayNametags;
 
 public class TeamsUtils {
 
-	public static Map<String, String> players = new HashMap<String, String>();
-	public static Map<String, List<String>> invitations = new HashMap<String, List<String>>();
+	public static Map<UUID, String> players = new HashMap<UUID, String>();
+	public static Map<UUID, List<UUID>> invitations = new HashMap<UUID, List<UUID>>();
 	
 	public static void config() {
 		
@@ -82,7 +83,7 @@ public class TeamsUtils {
 				
 				for (String member : teams.getString("members").split(";")) {
 					
-					players.put(member, teams.getString("name"));
+					players.put(UUID.fromString(member), teams.getString("name"));
 					
 				}
 				
@@ -104,7 +105,7 @@ public class TeamsUtils {
 		
 	}
 	
-	public static void createTeam(String player) {
+	public static void createTeam(UUID player) {
 		
 		int id = 0;
 		String name = null;
@@ -139,15 +140,15 @@ public class TeamsUtils {
 		
 	}
 	
-	public static String getTeam(String player) {
+	public static String getTeam(UUID player) {
 		
-		if (players.containsKey(player)) return players.get(player).toString();
+		if (players.containsKey(player)) return players.get(player);
 		
 		return null;
 		
 	}
 	
-	public static void joinTeam(String player, String team) {
+	public static void joinTeam(UUID player, String team) {
 		
 		String members = null;
 		int id = 0;
@@ -178,9 +179,9 @@ public class TeamsUtils {
 		
 	}
 	
-	public static void leaveTeam(String player) {
+	public static void leaveTeam(UUID player) {
 		
-		String team = players.get(player).toString();
+		String team = players.get(player);
 		String members = null;
 		int id = 0;
 		
@@ -214,7 +215,7 @@ public class TeamsUtils {
 			
 			for (int i = 0; i < membersList.length; i++) {
 				
-				if (!membersList[i].equalsIgnoreCase(player)) newMembers = newMembers + membersList[i] + ";";
+				if (!membersList[i].equalsIgnoreCase(player.toString())) newMembers = newMembers + membersList[i] + ";";
 				
 			}
 			
@@ -254,7 +255,7 @@ public class TeamsUtils {
 		
 	}
 	
-	public static String getTeamPrefix(String player) {
+	public static String getTeamPrefix(UUID player) {
 		
 		String prefix = null;
 		
@@ -307,7 +308,7 @@ public class TeamsUtils {
 		
 	}
 	
-	public static List<String> getTeamMembers(String team) {
+	public static List<UUID> getTeamMembers(String team) {
 		
 		String members = null;
 		
@@ -326,11 +327,13 @@ public class TeamsUtils {
 			
 		}
 		
-		List<String> list = new ArrayList<String>();
+		List<UUID> list = new ArrayList<UUID>();
 		
 		for (String member : members.split(";")) {
 			
-			list.add(member);
+			if (member.length() < 1) continue;
+			
+			list.add(UUID.fromString(member));
 			
 		}
 

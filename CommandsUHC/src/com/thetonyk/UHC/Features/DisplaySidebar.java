@@ -69,7 +69,7 @@ public class DisplaySidebar implements Listener {
 			
 		}
 		
-		if (TeamsUtils.getTeam(event.getEntity().getName()) != null &&TeamsUtils.getTeam(event.getEntity().getName()).equalsIgnoreCase(event.getEntity().getKiller().getName())) return;
+		if (TeamsUtils.getTeam(event.getEntity().getUniqueId()) != null && TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()) != null && TeamsUtils.getTeam(event.getEntity().getUniqueId()).equalsIgnoreCase(TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()))) return;
 		
 		if (event.getEntity().getKiller().equals(event.getEntity())) return;
 		
@@ -108,7 +108,7 @@ public class DisplaySidebar implements Listener {
 		
 		for (UUID killer : GameUtils.getKills().keySet()) {
 			
-			player.getScoreboard().getObjective("sidebar").getScore("  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(PlayerUtils.getName(PlayerUtils.getId(killer))) != null) ? TeamsUtils.getTeamPrefix(PlayerUtils.getName(PlayerUtils.getId(killer))) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
+			player.getScoreboard().getObjective("sidebar").getScore("  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(killer) != null) ? TeamsUtils.getTeamPrefix(killer) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
 			
 		}
 		

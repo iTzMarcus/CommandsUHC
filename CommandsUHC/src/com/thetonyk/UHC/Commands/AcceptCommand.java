@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -13,6 +14,7 @@ import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 
 import static net.md_5.bungee.api.ChatColor.*;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -40,7 +42,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (TeamsUtils.getTeam(sender.getName()) != null) {
+			if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) != null) {
 				
 				ComponentBuilder message = Main.getPrefixComponent().append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click on this text to leave your team.").color(GRAY).create()));
@@ -65,7 +67,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (TeamsUtils.getTeam(args[0]) == null) {
+			if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[0])) == null) {
 				
 				sender.sendMessage(Main.PREFIX + "This invitation was canceled.");
 				return true;
@@ -73,10 +75,10 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 			}
 			
 			sender.sendMessage(Main.PREFIX + "You joined the team of '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'.");
-			TeamsUtils.sendMessage(TeamsUtils.getTeam(args[0]), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
+			TeamsUtils.sendMessage(TeamsUtils.getTeam(PlayerUtils.getUUID(args[0])), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
 			
-			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
-			TeamsUtils.joinTeam(sender.getName(), TeamsUtils.getTeam(args[0]));
+			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
+			TeamsUtils.joinTeam(Bukkit.getPlayer(sender.getName()).getUniqueId(), TeamsUtils.getTeam(PlayerUtils.getUUID(args[0])));
 			TeamsUtils.invitations.get(args[0]).remove(sender.getName());
 			return true;
 			
@@ -96,9 +98,9 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length == 1) {
 
-			for (String player : TeamsUtils.invitations.keySet()) {
+			for (UUID player : TeamsUtils.invitations.keySet()) {
 				
-				if (TeamsUtils.invitations.get(player).contains(sender.getName())) complete.add(player);
+				if (TeamsUtils.invitations.get(player).contains(Bukkit.getPlayer(sender.getName()).getUniqueId())) complete.add(PlayerUtils.getName(PlayerUtils.getId(player)));
 				
 			}
 			

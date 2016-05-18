@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
@@ -17,6 +18,7 @@ import static net.md_5.bungee.api.ChatColor.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -36,7 +38,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
+		if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 		
 		if (args.length > 0) {
 		
@@ -70,14 +72,14 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				if (TeamsUtils.getTeam(sender.getName()) != null && TeamsUtils.getTeam(args[1]) != null && TeamsUtils.getTeam(sender.getName()).equalsIgnoreCase(TeamsUtils.getTeam(args[1]))) {
+				if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) != null && TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) != null && TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()).equalsIgnoreCase(TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])))) {
 					
 					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' is already in your team.");
 					return true;
 					
 				}
 				
-				if (TeamsUtils.getTeam(sender.getName()) == null) {
+				if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
 					
 					if (TeamsUtils.getTeamsLeft() < 1) {
 						
@@ -86,18 +88,18 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 						
 					}
 					
-					TeamsUtils.createTeam(sender.getName());
+					TeamsUtils.createTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
 					
 				}
 				
-				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(sender.getName())).size() >= size) {
+				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId())).size() >= size) {
 					
 					sender.sendMessage(Main.PREFIX + "Your team is already full.");
 					return true;
 					
 				}
 				
-				TeamsUtils.invitations.get(sender.getName()).add(Bukkit.getPlayer(args[1]).getName());
+				TeamsUtils.invitations.get(sender.getName()).add(PlayerUtils.getUUID(args[1]));
 				
 				Bukkit.getPlayer(args[1]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 				
@@ -127,7 +129,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				if (TeamsUtils.getTeam(sender.getName()) != null) {
+				if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) != null) {
 					
 					ComponentBuilder message = Main.getPrefixComponent().append("You are already in a team, ").color(GRAY).append("leave it first").color(AQUA).italic(true);
 					message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click on this text to leave your team.").color(GRAY).create()));
@@ -153,14 +155,14 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				if (TeamsUtils.getTeam(args[1]) == null) {
+				if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) == null) {
 					
 					sender.sendMessage(Main.PREFIX + "This invitation was canceled.");
 					return true;
 					
 				}
 				
-				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(args[1])).size() >= size) {
+				if (TeamsUtils.getTeamMembers(TeamsUtils.getTeam(PlayerUtils.getUUID(args[1]))).size() >= size) {
 					
 					sender.sendMessage(Main.PREFIX + "This team is already full.");
 					return true;
@@ -168,9 +170,9 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				}
 				
 				sender.sendMessage(Main.PREFIX + "You joined the team of '§6" + Bukkit.getPlayer(args[1]).getName() + "§7'.");
-				TeamsUtils.sendMessage(TeamsUtils.getTeam(args[1]), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
+				TeamsUtils.sendMessage(TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
 				
-				TeamsUtils.joinTeam(sender.getName(), TeamsUtils.getTeam(args[1]));
+				TeamsUtils.joinTeam(Bukkit.getPlayer(sender.getName()).getUniqueId(), TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])));
 				TeamsUtils.invitations.get(args[1]).remove(sender.getName());
 				return true;
 				
@@ -184,16 +186,16 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				if (TeamsUtils.getTeam(sender.getName()) == null) {
+				if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
 					
 					sender.sendMessage(Main.PREFIX + "You are not in a team.");
 					return true;
 					
 				}
 				
-				String team = TeamsUtils.getTeam(sender.getName());
+				String team = TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				
-				TeamsUtils.leaveTeam(sender.getName());
+				TeamsUtils.leaveTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				TeamsUtils.invitations.remove(sender.getName());
 				
 				sender.sendMessage(Main.PREFIX + "You left your team.");
@@ -232,15 +234,15 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			}
 			else if (args[0].equalsIgnoreCase("info")) {
 				
-				String name;
+				UUID uuid;
 				
 				if (args.length < 2) {
 					
-					name = sender.getName();
+					uuid = Bukkit.getPlayer(sender.getName()).getUniqueId();
 				
 				} else {
 				
-					if (TeamsUtils.getTeam(args[1]) == null) {
+					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) == null) {
 						
 						String nameMsg = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getName() : args[1];
 						
@@ -249,11 +251,11 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 						
 					}
 					
-					name = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getName() : args[1];
+					uuid = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getUniqueId() : PlayerUtils.getUUID(args[1]);
 					
 				}
 				
-				if (TeamsUtils.getTeam(name) == null) {
+				if (TeamsUtils.getTeam(uuid) == null) {
 					
 					sender.sendMessage(Main.PREFIX + "You are not in a team.");
 					return true;
@@ -261,10 +263,10 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				}
 				
 				sender.sendMessage(Main.PREFIX + "Informations about the team:");
-				sender.sendMessage("§8⫸ §7Team: " + TeamsUtils.getTeamPrefix(name) + TeamsUtils.getTeam(name) + "§7.");
+				sender.sendMessage("§8⫸ §7Team: " + TeamsUtils.getTeamPrefix(uuid) + TeamsUtils.getTeam(uuid) + "§7.");
 				sender.sendMessage(Main.PREFIX + "Members of the team:");
 				
-				for (String member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(name))) {
+				for (UUID member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(uuid))) {
 					
 					if (Bukkit.getPlayer(member) != null && Bukkit.getPlayer(member).isOnline()) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §f" + (int) ((Bukkit.getPlayer(member).getHealth()) / 2) * 10 + "§4♥\n");
 					else sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §cOFFLINE\n");
@@ -292,9 +294,9 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 						
 					}
 					
-					if (TeamsUtils.getTeam(Bukkit.getPlayer(args[1]).getName()) != null) {
+					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) != null) {
 						
-						TeamsUtils.leaveTeam(Bukkit.getPlayer(args[1]).getName());
+						TeamsUtils.leaveTeam(PlayerUtils.getUUID(args[1]));
 						TeamsUtils.invitations.remove(Bukkit.getPlayer(args[1]).getName());
 						
 					}
@@ -308,13 +310,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 							
 						}
 						
-						TeamsUtils.createTeam(Bukkit.getPlayer(args[1]).getName());
+						TeamsUtils.createTeam(PlayerUtils.getUUID(args[1]));
 						sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' has been added to a team.");
 						return true;
 						
 					}
 					
-					if (TeamsUtils.getTeam(args[2]) == null) {
+					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[2])) == null) {
 						
 						String name = Bukkit.getPlayer(args[2]) != null ? Bukkit.getPlayer(args[2]).getName() : args[3];
 						
@@ -323,8 +325,8 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 						
 					}
 					
-					TeamsUtils.joinTeam(args[1], TeamsUtils.getTeam(args[2]));
-					if (!TeamsUtils.invitations.containsKey(args[1])) TeamsUtils.invitations.put(args[1], new ArrayList<String>());
+					TeamsUtils.joinTeam(PlayerUtils.getUUID(args[1]), TeamsUtils.getTeam(PlayerUtils.getUUID(args[2])));
+					if (!TeamsUtils.invitations.containsKey(args[1])) TeamsUtils.invitations.put(PlayerUtils.getUUID(args[1]), new ArrayList<UUID>());
 					TeamsUtils.invitations.get(args[1]).remove(sender.getName());
 					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' has been added to the team.");
 					return true;
@@ -341,14 +343,14 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 					String name = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getName() : args[1];
 					
-					if (TeamsUtils.getTeam(args[1]) == null) {
+					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) == null) {
 						
 						sender.sendMessage(Main.PREFIX + "The player '§6" + name + "§7' is not in a team.");
 						return true;
 						
 					}
 					
-					TeamsUtils.leaveTeam(Bukkit.getPlayer(args[1]).getName());
+					TeamsUtils.leaveTeam(PlayerUtils.getUUID(args[1]));
 					TeamsUtils.invitations.remove(args[1]);
 					
 					sender.sendMessage(Main.PREFIX + "The player '§6" + name + "§7' has been removed from his team.");
@@ -364,23 +366,23 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 						
 					}
 					
-					String name = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getName() : args[1];
+					UUID uuid = Bukkit.getPlayer(args[1]) != null ? Bukkit.getPlayer(args[1]).getUniqueId() : PlayerUtils.getUUID(args[1]);
 					
-					if (TeamsUtils.getTeam(args[1]) == null) {
+					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) == null) {
 						
-						sender.sendMessage(Main.PREFIX + "The player '§6" + name + "§7' is not in a team.");
+						sender.sendMessage(Main.PREFIX + "The player '§6" + args[1] + "§7' is not in a team.");
 						return true;
 						
 					}
 					
-					for (String member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(name))) {
+					for (UUID member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(uuid))) {
 						
 						TeamsUtils.leaveTeam(member);
 						TeamsUtils.invitations.remove(member);
 						
 					}
 					
-					sender.sendMessage(Main.PREFIX + "The team of player '§6" + name + "§7' has been deleted.");
+					sender.sendMessage(Main.PREFIX + "The team of player '§6" + args[1] + "§7' has been deleted.");
 					return true;
 					
 				}
@@ -495,9 +497,9 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 			if (args[0].equalsIgnoreCase("accept")) {
 				
-				for (String player : TeamsUtils.invitations.keySet()) {
+				for (UUID player : TeamsUtils.invitations.keySet()) {
 					
-					if (TeamsUtils.invitations.get(player).contains(sender.getName())) complete.add(player);
+					if (TeamsUtils.invitations.get(player).contains(Bukkit.getPlayer(sender.getName()).getUniqueId())) complete.add(PlayerUtils.getName(PlayerUtils.getId(player)));
 					
 				}
 				

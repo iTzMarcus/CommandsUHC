@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Commands;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,7 +19,7 @@ public class TCommand implements CommandExecutor {
 			
 		}
 		
-		if (TeamsUtils.getTeam(sender.getName()) == null) {
+		if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
 			
 			sender.sendMessage(Main.PREFIX + "You are not in a team.");
 			return true;
@@ -40,7 +41,7 @@ public class TCommand implements CommandExecutor {
 			
 		}
 		
-		TeamsUtils.sendMessage(TeamsUtils.getTeam(sender.getName()), "§6Team §8| §7" + sender.getName() + " §8⫸ §f" + message);
+		TeamsUtils.sendMessage(TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()), "§6Team §8| §7" + sender.getName() + " §8⫸ §f" + message);
 		return true;
 		
 	}

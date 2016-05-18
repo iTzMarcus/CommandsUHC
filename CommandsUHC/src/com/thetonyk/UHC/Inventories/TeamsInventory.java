@@ -3,6 +3,7 @@ package com.thetonyk.UHC.Inventories;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -96,7 +97,7 @@ public class TeamsInventory implements Listener {
 					
 					for (String player : teams.getString("members").split(";")) {
 						
-						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(player) != null) ? TeamsUtils.getTeamPrefix(player) : "§7") + player);
+						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + player);
 						
 					}
 					

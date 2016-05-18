@@ -57,7 +57,7 @@ public class DisplayNametags implements Listener {
 				
 			}
 			
-			players.getScoreboard().getTeam(player.getName()).setPrefix(PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getName()) != null) ? TeamsUtils.getTeamPrefix(player.getName()) : "§7"));
+			players.getScoreboard().getTeam(player.getName()).setPrefix(PlayerUtils.getRank(player.getName()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7"));
 			players.getScoreboard().getTeam(player.getName()).setSuffix("§7");
 			players.getScoreboard().getTeam(player.getName()).addEntry(player.getName());
 			
@@ -73,7 +73,7 @@ public class DisplayNametags implements Listener {
 				
 			}
 			
-			player.getScoreboard().getTeam(players.getName()).setPrefix(PlayerUtils.getRank(players.getName()).getPrefix() + ((TeamsUtils.getTeam(players.getName()) != null) ? TeamsUtils.getTeamPrefix(players.getName()) : "§7"));
+			player.getScoreboard().getTeam(players.getName()).setPrefix(PlayerUtils.getRank(players.getName()).getPrefix() + ((TeamsUtils.getTeam(players.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(players.getUniqueId()) : "§7"));
 			player.getScoreboard().getTeam(players.getName()).setSuffix("§7");
 			player.getScoreboard().getTeam(players.getName()).addEntry(players.getName());
 		

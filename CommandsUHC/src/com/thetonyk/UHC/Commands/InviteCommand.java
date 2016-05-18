@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
@@ -16,6 +17,7 @@ import static net.md_5.bungee.api.ChatColor.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -56,7 +58,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (TeamsUtils.getTeam(sender.getName()) == null) {
+			if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
 				
 				if (TeamsUtils.getTeamsLeft() < 1) {
 					
@@ -65,13 +67,13 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				TeamsUtils.createTeam(sender.getName());
+				TeamsUtils.createTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				
 			}
 			
-			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(sender.getName(), new ArrayList<String>());
+			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 			
-			TeamsUtils.invitations.get(sender.getName()).add(Bukkit.getPlayer(args[0]).getName());
+			TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[1]));
 			
 			Bukkit.getPlayer(args[0]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 			
