@@ -606,7 +606,6 @@ public class GameUtils {
 				
 			}
 			
-			player.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 			player.setGameMode(GameMode.ADVENTURE);
 			PlayerUtils.clearInventory(player);
 			PlayerUtils.clearXp(player);
@@ -614,6 +613,7 @@ public class GameUtils {
 			PlayerUtils.heal(player);
 			PlayerUtils.clearEffects(player);
 			player.setMaxHealth(20.0);
+			player.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 			
 		}
 		

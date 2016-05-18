@@ -97,7 +97,7 @@ public class TeamsInventory implements Listener {
 					
 					for (String player : teams.getString("members").split(";")) {
 						
-						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + PlayerUtils.getName(PlayerUtils.getId(player)));
+						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + PlayerUtils.getName(PlayerUtils.getId(UUID.fromString(player))));
 						
 					}
 					
