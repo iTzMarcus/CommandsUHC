@@ -38,7 +38,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
+		if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(sender.getName()).getUniqueId())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 		
 		if (args.length > 0) {
 		
@@ -72,6 +72,13 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
+				if (sender.getName().equalsIgnoreCase(args[1])) {
+					
+					sender.sendMessage(Main.PREFIX + "You can't invite yourslef.");
+					return true;
+					
+				}
+				
 				if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) != null && TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) != null && TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()).equalsIgnoreCase(TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])))) {
 					
 					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' is already in your team.");
@@ -99,7 +106,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				TeamsUtils.invitations.get(sender.getName()).add(PlayerUtils.getUUID(args[1]));
+				TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[1]));
 				
 				Bukkit.getPlayer(args[1]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 				
@@ -141,14 +148,14 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(args[1]).getName())) {
+				if (!TeamsUtils.invitations.containsKey(PlayerUtils.getUUID(args[1]))) {
 					
 					sender.sendMessage(Main.PREFIX + "This player has not invited you.");
 					return true;
 					
 				}
 				
-				if (!TeamsUtils.invitations.get(Bukkit.getPlayer(args[1]).getName()).contains(sender.getName())) {
+				if (!TeamsUtils.invitations.get(PlayerUtils.getUUID(args[1])).contains(Bukkit.getPlayer(sender.getName()).getUniqueId())) {
 					
 					sender.sendMessage(Main.PREFIX + "This player has not invited you.");
 					return true;
@@ -173,7 +180,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				TeamsUtils.sendMessage(TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
 				
 				TeamsUtils.joinTeam(Bukkit.getPlayer(sender.getName()).getUniqueId(), TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])));
-				TeamsUtils.invitations.get(args[1]).remove(sender.getName());
+				TeamsUtils.invitations.get(PlayerUtils.getUUID(args[1])).remove(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				return true;
 				
 			}
@@ -196,7 +203,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				String team = TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				
 				TeamsUtils.leaveTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
-				TeamsUtils.invitations.remove(sender.getName());
+				TeamsUtils.invitations.remove(Bukkit.getPlayer(sender.getName()).getUniqueId());
 				
 				sender.sendMessage(Main.PREFIX + "You left your team.");
 				TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + sender.getName() + "§7' left your team.");
@@ -268,7 +275,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 				for (UUID member : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(uuid))) {
 					
-					if (Bukkit.getPlayer(member) != null && Bukkit.getPlayer(member).isOnline()) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §f" + (int) ((Bukkit.getPlayer(member).getHealth()) / 2) * 10 + "§4♥\n");
+					if (Bukkit.getPlayer(member) != null && Bukkit.getPlayer(member).isOnline()) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + PlayerUtils.getName(PlayerUtils.getId(member)) + "§8 - §f" + (int) ((Bukkit.getPlayer(member).getHealth()) / 2) * 10 + "§4♥\n");
 					else sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + member + "§8 - §cOFFLINE\n");
 					
 				}
@@ -297,7 +304,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					if (TeamsUtils.getTeam(PlayerUtils.getUUID(args[1])) != null) {
 						
 						TeamsUtils.leaveTeam(PlayerUtils.getUUID(args[1]));
-						TeamsUtils.invitations.remove(Bukkit.getPlayer(args[1]).getName());
+						TeamsUtils.invitations.remove(PlayerUtils.getUUID(args[1]));
 						
 					}
 					
@@ -326,8 +333,8 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					}
 					
 					TeamsUtils.joinTeam(PlayerUtils.getUUID(args[1]), TeamsUtils.getTeam(PlayerUtils.getUUID(args[2])));
-					if (!TeamsUtils.invitations.containsKey(args[1])) TeamsUtils.invitations.put(PlayerUtils.getUUID(args[1]), new ArrayList<UUID>());
-					TeamsUtils.invitations.get(args[1]).remove(sender.getName());
+					if (!TeamsUtils.invitations.containsKey(PlayerUtils.getUUID(args[1]))) TeamsUtils.invitations.put(PlayerUtils.getUUID(args[1]), new ArrayList<UUID>());
+					TeamsUtils.invitations.get(PlayerUtils.getUUID(args[1])).remove(Bukkit.getPlayer(sender.getName()).getUniqueId());
 					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[1]).getName() + "§7' has been added to the team.");
 					return true;
 					
@@ -351,7 +358,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					}
 					
 					TeamsUtils.leaveTeam(PlayerUtils.getUUID(args[1]));
-					TeamsUtils.invitations.remove(args[1]);
+					TeamsUtils.invitations.remove(PlayerUtils.getUUID(args[1]));
 					
 					sender.sendMessage(Main.PREFIX + "The player '§6" + name + "§7' has been removed from his team.");
 					return true;

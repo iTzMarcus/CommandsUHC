@@ -58,6 +58,13 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			if (sender.getName().equalsIgnoreCase(args[1])) {
+				
+				sender.sendMessage(Main.PREFIX + "You can't invite yourslef.");
+				return true;
+				
+			}
+			
 			if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
 				
 				if (TeamsUtils.getTeamsLeft() < 1) {
@@ -71,7 +78,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
+			if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(sender.getName()).getUniqueId())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 			
 			TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[1]));
 			

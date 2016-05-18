@@ -53,14 +53,14 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(args[0]).getName())) {
+			if (!TeamsUtils.invitations.containsKey(PlayerUtils.getUUID(args[0]))) {
 				
 				sender.sendMessage(Main.PREFIX + "This player has not invited you.");
 				return true;
 				
 			}
 			
-			if (!TeamsUtils.invitations.get(Bukkit.getPlayer(args[0]).getName()).contains(sender.getName())) {
+			if (!TeamsUtils.invitations.get(PlayerUtils.getUUID(args[0])).contains(sender.getName())) {
 				
 				sender.sendMessage(Main.PREFIX + "This player has not invited you.");
 				return true;
@@ -77,9 +77,9 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 			sender.sendMessage(Main.PREFIX + "You joined the team of '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'.");
 			TeamsUtils.sendMessage(TeamsUtils.getTeam(PlayerUtils.getUUID(args[0])), Main.PREFIX + "The player '§6" + sender.getName() + "§7' joined your team.");
 			
-			if (!TeamsUtils.invitations.containsKey(sender.getName())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
+			if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(sender.getName()).getUniqueId())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 			TeamsUtils.joinTeam(Bukkit.getPlayer(sender.getName()).getUniqueId(), TeamsUtils.getTeam(PlayerUtils.getUUID(args[0])));
-			TeamsUtils.invitations.get(args[0]).remove(sender.getName());
+			TeamsUtils.invitations.get(PlayerUtils.getUUID(args[0])).remove(Bukkit.getPlayer(sender.getName()).getUniqueId());
 			return true;
 			
 		}	

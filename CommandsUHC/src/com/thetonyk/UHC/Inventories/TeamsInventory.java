@@ -97,13 +97,13 @@ public class TeamsInventory implements Listener {
 					
 					for (String player : teams.getString("members").split(";")) {
 						
-						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + player);
+						lore.add("§8⫸ " + (GameUtils.getDeath(PlayerUtils.getUUID(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(player).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + PlayerUtils.getName(PlayerUtils.getId(player)));
 						
 					}
 					
 					lore.add(" ");
 					
-					ItemStack item = ItemsUtils.createItem(Material.BANNER, "§8⫸ " + teams.getString("prefix") + teams.getString("name") + " §8⫷", 1, data, lore);
+					ItemStack item = ItemsUtils.createItem(Material.BANNER, "§8⫸ " + teams.getString("prefix") + teams.getString("name") + "§r §8⫷", 1, data, lore);
 					
 					if (count <= 44) inventory.setItem(count, item);
 					else {
