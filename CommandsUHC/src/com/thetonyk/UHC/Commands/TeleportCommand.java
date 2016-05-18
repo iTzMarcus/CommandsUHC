@@ -52,13 +52,6 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 		}
 		
-		if (teleport) {
-			
-			sender.sendMessage(Main.PREFIX + "You have already started the teleportation.");
-			return true;
-			
-		}
-		
 		if (args.length > 0) {
 			
 			List<UUID> players = new ArrayList<UUID>();
@@ -72,6 +65,8 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 					return true;
 					
 				}
+				
+				players.add(Bukkit.getPlayer(args[i]).getUniqueId());
 				
 				if (i == 0) {
 					
@@ -127,7 +122,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 					}
 				
 				};
-				
+						
 				uuids.add(uuid);
 				
 			}
@@ -140,6 +135,13 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 		if (GameUtils.getTeleported()) {
 			
 			sender.sendMessage(Main.PREFIX + "You have already teleported players.");
+			return true;
+			
+		}
+		
+		if (teleport) {
+			
+			sender.sendMessage(Main.PREFIX + "You have already started the teleportation.");
 			return true;
 			
 		}
