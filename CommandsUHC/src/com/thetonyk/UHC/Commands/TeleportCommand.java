@@ -145,7 +145,6 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 		}
 		
 		GameUtils.setStatus(Status.TELEPORT);
-		GameUtils.setupPlayers();
 		Bukkit.setWhitelist(true);
 		teleport = true;
 		
@@ -156,6 +155,8 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			online.setWhitelisted(true);
 			
 		}
+		
+		GameUtils.setupPlayers();
 		
 		int teams = 0;
 		int solo = 0;
@@ -243,7 +244,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			solo++;
 			
 		}
-		
+
 		new BukkitRunnable() {
 		
 			public void run() {

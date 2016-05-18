@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -99,19 +100,50 @@ public class TeleportUtils {
 	
 	public static void loadSpawnsAndTeleport(List<Map.Entry<String, ?>> teleport) {
 		
-		Map<Map.Entry<String, ?>, Location> locations = new HashMap<Map.Entry<String, ?>, Location>();
+		List<Map.Entry<Map.Entry<String, ?>, Location>> locationsList = new ArrayList<Map.Entry<Map.Entry<String, ?>, Location>>();
 		List<Location> spawns = getSpawns(Bukkit.getWorld(GameUtils.getWorld()), teleport.size());
-		int index = 0;
+		Iterator<Map.Entry<String, ?>> iterator = teleport.iterator();
+		int i = 0;
 		
-		for (Map.Entry<String, ?> teamOrUUID : teleport) {
+		while (iterator.hasNext()) {
 			
-			locations.put(teamOrUUID, spawns.get(index));
+			Map.Entry<String, ?> entry = iterator.next();
+			final int index = i;
+			
+			Map.Entry<Map.Entry<String, ?>, Location> location = new Map.Entry<Map.Entry<String, ?>, Location>() {
+				
+				Location location = spawns.get(index);
+	
+				@Override
+				public Map.Entry<String, ?> getKey() {
+					
+					return entry;
+					
+				}
+	
+				@Override
+				public Location getValue() {
+					
+					return this.location;
+					
+				}
+	
+				@Override
+				public Location setValue(Location location) {
+				
+					this.location = location;
+					return this.location;
+					
+				}
+				
+			};
+			
+			locationsList.add(location);
+			i++;
 			
 		}
 		
 		if (GameUtils.getStatus() == Status.TELEPORT) Bukkit.broadcastMessage(Main.PREFIX + "Generation and loading of spawns...");
-		
-		List<Map.Entry<Map.Entry<String, ?>, Location>> locationsList = new ArrayList<Map.Entry<Map.Entry<String, ?>, Location>>(locations.entrySet());
 		
 		new BukkitRunnable() {
 			
@@ -178,7 +210,7 @@ public class TeleportUtils {
 										
 										for (Player playerOnline : Bukkit.getOnlinePlayers()) {
 											
-											DisplayUtils.sendActionBar(playerOnline, "§a" + locationsList.size() + "§7 players successfully teleported.");
+											DisplayUtils.sendActionBar(playerOnline, "§a" + locationsList.size() + "§7 teams and players successfully teleported.");
 											
 										}
 										
@@ -187,14 +219,16 @@ public class TeleportUtils {
 									}
 									
 									if (locationsList.get(i).getKey().getKey().equalsIgnoreCase("team")) {
-										
+
 										for (String mate : TeamsUtils.getTeamMembers((String) locationsList.get(i).getKey().getValue())) {
+											
+											if (mate.length() < 1) continue;
 											
 											saveLocations.put(PlayerUtils.getUUID(mate), locationsList.get(i).getValue());
 											
 											if (Bukkit.getPlayer(mate) == null) continue;
 											
-											Bukkit.getPlayer(mate).teleport(locationsList.get(i).getValue().add(0, 0.5, 0));
+											Bukkit.getPlayer(mate).teleport(locationsList.get(i).getValue().clone().add(0, 0.5, 0));
 											GameUtils.setTeleported(Bukkit.getPlayer(mate).getUniqueId(), true);
 											
 										}
@@ -205,7 +239,7 @@ public class TeleportUtils {
 										
 										for (Player playerOnline : Bukkit.getOnlinePlayers()) {
 											
-											DisplayUtils.sendActionBar(playerOnline, "§7Teleportation of §6Team " + ((String) locationsList.get(i).getKey().getValue()).substring(3) + " §8(§a" + i + "§7/§a" + locationsList.size() + "§8)");
+											DisplayUtils.sendActionBar(playerOnline, "§7Teleportation of §6Team " + ((String) locationsList.get(i - 1).getKey().getValue()).substring(3) + " §8(§a" + i + "§7/§a" + locationsList.size() + "§8)");
 											
 										}
 										
@@ -219,7 +253,7 @@ public class TeleportUtils {
 										
 										if (Bukkit.getPlayer((UUID) locationsList.get(i).getKey().getValue()) != null) {
 											
-											Bukkit.getPlayer((UUID) locationsList.get(i).getKey().getValue()).teleport(locationsList.get(i).getValue().add(0, 0.5, 0));
+											Bukkit.getPlayer((UUID) locationsList.get(i).getKey().getValue()).teleport(locationsList.get(i).getValue().clone().add(0, 0.5, 0));
 											GameUtils.setTeleported(Bukkit.getPlayer((UUID) locationsList.get(i).getKey().getValue()).getUniqueId(), true);
 											
 										}
