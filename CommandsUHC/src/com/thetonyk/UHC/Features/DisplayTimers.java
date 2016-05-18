@@ -35,7 +35,7 @@ public class DisplayTimers {
 			
 			public void run() {
 				
-				if (time % 60 == 60) GameUtils.setTime(time);
+				if (time % 60 == 0) GameUtils.setTime(time);
 				
 				if (time < 45) {
 					

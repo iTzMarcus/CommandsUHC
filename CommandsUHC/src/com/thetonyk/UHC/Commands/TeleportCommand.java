@@ -97,7 +97,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 				Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
 				
-					UUID uuid = Bukkit.getPlayer(args[0]).getUniqueId();
+					UUID uuid = Bukkit.getPlayer(player).getUniqueId();
 	
 					@Override
 					public String getKey() {
