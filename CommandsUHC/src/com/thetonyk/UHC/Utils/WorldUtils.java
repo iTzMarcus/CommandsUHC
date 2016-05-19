@@ -1,8 +1,9 @@
 package com.thetonyk.UHC.Utils;
 
 import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
@@ -14,83 +15,59 @@ import org.bukkit.WorldType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
+import com.thetonyk.UHC.Utils.DatabaseUtils.Callback;
+
 public class WorldUtils {
+	
+	private static Map<String, Integer> worlds = new HashMap<String, Integer>();
 
 	public static void loadWorld(String world) {
-			
-		if (!exist(world)) {
-			
-			return;
-			
-		}
-			
-		Environment environment = Environment.NORMAL;
-		long seed = -89417720380802761l;
-		WorldType type = WorldType.NORMAL;
 		
-		try {
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
+				
+				Environment environment = Environment.valueOf(results.get(0).get("environment"));
+				long seed = Long.parseLong(results.get(0).get("seed"));
+				WorldType type = WorldType.valueOf(results.get(0).get("type"));
+				
+				WorldCreator worldCreator = new WorldCreator(world);
+				worldCreator.environment(environment);
+				worldCreator.generateStructures(true);
+				worldCreator.generatorSettings("{\"useMonuments\":false,\"graniteSize\":1,\"graniteCount\":0,\"graniteMinHeight\":0,\"graniteMaxHeight\":0,\"dioriteSize\":1,\"dioriteCount\":0,\"dioriteMinHeight\":0,\"dioriteMaxHeight\":0,\"andesiteSize\":1,\"andesiteCount\":0,\"andesiteMinHeight\":0,\"andesiteMaxHeight\":0}");
+				worldCreator.seed(seed);
+				worldCreator.type(type);
+				
+				World newWorld = worldCreator.createWorld();
+				newWorld.save();
+				
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
+				
+			}
 			
-			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			worldDB.next();
-			
-			environment = Environment.valueOf(worldDB.getString("environment"));
-			seed = worldDB.getLong("seed");
-			type = WorldType.valueOf(worldDB.getString("type"));
-			
-			worldDB.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] Error to fetch informations of world " + world + " in DB.");
-			return;
-			
-		}
-		
-		WorldCreator worldCreator = new WorldCreator(world);
-		worldCreator.environment(environment);
-		worldCreator.generateStructures(true);
-		worldCreator.generatorSettings("{\"useMonuments\":false,\"graniteSize\":1,\"graniteCount\":0,\"graniteMinHeight\":0,\"graniteMaxHeight\":0,\"dioriteSize\":1,\"dioriteCount\":0,\"dioriteMinHeight\":0,\"dioriteMaxHeight\":0,\"andesiteSize\":1,\"andesiteCount\":0,\"andesiteMinHeight\":0,\"andesiteMaxHeight\":0}");
-		worldCreator.seed(seed);
-		worldCreator.type(type);
-		
-		World newWorld = worldCreator.createWorld();
-		newWorld.save();
-		
-		return;
+		});
 		
 	}
 	
 	public static void unloadWorld(String world) {
-		
-		if (Bukkit.getWorld(world) == null) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] The world " + world + " can't be unloaded.");
-			return ;
-			
-		}
 		
 		Bukkit.unloadWorld(world, true);
 		
 	}
 	
 	public static void deleteWorld(String world) {
-		
-		if (!exist(world)) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] The world §6" + world + " doesn't exist.");
-			return;
-			
-		}
-			
-		if (Bukkit.getWorld(world) == null) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] The world " + world + " can't be unloaded.");
-			return;
-			
-		}
 
-		for (Player player : Bukkit.getWorld(world).getPlayers()) player.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
+		for (Player player : Bukkit.getWorld(world).getPlayers()) {
+			
+			player.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
+			
+		}
 		
 		File folder = Bukkit.getWorld(world).getWorldFolder();
 		
@@ -99,6 +76,7 @@ public class WorldUtils {
 		if (FileUtils.delete(folder)) {
 			
 			DatabaseUtils.sqlInsert("DELETE FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
+			worlds.remove(world);
 			return;
 			
 		}
@@ -110,64 +88,61 @@ public class WorldUtils {
 
 	public static Boolean exist(String world) {
 		
-		Boolean exist = false;
-		
-		try {
-			
-			ResultSet name = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			if (name.next()) exist = true;
-			
-			name.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] Error to check if world " + world + " exist.");
-			
-		}
-		
-		return exist;
+		return worlds.containsKey(world);
 		
 	}
 	
 	public static void loadAllWorlds() {
+		
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_worlds WHERE server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
 
-		try {
-			
-			ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE server = '" + GameUtils.getServer() + "';");
-			
-			while (worlds.next()) {
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-				loadWorld(worlds.getString("name"));
+				for (Map<String, String> result : results) {
+					
+					String name = result.get("name");
+					int size = Integer.parseInt(result.get("size"));
+					
+					worlds.put(name, size);
+					
+					WorldUtils.loadWorld(name);
+					
+					if (GameUtils.getWorld() != null && GameUtils.getWorld().equalsIgnoreCase(name)) continue;
+					
+					World world = Bukkit.getWorld(name);
+					world.setPVP(false);
+					world.setTime(6000);
+					world.setGameRuleValue("doDaylightCycle", "false");
+					world.setSpawnFlags(false, false);
+					world.setDifficulty(Difficulty.PEACEFUL);
+					world.save();
+					
+				}
 				
-				if (GameUtils.getWorld() != null && GameUtils.getWorld().equalsIgnoreCase(worlds.getString("name"))) continue;
+				World lobby = Bukkit.getWorld("lobby");
 				
-				Bukkit.getWorld(worlds.getString("name")).setPVP(false);
-				Bukkit.getWorld(worlds.getString("name")).setTime(6000);
-				Bukkit.getWorld(worlds.getString("name")).save();
+				lobby.setPVP(false);
+				lobby.setTime(6000);
+				lobby.setGameRuleValue("doDaylightCycle", "false");
+				lobby.setSpawnFlags(false, false);
+				lobby.setDifficulty(Difficulty.PEACEFUL);
+				lobby.save();
+				
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
 				
 			}
 			
-			worlds.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[WorldUtils] Error to fetch all worlds.");
-			
-		}
-		
-		Bukkit.getWorld("lobby").setPVP(false);
-		Bukkit.getWorld("lobby").setTime(6000);
-		Bukkit.getWorld("lobby").setGameRuleValue("doDaylightCycle", "false");
-		Bukkit.getWorld("lobby").setSpawnFlags(false, false);
-		Bukkit.getWorld("lobby").setWeatherDuration(0);
-		Bukkit.getWorld("lobby").setDifficulty(Difficulty.PEACEFUL);
-		Bukkit.getWorld("lobby").save();
-		
+		});
 		
 	}
 	
-	public static World createWorld(String world, Environment environment, long seed, WorldType type, int radius) {
+	public static World createWorld(String world, Environment environment, long seed, WorldType type, int size) {
 		
 		WorldCreator worldCreator = new WorldCreator(world);
 		
@@ -179,19 +154,21 @@ public class WorldUtils {
 		
 		World newWorld = worldCreator.createWorld();
 		
-		newWorld.setDifficulty(Difficulty.HARD);
+		newWorld.setDifficulty(Difficulty.PEACEFUL);
 		newWorld.setSpawnLocation(0, 200, 0);
-		newWorld.getWorldBorder().setSize(radius);
+		newWorld.getWorldBorder().setSize(size);
 		newWorld.getWorldBorder().setCenter(0, 0);
 		newWorld.getWorldBorder().setDamageBuffer(0);
 		newWorld.getWorldBorder().setDamageAmount(1);
 		newWorld.getWorldBorder().setWarningDistance(15);
 		newWorld.getWorldBorder().setWarningTime(1);
+		newWorld.setTime(6000);
 		newWorld.setGameRuleValue("doDaylightCycle", "false");
-		newWorld.setSpawnFlags(false, true);
+		newWorld.setSpawnFlags(false, false);
 		newWorld.save();
 		
-		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + radius + "', 0, '" + GameUtils.getServer() + "');");
+		DatabaseUtils.sqlInsert("INSERT INTO uhc_worlds (`name`, `environment`, `seed`, `type`, `size`, `pregenned`, `server`) VALUES ('" + world + "', '" + environment.name() + "', '" + seed + "', '" + type.name() + "', '" + size + "', 0, '" + GameUtils.getServer() + "');");
+		worlds.put(world, size);
 		
 		return newWorld;
 		
@@ -213,23 +190,14 @@ public class WorldUtils {
 	
 	public static int getSize(String world) {
 		
-		int radius = 0;
+		return worlds.containsKey(world) ? worlds.get(world) : 0;
 		
-		try {
-			
-			ResultSet worldDB = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds WHERE name='" + world + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			if (worldDB.next()) radius = worldDB.getInt("size");
-			
-			worldDB.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[BorderCommand] Error to fetch informations of world " + world + " in DB.");
-			
-		}
+	}
+	
+	public static void setSize(String world, int size) {
 		
-		return radius;
+		DatabaseUtils.sqlInsert("UPDATE uhc_worlds SET size = '" + size + "' WHERE name = '" + world + "' AND server = '" + GameUtils.getServer() + "';");
+		worlds.put(world, size);
 		
 	}
 	

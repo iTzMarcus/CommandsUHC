@@ -52,7 +52,7 @@ public class DisplayTab implements Listener {
 		String pvp = DisplayTimers.getTimeLeftPVP() > 0 ? DisplayTimers.getOtherFormatedTime(DisplayTimers.getTimeLeftPVP()) : "ON";
 		String meetup = DisplayTimers.getTimeLeftMeetup() > 0 ? DisplayTimers.getOtherFormatedTime(DisplayTimers.getTimeLeftMeetup()) : "Now";
 		String border = GameUtils.getWorld() != null ? (Bukkit.getWorld(GameUtils.getWorld()) != null ? (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§a" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() : "Not ready") : "Not ready";
-		int players = GameUtils.getPlayersCount();
+		int players = /*GameUtils.getPlayersCount()*/0;
 		
 		DisplayUtils.sendTab(player, "\n §7Welcome on the UHC, §a" + player.getName() + " §7! \n §b@CommandsPVP §7⋯ §aTS: §bcommandspvp.com \n §7Players: §a" + players + " §7⋯ Ping: §a" + ping + "ms §7⋯ TPS: §a" + tps + " \n", "\n §7PVP: §a" + pvp + " §7⋯ Meetup: §a" + meetup + " §7⋯ Border: §a" + border + " \n");
 		

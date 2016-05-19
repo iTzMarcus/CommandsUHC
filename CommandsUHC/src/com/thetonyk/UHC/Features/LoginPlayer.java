@@ -44,7 +44,7 @@ public class LoginPlayer implements Listener {
 			
 		}
 		
-		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
+		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
 		
 		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && (!GameUtils.getDeath(event.getPlayer().getUniqueId()) || GameUtils.getSpectate(event.getPlayer().getUniqueId()))) return;
 			

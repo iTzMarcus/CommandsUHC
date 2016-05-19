@@ -20,7 +20,7 @@ public class LogoutPlayer implements Listener {
 		
 		PermissionsUtils.clearPermissions(event.getPlayer());
 		
-		event.setQuitMessage("§7[§c-§7] " + PlayerUtils.getRank(event.getPlayer().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
+		event.setQuitMessage("§7[§c-§7] " + PlayerUtils.getRank(event.getPlayer().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
 		
 	}
 

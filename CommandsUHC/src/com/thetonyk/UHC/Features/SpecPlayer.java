@@ -108,7 +108,7 @@ public class SpecPlayer implements Listener {
 		
 		if (!GameUtils.getSpectate(event.getPlayer().getUniqueId())) return;
 		
-		if (PlayerUtils.getRank(event.getPlayer().getName()) == Rank.ADMIN || PlayerUtils.getRank(event.getPlayer().getName()) == Rank.HOST || PlayerUtils.getRank(event.getPlayer().getName()) == Rank.STAFF) return;
+		if (PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.ADMIN || PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.HOST || PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.STAFF) return;
 		
 		event.setCancelled(true);
 		event.getPlayer().sendMessage(Main.PREFIX + "You can't speak in chat when you are spectator.");

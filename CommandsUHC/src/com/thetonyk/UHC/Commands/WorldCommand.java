@@ -1,9 +1,8 @@
 package com.thetonyk.UHC.Commands;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -17,6 +16,7 @@ import org.bukkit.command.TabCompleter;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.DatabaseUtils;
+import com.thetonyk.UHC.Utils.DatabaseUtils.Callback;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.WorldUtils;
@@ -158,47 +158,48 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 							
 				if (Bukkit.getWorld("lobby") != null) sender.sendMessage(Main.PREFIX + "§7" + Bukkit.getWorld("lobby").getName() + " §8- §a" + Bukkit.getWorld("lobby").getEnvironment().name() + "§7.");
 				else sender.sendMessage(Main.PREFIX + "§clobby §8- §aNORMAL§7.");
+				
+				DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_worlds;", new Callback<List<Map<String, String>>>() {
+
+					@Override
+					public void onSuccess(List<Map<String, String>> results) {
+						
+						for (Map<String, String> result : results) {
 							
-				try {
-					
-					ResultSet worlds = DatabaseUtils.sqlQuery("SELECT * FROM uhc_worlds;");
-					
-					String world = null;
-					String color = "§7";
-					
-					while (worlds.next()) {
-						
-						world = worlds.getString("name");
-						
-						switch (worlds.getString("environment")) {
-						
-						case "NORMAL":
-							color = "§a";
-							break;
-						case "NETHER":
-							color = "§c";
-							break;
-						case "THE_END":
-							color = "§9";
-							break;
-						default:
-							break;
+							String world = null;
+							String color = "§7";
+							
+							switch (result.get("environment")) {
+							
+								case "NORMAL":
+									color = "§a";
+									break;
+								case "NETHER":
+									color = "§c";
+									break;
+								case "THE_END":
+									color = "§9";
+									break;
+								default:
+									break;
+							
+							}
+							
+							if (Bukkit.getWorld(result.get("name")) != null) sender.sendMessage(Main.PREFIX + "§7" + world + " §8- " + color + result.get("environment") + "§7.");		
+							else sender.sendMessage(Main.PREFIX + "§c" + world + " §8- " + color + result.get("environment") + "§7.");
 							
 						}
 						
-						if (Bukkit.getWorld(world) != null) sender.sendMessage(Main.PREFIX + "§7" + world + " §8- " + color + worlds.getString("environment") + "§7.");		
-						else sender.sendMessage(Main.PREFIX + "§c" + world + " §8- " + color + worlds.getString("environment") + "§7.");						
+					}
+
+					@Override
+					public void onFailure(Throwable cause) {
+						
+						
 						
 					}
 					
-					worlds.close();
-				
-				} catch (SQLException exception) {
-					
-					Bukkit.getLogger().severe("[WorldUtils] Error to fetch informations of worlds in DB.");
-					sender.sendMessage(Main.PREFIX + "§cError to fetch informations of worlds in DB.");
-					
-				}
+				});
 				
 				return true;
 							

@@ -173,8 +173,6 @@ public class TeleportUtils {
 										
 										if (GameUtils.getStatus() != Status.TELEPORT) {
 											
-											
-											
 											new BukkitRunnable() {
 												
 												public void run() {

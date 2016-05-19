@@ -12,8 +12,11 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Utils.DatabaseUtils.Callback;
 
 public class TeamsUtils {
 
@@ -63,169 +66,208 @@ public class TeamsUtils {
 			
 		}
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
+		new BukkitRunnable() {
 			
-			DisplayNametags.updateNametag(player);
-			
-		}
+			public void run() {
+		
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplayNametags.updateNametag(player);
+					
+				}
+		
+			}
+		
+		}.runTaskLater(Main.uhc, 1);
 		
 	}
 	
 	public static void reload() {
 		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';");
-			
-			while (teams.next()) {
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-				if (teams.getInt("exist") == 0) continue;
-				
-				for (String member : teams.getString("members").split(";")) {
+				for (Map<String, String> result : results) {
 					
-					players.put(UUID.fromString(member), teams.getString("name"));
+					if (Integer.parseInt(result.get("exist")) == 0) continue;
+					
+					for (String member : result.get("members").split(";")) {
+						
+						players.put(UUID.fromString(member), result.get("name"));
+						
+					}
+					
+				}
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplayNametags.updateNametag(player);
 					
 				}
 				
 			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
+				
+			}
 			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch all teams.");
-			
-		}
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-		
-			DisplayNametags.updateNametag(player);
-			
-		}
+		});
 		
 	}
 	
 	public static void createTeam(UUID player) {
 		
-		int id = 0;
-		String name = null;
-		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';");
-			
-			while (teams.next()) {
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_teams WHERE server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-				if (teams.getInt("exist") != 0) continue;
-	
-				id = teams.getInt("id");
-				name = teams.getString("name");
-				break;		
+				for (Map<String, String> result : results) {
+					
+					if (Integer.parseInt(result.get("exist")) != 0) continue;
+					
+					DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + Integer.parseInt(result.get("id")) + "' AND server = '" + GameUtils.getServer() + "';");
+					players.put(player, result.get("name"));
+					
+					if (Bukkit.getPlayer(player) == null) break;
+					
+					new BukkitRunnable() {
+
+						public void run() {
+							
+							DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+							
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+					break;
+					
+				}
+				
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
 				
 			}
 			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch all teams.");
-			
-		}
-		
-		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
-		
-		players.put(player, name);
-		
-		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+		});
 		
 	}
 	
 	public static String getTeam(UUID player) {
 		
-		if (players.containsKey(player)) return players.get(player);
-		
-		return null;
+		return players.containsKey(player) ? players.get(player) : null;
 		
 	}
 	
 	public static void joinTeam(UUID player, String team) {
 		
-		String members = null;
-		int id = 0;
-		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			if (teams.next()) {
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-				members = teams.getString("members");
-				id = teams.getInt("id");
+				for (Map<String, String> result : results) {
+					
+					DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + result.get("members") + player + ";' WHERE id = '" + Integer.parseInt(result.get("id")) + "' AND server = '" + GameUtils.getServer() + "';");
+					players.put(player, team);
+					
+					if (Bukkit.getPlayer(player) == null) break;
+					
+					new BukkitRunnable() {
+
+						public void run() {
+							
+							DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+							
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+					break;
+					
+				}
+				
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
 				
 			}
 			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch team '" + team + "'.");
-			
-		}
-		
-		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + members + player + ";' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
-		
-		players.put(player, team);
-		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+		});
 		
 	}
 	
 	public static void leaveTeam(UUID player) {
 		
-		String team = players.get(player);
-		String members = null;
-		int id = 0;
-		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_teams WHERE name = '" + players.get(player) + "' AND server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-			if (teams.next()) {
+				for (Map<String, String> result : results) {
+					
+					String members = result.get("members");
+					
+					if (members.split(";").length < 2) {
+						
+						DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + Integer.parseInt(result.get("id")) + "' AND server = '" + GameUtils.getServer() + "';");
+						
+					} else {
+						
+						String[] membersList = members.split(";");
+						String newMembers = "";
+						
+						for (int i = 0; i < membersList.length; i++) {
+							
+							if (!membersList[i].equalsIgnoreCase(player.toString())) newMembers = newMembers + membersList[i] + ";";
+							
+						}
+						
+						DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + Integer.parseInt(result.get("id")) + "' AND server = '" + GameUtils.getServer() + "';");
+						
+					}
+					
+					if (players.containsKey(player)) players.remove(player);
+					
+					if (Bukkit.getPlayer(player) == null) break;
+					
+					new BukkitRunnable() {
+
+						public void run() {
+							
+							DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+							
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+					break;
+					
+				}
 				
-				id = teams.getInt("id");
-				members = teams.getString("members");
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
 				
 			}
 			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch team '" + team + "'.");
-			
-		}
-		
-		if (members.split(";").length < 2) {
-			
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 0, members = '' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
-			
-		} else {
-			
-			String[] membersList = members.split(";");
-			String newMembers = "";
-			
-			for (int i = 0; i < membersList.length; i++) {
-				
-				if (!membersList[i].equalsIgnoreCase(player.toString())) newMembers = newMembers + membersList[i] + ";";
-				
-			}
-			
-			DatabaseUtils.sqlInsert("UPDATE uhc_teams SET members = '" + newMembers + "' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
-			
-		}
-		
-		if (players.containsKey(player)) players.remove(player);
-		
-		if (Bukkit.getPlayer(player) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+		});
 		
 	}
 	
@@ -279,32 +321,36 @@ public class TeamsUtils {
 	
 	public static void sendMessage(String team, String message) {
 		
-		String members = null;
-		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			if (teams.next()) members = teams.getString("members");
-			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamsUtils] Error to fetch members of team '" + team + "'.");
-			return;
-			
-		}
-		
-		if (members.isEmpty()) return;
-		
-		for (String player : members.split(";")) {
-			
-			if (Bukkit.getPlayer(player) == null) continue;
+		DatabaseUtils.asynSqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';", new Callback<List<Map<String, String>>>() {
+
+			@Override
+			public void onSuccess(List<Map<String, String>> results) {
 				
-			Bukkit.getPlayer(player).sendMessage(message);
+				for (Map<String, String> result : results) {
+					
+					if (result.get("members").length() < 1) return;
+					
+					for (String player : result.get("members").split(";")) {
+						
+						if (Bukkit.getPlayer(UUID.fromString(player)) == null) continue;
+						
+						Bukkit.getPlayer(UUID.fromString(player)).sendMessage(message);
+						return;
+						
+					}
+					
+				}
+				
+			}
+
+			@Override
+			public void onFailure(Throwable cause) {
+				
+				
+				
+			}
 			
-		}
+		});
 		
 	}
 	
@@ -377,11 +423,19 @@ public class TeamsUtils {
 			
 		}
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
+		new BukkitRunnable() {
 			
-			DisplayNametags.updateNametag(player);
-			
-		}
+			public void run() {
+		
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplayNametags.updateNametag(player);
+					
+				}
+		
+			}
+		
+		}.runTaskLater(Main.uhc, 1);
 		
 	}
 	

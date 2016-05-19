@@ -58,7 +58,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
-			if (sender.getName().equalsIgnoreCase(args[1])) {
+			if (sender.getName().equalsIgnoreCase(Bukkit.getPlayer(args[0]).getName())) {
 				
 				sender.sendMessage(Main.PREFIX + "You can't invite yourslef.");
 				return true;
@@ -80,7 +80,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 			
 			if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(sender.getName()).getUniqueId())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
 			
-			TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[1]));
+			TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[0]));
 			
 			Bukkit.getPlayer(args[0]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
 			

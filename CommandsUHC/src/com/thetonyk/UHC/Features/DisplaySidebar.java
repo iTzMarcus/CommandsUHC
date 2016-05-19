@@ -108,7 +108,7 @@ public class DisplaySidebar implements Listener {
 		
 		for (UUID killer : GameUtils.getKills().keySet()) {
 			
-			player.getScoreboard().getObjective("sidebar").getScore("  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(PlayerUtils.getName(PlayerUtils.getId(killer))).getPrefix() + ((TeamsUtils.getTeam(killer) != null) ? TeamsUtils.getTeamPrefix(killer) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
+			player.getScoreboard().getObjective("sidebar").getScore("  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(killer).getPrefix() + ((TeamsUtils.getTeam(killer) != null) ? TeamsUtils.getTeamPrefix(killer) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
 			
 		}
 		

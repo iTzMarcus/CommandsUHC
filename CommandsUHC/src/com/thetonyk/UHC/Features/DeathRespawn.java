@@ -78,20 +78,10 @@ public class DeathRespawn implements Listener {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			player.showPlayer(event.getPlayer());
+			if (GameUtils.getDeath(event.getPlayer().getUniqueId())) player.hidePlayer(event.getPlayer());
+			else player.showPlayer(event.getPlayer());
 			
 			if (!GameUtils.getDeath(player.getUniqueId())) event.getPlayer().showPlayer(player);
-			else event.getPlayer().hidePlayer(player);
-			
-		}
-		
-		if (!GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			player.hidePlayer(event.getPlayer());
-			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) event.getPlayer().showPlayer(player);
 			else event.getPlayer().hidePlayer(player);
 			
 		}

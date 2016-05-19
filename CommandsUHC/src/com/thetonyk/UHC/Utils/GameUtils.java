@@ -561,10 +561,11 @@ public class GameUtils {
 	public static List<UUID> getAlives() {
 		
 		List<UUID> alives = new ArrayList<UUID>();
+		Map<UUID, Map<String, String>> players = GameUtils.getPlayers();
 		
-		for (UUID player : getPlayers().keySet()) {
+		for (UUID player : players.keySet()) {
 			
-			if (getDeath(player) || getSpectate(player)) continue;
+			if (Boolean.parseBoolean(players.get(player).get("death")) || Boolean.parseBoolean(players.get(player).get("spectate"))) continue;
 			
 			alives.add(player);
 			

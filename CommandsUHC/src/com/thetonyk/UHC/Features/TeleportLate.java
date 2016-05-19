@@ -35,7 +35,7 @@ public class TeleportLate implements Listener {
 			
 			if (Bukkit.getPlayer(player) == null) continue;
 			
-			if (!GameUtils.getTeleported(player)) {
+			if (GameUtils.getPlayers().containsKey(player) && !GameUtils.getTeleported(player)) {
 				
 				teleport.add(player);
 				
@@ -89,7 +89,7 @@ public class TeleportLate implements Listener {
 				
 				for (UUID uuid : new ArrayList<UUID>(players)) {
 					
-					GameUtils.setOnGround(uuid, true);;
+					GameUtils.setOnGround(uuid, true);
 					players.remove(uuid);
 					
 				}
@@ -129,18 +129,19 @@ public class TeleportLate implements Listener {
 			
 		}
 		
-		
-		
 	}
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getPlayers().containsKey(event.getPlayer().getUniqueId())) return;
 		
 		if (!GameUtils.getTeleported(event.getPlayer().getUniqueId())) {
 			
 			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
+			
+			event.getPlayer().setWhitelisted(true);
+			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(event.getPlayer().getUniqueId());
 			
 			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
 				
@@ -182,8 +183,6 @@ public class TeleportLate implements Listener {
 				}
 				
 			}.runTaskLater(Main.uhc, 1);
-			
-			return;
 			
 		}
 		

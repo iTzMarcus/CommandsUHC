@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayNametags;
-import com.thetonyk.UHC.Utils.DatabaseUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
 
@@ -42,7 +41,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 				
 		}
 		
-		if (!DatabaseUtils.exist("SELECT * FROM users WHERE name = '" + args[0] + "'")) {
+		if (PlayerUtils.getUUID(args[0]) == null) {
 			
 			sender.sendMessage(Main.PREFIX + "This player is not known on this server");
 			return true;
@@ -69,7 +68,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 			
 		}
 			
-		PlayerUtils.setRank(args[0], rank);
+		PlayerUtils.setRank(PlayerUtils.getUUID(args[0]), rank);
 		if (Bukkit.getPlayer(args[0]) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(args[0]));
 		
 		if (Bukkit.getPlayer(args[0]) != null && sender.getName() != Bukkit.getPlayer(args[0]).getName()) {

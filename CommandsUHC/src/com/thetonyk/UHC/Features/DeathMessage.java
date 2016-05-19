@@ -27,8 +27,8 @@ public class DeathMessage implements Listener {
 			
 		}
 		
-		String victim = PlayerUtils.getRank(event.getEntity().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getUniqueId()) : "§7") + event.getEntity().getName() + "§7";
-		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getName()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getUniqueId()) : "§7") + event.getEntity().getKiller().getName() + "§7";		
+		String victim = PlayerUtils.getRank(event.getEntity().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getUniqueId()) : "§7") + event.getEntity().getName() + "§7";
+		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getUniqueId()) : "§7") + event.getEntity().getKiller().getName() + "§7";		
 		String message = Main.PREFIX + "§7" + event.getDeathMessage().substring(0, event.getDeathMessage().contains("using") ? event.getDeathMessage().indexOf("using") : event.getDeathMessage().length()).replaceAll(event.getEntity().getName(), victim).replaceAll(event.getEntity().getKiller() != null ? event.getEntity().getKiller().getName() : "", event.getEntity().getKiller() != null ? killer : "");
 		
 		event.setDeathMessage(message);

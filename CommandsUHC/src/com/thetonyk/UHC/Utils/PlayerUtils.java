@@ -2,7 +2,6 @@ package com.thetonyk.UHC.Utils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -98,11 +97,11 @@ public class PlayerUtils {
 		
 	}
 	
-	public static void setRank(String player, Rank rank) {
+	public static void setRank(UUID player, Rank rank) {
 		
-		DatabaseUtils.sqlInsert("UPDATE users SET rank = '" + rank + "' WHERE name = '" + player + "';");
+		DatabaseUtils.sqlInsert("UPDATE users SET rank = '" + rank + "' WHERE uuid = '" + player + "';");
 		
-		if (Bukkit.getPlayer(player) != null && Bukkit.getPlayer(player).isOnline()) {
+		if (Bukkit.getPlayer(player) != null) {
 			
 			PermissionsUtils.clearPermissions(Bukkit.getPlayer(player));
 			PermissionsUtils.setPermissions(Bukkit.getPlayer(player));
@@ -112,13 +111,13 @@ public class PlayerUtils {
 		
 	}
 	
-	public static Rank getRank(String player) {
+	public static Rank getRank(UUID player) {
 		
 		Rank rank = Rank.PLAYER;
 		
 		try {
 			
-			ResultSet req = DatabaseUtils.sqlQuery("SELECT rank FROM users WHERE name = '" + player + "';");
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT rank FROM users WHERE uuid = '" + player + "';");
 			
 			if (req.next()) rank = Rank.valueOf(req.getString("rank"));
 			
@@ -126,7 +125,7 @@ public class PlayerUtils {
 			
 		} catch (SQLException exception) {
 			
-			Bukkit.getLogger().severe("[PlayerUtils] Error to get the rank of player " + player + ".");
+			Bukkit.getLogger().severe("[PlayerUtils] Error to get the rank of player with UUID " + player + ".");
 			
 		}
 		
@@ -308,17 +307,7 @@ public class PlayerUtils {
 		
 		int state = PlayerUtils.getNosoundState(player) == 1 ? 0 : 1;
 		
-		try {
-			
-			Statement sql = DatabaseUtils.getConnection().createStatement();
-			sql.executeUpdate("UPDATE settings SET nosound = " + state + " WHERE id = " + PlayerUtils.getId(player.getUniqueId()) + ";");
-			sql.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[PlayerUtils] Error to toggle nosound state of player " + player.getName() + ".");
-			
-		}
+		DatabaseUtils.sqlInsert("UPDATE settings SET nosound = " + state + " WHERE id = " + PlayerUtils.getId(player.getUniqueId()) + ";");
 	
 	}
 	
