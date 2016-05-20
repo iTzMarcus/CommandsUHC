@@ -15,9 +15,11 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.thetonyk.UHC.Main;
 
 public class PlayerUtils {
 	
@@ -71,7 +73,7 @@ public class PlayerUtils {
 	
 	public enum Rank {
 		
-		PLAYER("", "§7Player"), WINNER("§6Winner §8| ", "§6Winner"), FAMOUS("§bFamous §8| ", "§bFamous"), BUILDER("§2Build §8| ", "§2Builder"),STAFF("§cStaff §8| ", "§cStaff"), MOD("§9Mod §8| ", "§9Moderator"), ADMIN("§4Admin §8| ", "§4Admin"), FRIEND("§3Friend §8| ", "§3Friend"), HOST("§cHost §8| ", "§cHost"), ACTIVE_BUILDER("§2Build §8| ", "§2Builder");
+		PLAYER("", "§7Player"), WINNER("§6Winner | ", "§6Winner"), FAMOUS("§bFamous | ", "§bFamous"), BUILDER("§2Build §8| ", "§2Builder"),STAFF("§cStaff §8| ", "§cStaff"), MOD("§9Mod §8| ", "§9Moderator"), ADMIN("§4Admin §8| ", "§4Admin"), FRIEND("§3Friend | ", "§3Friend"), HOST("§cHost §8| ", "§cHost"), ACTIVE_BUILDER("§2Build §8| ", "§2Builder");
 		
 		String prefix;
 		String name;
@@ -101,13 +103,19 @@ public class PlayerUtils {
 		
 		DatabaseUtils.sqlInsert("UPDATE users SET rank = '" + rank + "' WHERE uuid = '" + player + "';");
 		
-		if (Bukkit.getPlayer(player) != null) {
+		if (Bukkit.getPlayer(player) == null) return;
 			
-			PermissionsUtils.clearPermissions(Bukkit.getPlayer(player));
-			PermissionsUtils.setPermissions(Bukkit.getPlayer(player));
-			PermissionsUtils.updateBungeePermissions(Bukkit.getPlayer(player));
-		
-		}
+		new BukkitRunnable() {
+			
+			public void run() {
+				
+				PermissionsUtils.clearPermissions(Bukkit.getPlayer(player));
+				PermissionsUtils.setPermissions(Bukkit.getPlayer(player));
+				PermissionsUtils.updateBungeePermissions(Bukkit.getPlayer(player));
+				
+			}
+			
+		}.runTaskLater(Main.uhc, 2);
 		
 	}
 	

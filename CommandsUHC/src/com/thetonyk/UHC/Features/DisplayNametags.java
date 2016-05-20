@@ -60,6 +60,7 @@ public class DisplayNametags implements Listener {
 			players.getScoreboard().getTeam(player.getName()).setPrefix(PlayerUtils.getRank(player.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7"));
 			players.getScoreboard().getTeam(player.getName()).setSuffix("§7");
 			players.getScoreboard().getTeam(player.getName()).addEntry(player.getName());
+			player.setPlayerListName(((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "") + PlayerUtils.getRank(player.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7") + player.getName());
 			
 			if (players.equals(player)) continue;
 			

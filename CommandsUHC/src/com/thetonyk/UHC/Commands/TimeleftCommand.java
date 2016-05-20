@@ -1,6 +1,5 @@
 package com.thetonyk.UHC.Commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,10 +25,10 @@ public class TimeleftCommand implements CommandExecutor {
 			
 		}
 		
-		Bukkit.broadcastMessage(Main.PREFIX + "Times left:");
-		Bukkit.broadcastMessage("§8⫸ §7Final Heal: §a" + (60 - DisplayTimers.time > 0 ? DisplayTimers.getFormatedTime(60 - DisplayTimers.time) : "Already given") + "§7.");
-		Bukkit.broadcastMessage("§8⫸ §7PVP: §a" + (DisplayTimers.getTimeLeftPVP() > 0 ? DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftPVP()) : "ON") + "§7.");
-		Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + (DisplayTimers.getTimeLeftMeetup() > 0 ? DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftMeetup()) : "Now") + "§7.");
+		sender.sendMessage(Main.PREFIX + "Times left:");
+		sender.sendMessage("§8⫸ §7Final Heal: §a" + (60 - DisplayTimers.time > 0 ? DisplayTimers.getFormatedTime(60 - DisplayTimers.time) : "Already given") + "§7.");
+		sender.sendMessage("§8⫸ §7PVP: §a" + (DisplayTimers.getTimeLeftPVP() > 0 ? DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftPVP()) : "ON") + "§7.");
+		sender.sendMessage("§8⫸ §7Meetup: §a" + (DisplayTimers.getTimeLeftMeetup() > 0 ? DisplayTimers.getFormatedTime(DisplayTimers.getTimeLeftMeetup()) : "Now") + "§7.");
 		return true;
 		
 	}
