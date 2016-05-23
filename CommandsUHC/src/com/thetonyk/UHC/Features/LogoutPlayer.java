@@ -1,9 +1,13 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.thetonyk.UHC.Utils.PermissionsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -14,13 +18,17 @@ public class LogoutPlayer implements Listener {
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
 
-		if (event.getPlayer().isInsideVehicle()) event.getPlayer().leaveVehicle();
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
-		event.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+		if (player.isInsideVehicle()) player.leaveVehicle();
 		
-		PermissionsUtils.clearPermissions(event.getPlayer());
+		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		player.setScoreboard(scoreboard);
 		
-		event.setQuitMessage("§7[§c-§7] " + PlayerUtils.getRank(event.getPlayer().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
+		PermissionsUtils.clearPermissions(player);
+		
+		event.setQuitMessage("§7[§c-§7] " + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + player.getName());
 		
 	}
 

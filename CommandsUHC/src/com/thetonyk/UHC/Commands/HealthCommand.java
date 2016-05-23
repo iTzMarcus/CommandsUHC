@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.GameUtils;
 
 public class HealthCommand implements CommandExecutor, TabCompleter {
 	
@@ -59,6 +60,8 @@ public class HealthCommand implements CommandExecutor, TabCompleter {
 		if (args.length == 1) {
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
+				
+				if (GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) continue;
 				
 				complete.add(player.getName());
 				

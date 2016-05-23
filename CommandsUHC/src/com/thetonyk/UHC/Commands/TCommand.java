@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.TeamsUtils;
@@ -19,7 +20,10 @@ public class TCommand implements CommandExecutor {
 			
 		}
 		
-		if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
+		Player player = Bukkit.getPlayer(sender.getName());
+		String team = TeamsUtils.getTeam(player.getUniqueId());
+		
+		if (team == null) {
 			
 			sender.sendMessage(Main.PREFIX + "You are not in a team.");
 			return true;
@@ -41,7 +45,7 @@ public class TCommand implements CommandExecutor {
 			
 		}
 		
-		TeamsUtils.sendMessage(TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()), "§6Team §8| §7" + sender.getName() + " §8⫸ §f" + message);
+		TeamsUtils.sendMessage(team, "§6Team §8| §7" + player.getName() + " §8⫸ §f" + message);
 		return true;
 		
 	}

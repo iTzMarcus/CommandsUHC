@@ -1,9 +1,14 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -20,60 +25,55 @@ public class MeetupWarning implements Listener {
 	@EventHandler
 	public void onMove(PlayerMoveEvent event) {
 		
-		if (event.getTo().getWorld().getWorldBorder().getSize() == WorldUtils.getSize(event.getTo().getWorld().getName()) || event.getTo().getWorld().getWorldBorder().getSize() == 100) return;
+		World world = event.getTo().getWorld();
+		UUID uuid = event.getPlayer().getUniqueId();
+		double size = world.getWorldBorder().getSize();
+		double posRadius = size / 2;
+		double negRadius = size - (size * 1.5);
+		double x = event.getTo().getX();
+		double z = event.getTo().getZ();
 		
-		if (runnables.containsKey(event.getPlayer().getUniqueId())) return;
+		if (size == WorldUtils.getSize(world.getName()) || size <= 100) return;
 		
-		if (event.getTo().getX() < (event.getTo().getWorld().getWorldBorder().getSize() / 2) - 30 
-			&& event.getTo().getX() > (event.getTo().getWorld().getWorldBorder().getSize() - (event.getTo().getWorld().getWorldBorder().getSize() * 1.5)) + 30 
-			&& event.getTo().getZ() < (event.getTo().getWorld().getWorldBorder().getSize() / 2) - 30  
-			&& event.getTo().getZ() > (event.getTo().getWorld().getWorldBorder().getSize() - (event.getTo().getWorld().getWorldBorder().getSize() * 1.5)) + 30) return;
+		if (runnables.containsKey(uuid)) return;
 		
-		double x_pos = (event.getTo().getWorld().getWorldBorder().getSize() / 2) - event.getTo().getX();
-		double x_neg = event.getTo().getX() - (event.getTo().getWorld().getWorldBorder().getSize() - (event.getTo().getWorld().getWorldBorder().getSize() * 1.5));
-		double z_pos = (event.getTo().getWorld().getWorldBorder().getSize() / 2) - event.getTo().getZ();
-		double z_neg = event.getTo().getZ() - (event.getTo().getWorld().getWorldBorder().getSize() - (event.getTo().getWorld().getWorldBorder().getSize() * 1.5));
+		if (x < posRadius - 30 && x > negRadius + 30 && z < posRadius - 30  && z > negRadius + 30) return;
 		
-		double temp = 0;
+		List<Double> compare = new ArrayList<Double>();
 		
-		if (x_pos <= x_neg && x_pos <= z_pos && x_pos <= z_neg) temp = x_pos;
-		if (x_neg <= x_pos && x_neg <= z_pos && x_neg <= z_neg)	temp = x_neg;
-		if (z_pos <= x_neg && z_pos <= x_pos && z_pos <= z_neg) temp = z_pos;
-		if (z_neg <= x_neg && z_neg <= z_pos && z_neg <= x_pos) temp = z_neg;
+		compare.add(posRadius - x);
+		compare.add(x - negRadius);
+		compare.add(posRadius - z);
+		compare.add(z - negRadius);
 			
-		final double distance = temp >= 0 ? temp : 0;
+		double smallest = Collections.min(compare);
+		final int distance = smallest >= 0 ? (int) Math.floor(smallest) : 0;
 		
-		runnables.put(event.getPlayer().getUniqueId(), new BukkitRunnable() {
-			
-			int i = 0;
+		DisplayUtils.sendActionBar(event.getPlayer(), "§8⫸ §6World Border is at §c" + (int) Math.floor(distance) + " §6blocks of you! §8⫷");
+		
+		runnables.put(uuid, new BukkitRunnable() {
 			
 			public void run() {
 				
-				if (!event.getPlayer().isOnline()) {
+				runnables.remove(uuid);
 					
-					cancel();
-					runnables.remove(event.getPlayer().getUniqueId());
-					return;
+				new BukkitRunnable() {
 					
-				}
-				
-				DisplayUtils.sendActionBar(event.getPlayer(), "§7World Border is at §c" + (int) Math.floor(distance) + " blocks §7of you!");
-				
-				if (i >= 1) {
+					public void run() {
+						
+						if (Bukkit.getPlayer(uuid) == null) return;
+						
+						DisplayUtils.sendActionBar(event.getPlayer(), "§8⫸ §6World Border is at §c" + (int) Math.floor(distance) + " §6blocks of you! §8⫷");
+						
+					}
 					
-					cancel();
-					runnables.remove(event.getPlayer().getUniqueId());
-					return;
-					
-				}
-				
-				i++;
+				}.runTaskLater(Main.uhc, 1);
 				
 			}
 			
 		});
 		
-		runnables.get(event.getPlayer().getUniqueId()).runTaskTimer(Main.uhc, 0, 5);
+		runnables.get(event.getPlayer().getUniqueId()).runTaskLater(Main.uhc, 4);
 		
 	}
 	

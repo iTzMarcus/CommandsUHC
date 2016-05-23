@@ -26,6 +26,7 @@ import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class SpecPlayer implements Listener {
@@ -33,6 +34,9 @@ public class SpecPlayer implements Listener {
 	public static void enable(UUID uuid) {
 		
 		GameUtils.setSpectate(uuid, true);
+		
+		if (TeamsUtils.invitations.containsKey(uuid)) TeamsUtils.invitations.remove(uuid);
+		TeamsUtils.leaveTeam(uuid);
 		
 		if (Bukkit.getPlayer(uuid) == null || !Bukkit.getPlayer(uuid).isOnline()) return;
 		
@@ -52,7 +56,7 @@ public class SpecPlayer implements Listener {
 		PlayerUtils.clearEffects(spectator);
 		PlayerUtils.clearXp(spectator);
 		spectator.setGameMode(GameMode.SPECTATOR);
-		spectator.setPlayerListName("§7§o" + spectator.getName());
+		spectator.setPlayerListName(PlayerUtils.getRank(spectator.getUniqueId()).getPrefix() + "§7§o" + spectator.getName());
 		
 		
 		

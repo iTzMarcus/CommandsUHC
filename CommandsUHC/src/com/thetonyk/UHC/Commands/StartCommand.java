@@ -1,9 +1,14 @@
 package com.thetonyk.UHC.Commands;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -34,32 +39,32 @@ public class StartCommand implements CommandExecutor {
 			
 		}
 		
-		if (GameUtils.getWorld() == null) {
+		Status status = GameUtils.getStatus();
+		String gameWorld = GameUtils.getWorld();
+		
+		if (gameWorld == null) {
 			
 			sender.sendMessage(Main.PREFIX + "You need to setup the game first.");
 			return true;
 			
 		}
 		
-		if (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN) {
-			
-			sender.sendMessage(Main.PREFIX + "The game is not ready.");
-			return true;
-			
-		}
+		switch (status) {
 		
-		if (GameUtils.getStatus() == Status.READY) {
-			
-			sender.sendMessage(Main.PREFIX + "You need to teleport players first.");
-			return true;
-			
-		}
+			case NONE:
+			case OPEN:
+				sender.sendMessage(Main.PREFIX + "The game is not ready.");
+				return true;
+			case READY:
+				sender.sendMessage(Main.PREFIX + "You need to teleport players first.");
+				return true;
+			case PLAY:
+			case END:
+				sender.sendMessage(Main.PREFIX + "Game has already started.");
+				return true;
+			default:
+				break;
 		
-		if (GameUtils.getStatus() != Status.TELEPORT) {
-			
-			sender.sendMessage(Main.PREFIX + "Game has already started.");
-			return true;
-			
 		}
 		
 		if (start) {
@@ -70,12 +75,23 @@ public class StartCommand implements CommandExecutor {
 		}
 		
 		start = true;
+		Map<UUID, Boolean> nosounds = new HashMap<UUID, Boolean>();
+		final World world = Bukkit.getWorld(gameWorld);
+		
+		if (world == null) {
+			
+			sender.sendMessage(Main.PREFIX + "The game world is not loaded.");
+			return true;
+			
+		}
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			DisplayUtils.sendTitle(player, "§45", "", 0, 20, 0);
 			
-			if (PlayerUtils.getNosoundState(player) == 1) continue;
+			nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+			
+			if (nosounds.get(player.getUniqueId())) continue;
 			
 			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
@@ -89,7 +105,9 @@ public class StartCommand implements CommandExecutor {
 					
 					DisplayUtils.sendTitle(player, "§c4", "", 0, 20, 0);
 					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+					
+					if (nosounds.get(player.getUniqueId())) continue;
 					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
@@ -107,7 +125,9 @@ public class StartCommand implements CommandExecutor {
 					
 					DisplayUtils.sendTitle(player, "§63", "", 0, 20, 0);
 					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+					
+					if (nosounds.get(player.getUniqueId())) continue;
 					
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					
@@ -125,7 +145,9 @@ public class StartCommand implements CommandExecutor {
 					
 					DisplayUtils.sendTitle(player, "§22", "", 0, 20, 0);
 					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+					
+					if (nosounds.get(player.getUniqueId())) continue;
 					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
@@ -143,7 +165,9 @@ public class StartCommand implements CommandExecutor {
 					
 					DisplayUtils.sendTitle(player, "§a1", "", 0, 20, 0);
 					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+					
+					if (nosounds.get(player.getUniqueId())) continue;
 					
 					player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 					
@@ -170,14 +194,14 @@ public class StartCommand implements CommandExecutor {
 				Bukkit.broadcastMessage("§8⫸ §7Meetup: §a" + (int) Math.floor(DisplayTimers.meetupTime / 60) + " minutes§7.");
 				Bukkit.broadcastMessage(Main.PREFIX + "Good luck & Have Fun!");
 				
-				Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
-				Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
-				Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
-				Bukkit.getWorld(GameUtils.getWorld()).setGameRuleValue("doDaylightCycle", "true");
-				Bukkit.getWorld(GameUtils.getWorld()).setDifficulty(Difficulty.HARD);
-				Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(false, true);
-				Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
-				WorldUtils.butcher(Bukkit.getWorld(GameUtils.getWorld()));
+				world.setTime(0);
+				world.setStorm(false);
+				world.setThundering(false);
+				world.setGameRuleValue("doDaylightCycle", "true");
+				world.setDifficulty(Difficulty.HARD);
+				world.setSpawnFlags(false, true);
+				world.setPVP(false);
+				WorldUtils.butcher(world);
 				GameUtils.setStatus(Status.PLAY);
 				Bukkit.getPluginManager().callEvent(new StartEvent());
 				DisplayTimers.startTimer();
@@ -195,7 +219,9 @@ public class StartCommand implements CommandExecutor {
 					PlayerUtils.heal(player);
 					DisplaySidebar.update(player);
 					
-					if (PlayerUtils.getNosoundState(player) == 1) continue;
+					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
+					
+					if (nosounds.get(player.getUniqueId())) continue;
 					
 					player.playSound(player.getLocation(), Sound.SUCCESSFUL_HIT, 1, 1);
 					

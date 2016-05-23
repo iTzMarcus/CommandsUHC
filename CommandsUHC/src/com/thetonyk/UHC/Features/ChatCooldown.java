@@ -19,20 +19,22 @@ public class ChatCooldown implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onChat (AsyncPlayerChatEvent event) {
 		
-		if (cooldown.contains(event.getPlayer().getUniqueId())) {
+		UUID uuid = event.getPlayer().getUniqueId();
+		
+		if (cooldown.contains(uuid)) {
 			
 			event.setCancelled(true);
 			return;
 			
 		}
 		
-		cooldown.add(event.getPlayer().getUniqueId());
+		cooldown.add(uuid);
 		
 		new BukkitRunnable() {
 			
 			public void run() {
 				
-				cooldown.remove(event.getPlayer().getUniqueId());
+				cooldown.remove(uuid);
 				
 			}
 			

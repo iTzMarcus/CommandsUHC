@@ -30,56 +30,39 @@ public class DisplayTimers {
 		}
 		
 		time = GameUtils.getTime();
-		
 		timer = new BukkitRunnable() {
 			
 			public void run() {
 				
 				if (time % 60 == 0) GameUtils.setTime(time);
 				
-				if (time < 45) {
+				int finalHeal = 45 - time;
+				int pvp = pvpTime - time;
+				int meetup = meetupTime - time;
+				String message = "";
+				
+				if (finalHeal > 0) message += "§7Final heal §8⫸ §a" + getFormatedTime(finalHeal);
+				
+				if (pvp > 0) message += (message.length() > 0 ? " §8| " : "") + "§7PVP §8⫸ §a" + getFormatedTime(pvp);
+				
+				if (meetup > 0) message += (message.length() > 0 ? " §8| " : "") + "§7Meetup §8⫸ §a " + getFormatedTime(meetup);
+				
+				if (message.length() == 0) {
 					
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
-						
-						DisplayUtils.sendActionBar(player, "§7Final heal §8⫸ §a" + DisplayTimers.getFormatedTime(45 - time) + " §8| §7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
-						
-					}
-					
-				} else if (time < pvpTime) {
-					
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
-						
-						DisplayUtils.sendActionBar(player, "§7PVP §8⫸ §a" + DisplayTimers.getFormatedTime(pvpTime - time) + " §8| §7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
-						
-					}
-					
-				} else if (time < meetupTime) {
-					
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
-						
-						DisplayUtils.sendActionBar(player, "§7Meetup §8⫸ §a" + DisplayTimers.getFormatedTime(meetupTime - time));
-						
-					}
-					
-				} else {
-					
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
-						
-						DisplayUtils.sendActionBar(player, "§8⫸ §6Go to the middle of the map §8⫷");
-						
-					}
+					int size = (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize();
+					message = "§8⫸ §6Meetup is now! §8| §7Border size §8⫸ §a" + size + "§7x§a" + size;
 					
 				}
 				
-				if (time == 45) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+						
+					if (MeetupWarning.runnables.containsKey(player.getUniqueId())) continue;
+						
+					DisplayUtils.sendActionBar(player, message);
+						
+				}
+				
+				if (finalHeal == 0) {
 					
 					Bukkit.getPluginManager().callEvent(new FinalHealEvent());
 					
@@ -103,17 +86,9 @@ public class DisplayTimers {
 					
 				}
 				
-				if (time == pvpTime) {
-					
-					Bukkit.getPluginManager().callEvent(new PVPEvent());
-					
-				}
+				if (pvp == 0) Bukkit.getPluginManager().callEvent(new PVPEvent());
 				
-				if (time == meetupTime) {
-					
-					Bukkit.getPluginManager().callEvent(new MeetupEvent());
-					
-				}
+				if (meetup == 0) Bukkit.getPluginManager().callEvent(new MeetupEvent());
 				
 				time++;
 				
@@ -208,13 +183,13 @@ public class DisplayTimers {
 	
 	public static int getTimeLeftPVP() {
 		
-		return (pvpTime - time);
+		return pvpTime - time;
 		
 	}
 	
 	public static int getTimeLeftMeetup() {
 		
-		return (meetupTime - time);
+		return meetupTime - time;
 		
 	}
 

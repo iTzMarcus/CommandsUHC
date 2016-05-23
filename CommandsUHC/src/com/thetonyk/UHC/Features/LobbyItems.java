@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,7 +16,9 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Inventories.RulesInventory;
@@ -28,38 +32,49 @@ public class LobbyItems implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
+		
+		Status status = GameUtils.getStatus();
+		ItemStack item = event.getItem();
+		Player player = event.getPlayer();
 			
-		if (event.getItem() == null || !event.getItem().hasItemMeta() || !event.getItem().getItemMeta().hasDisplayName()) return;
+		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
+		
+		ItemMeta meta = item.getItemMeta();
 				
-		if (event.getItem().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
+		if (meta.getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 			
 			event.setCancelled(true);	
-			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
-			if (GameUtils.getStatus() == Status.NONE) {
+			if (status == Status.NONE) {
 				
-				event.getPlayer().sendMessage(Main.PREFIX + "The game is not ready.");
+				player.sendMessage(Main.PREFIX + "The game is not ready.");
 				return;
 				
 			}
 			
-			event.getPlayer().openInventory(RulesInventory.getRules());
+			Inventory rules = RulesInventory.getRules();
+			
+			player.openInventory(rules);
 			return;
 			
 		}
 		
-		if (event.getItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
+		if (meta.getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);	
-			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
 			if (TeamsUtils.getTeamsLeft() == 75) {
 				
-				event.getPlayer().sendMessage(Main.PREFIX + "There are no teams.");
+				player.sendMessage(Main.PREFIX + "There are no teams.");
 				return;
 				
 			}
 			
-			event.getPlayer().openInventory(TeamsInventory.getTeams(1));
+			Inventory teams = TeamsInventory.getTeams(0);
+			
+			player.openInventory(teams);
 			return;
 			
 		}
@@ -69,37 +84,48 @@ public class LobbyItems implements Listener {
 	@EventHandler
 	public void onDrop(PlayerDropItemEvent event) {
 		
-		if (event.getItemDrop() == null || !event.getItemDrop().getItemStack().hasItemMeta() || !event.getItemDrop().getItemStack().getItemMeta().hasDisplayName()) return;
+		Status status = GameUtils.getStatus();
+		Item item = event.getItemDrop();
+		Player player = event.getPlayer();
+		
+		if (item == null || !item.getItemStack().hasItemMeta() || !item.getItemStack().getItemMeta().hasDisplayName()) return;
+		
+		ItemMeta meta = item.getItemStack().getItemMeta();
 				
-		if (event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
+		if (meta.getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 			
 			event.setCancelled(true);
-			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
-			if (GameUtils.getStatus() == Status.NONE) {
+			if (status == Status.NONE) {
 				
-				event.getPlayer().sendMessage(Main.PREFIX + "The game is not ready.");
+				player.sendMessage(Main.PREFIX + "The game is not ready.");
 				return;
 				
 			}
 			
-			event.getPlayer().openInventory(RulesInventory.getRules());
+			Inventory rules = RulesInventory.getRules();
+			
+			player.openInventory(rules);
 			return;
 			
 		}
 		
-		if (event.getItemDrop().getItemStack().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
+		if (meta.getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);
-			event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
 			if (TeamsUtils.getTeamsLeft() == 75) {
 				
-				event.getPlayer().sendMessage(Main.PREFIX + "There are no teams.");
+				player.sendMessage(Main.PREFIX + "There are no teams.");
 				return;
 				
 			}
 			
-			event.getPlayer().openInventory(TeamsInventory.getTeams(1));
+			Inventory teams = TeamsInventory.getTeams(0);
+			
+			player.openInventory(teams);
 			return;
 			
 		}
@@ -109,37 +135,50 @@ public class LobbyItems implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 				
-		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+		if (!(event.getWhoClicked() instanceof Player)) return;
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
+		Status status = GameUtils.getStatus();
+		ItemStack item = event.getCurrentItem();
+		Player player = (Player) event.getWhoClicked();
+		
+		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
+		
+		ItemMeta meta = item.getItemMeta();
+		
+		if (meta.getDisplayName().equals("§a§lThe Rules §7(Right-Click)")) {
 				
 			event.setCancelled(true);
-			((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
 			
-			if (GameUtils.getStatus() == Status.NONE) {
+			if (status == Status.NONE) {
 				
-				event.getWhoClicked().sendMessage(Main.PREFIX + "The game is not ready.");
+				player.sendMessage(Main.PREFIX + "The game is not ready.");
 				return;
 				
 			}
 			
-			event.getWhoClicked().openInventory(RulesInventory.getRules());
+			Inventory rules = RulesInventory.getRules();
+			
+			player.openInventory(rules);
 			return;
 			
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
+		if (meta.getDisplayName().equals("§6§lTeams List §7(Right-Click)")) {
 			
 			event.setCancelled(true);
-			((Player) event.getWhoClicked()).playSound(event.getWhoClicked().getLocation(), Sound.ORB_PICKUP, 1, 1);
+			player.playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 1);
+			
 			if (TeamsUtils.getTeamsLeft() == 75) {
 				
-				event.getWhoClicked().sendMessage(Main.PREFIX + "There are no teams.");
+				player.sendMessage(Main.PREFIX + "There are no teams.");
 				return;
 				
 			}
 			
-			event.getWhoClicked().openInventory(TeamsInventory.getTeams(1));
+			Inventory teams = TeamsInventory.getTeams(0);
+			
+			player.openInventory(teams);
 			return;
 			
 		}
@@ -149,27 +188,36 @@ public class LobbyItems implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && !GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		
+		if ((status == Status.TELEPORT || status == Status.PLAY || status == Status.END) && !GameUtils.getDeath(player.getUniqueId())) return;
 			
-		giveItems(event.getPlayer());
+		giveItems(player);
 		
 	}
 	
 	@EventHandler
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		
-		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		Player player = event.getPlayer();
+		World world = player.getWorld();
 		
-		giveItems(event.getPlayer());
+		if (!world.getName().equalsIgnoreCase("lobby")) return;
+		
+		giveItems(player);
 		
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onRespawn(PlayerRespawnEvent event) {
 		
-		if (!event.getRespawnLocation().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		Player player = event.getPlayer();
+		World world = event.getRespawnLocation().getWorld();
 		
-		giveItems(event.getPlayer());
+		if (!world.getName().equalsIgnoreCase("lobby")) return;
+		
+		giveItems(player);
 		
 	}
 	
@@ -177,6 +225,7 @@ public class LobbyItems implements Listener {
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		lore.add("§7Click to see the rules.");
+		
 		ItemStack rules = ItemsUtils.createItem(Material.PAPER, "§a§lThe Rules §7(Right-Click)", 1, 0, lore);
 		rules = ItemsUtils.addGlow(rules);
 		
@@ -184,6 +233,7 @@ public class LobbyItems implements Listener {
 		
 		lore = new ArrayList<String>();
 		lore.add("§7Click to see teams.");
+		
 		ItemStack teams = ItemsUtils.createItem(Material.NAME_TAG, "§6§lTeams List §7(Right-Click)", 1, 0, lore);
 		teams = ItemsUtils.addGlow(teams);
 		

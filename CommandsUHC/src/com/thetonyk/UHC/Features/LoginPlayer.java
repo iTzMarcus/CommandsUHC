@@ -1,12 +1,16 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
@@ -21,7 +25,8 @@ public class LoginPlayer implements Listener {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+			Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+			player.setScoreboard(scoreboard);
 			PermissionsUtils.setPermissions(player);
 			PermissionsUtils.updateBungeePermissions(player);
 			
@@ -32,32 +37,29 @@ public class LoginPlayer implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
 
-		if (event.getPlayer().isDead()) event.getPlayer().spigot().respawn();
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
-		event.getPlayer().setNoDamageTicks(0);
-		event.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+		if (player.isDead()) player.spigot().respawn();
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
+		player.setNoDamageTicks(0);
+		
+		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + player.getName());
+		
+		if ((status == Status.TELEPORT || status == Status.PLAY || status == Status.END) && (!GameUtils.getDeath(uuid) || GameUtils.getSpectate(uuid))) return;
 			
-			player.showPlayer(event.getPlayer());
-			event.getPlayer().showPlayer(player);
-			
-		}
+		DisplayUtils.sendTitle(player, "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
 		
-		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(event.getPlayer().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName());
-		
-		if ((GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) && (!GameUtils.getDeath(event.getPlayer().getUniqueId()) || GameUtils.getSpectate(event.getPlayer().getUniqueId()))) return;
-			
-		DisplayUtils.sendTitle(event.getPlayer(), "§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
-		
-		event.getPlayer().teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
-		event.getPlayer().setGameMode(GameMode.ADVENTURE);
-		PlayerUtils.clearInventory(event.getPlayer());
-		PlayerUtils.clearXp(event.getPlayer());
-		PlayerUtils.feed(event.getPlayer());
-		PlayerUtils.heal(event.getPlayer());
-		PlayerUtils.clearEffects(event.getPlayer());
-		event.getPlayer().setMaxHealth(20.0);
+		Location spawn = Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5);
+		player.teleport(spawn);
+		player.setGameMode(GameMode.ADVENTURE);
+		PlayerUtils.clearInventory(player);
+		PlayerUtils.clearXp(player);
+		PlayerUtils.feed(player);
+		PlayerUtils.heal(player);
+		PlayerUtils.clearEffects(player);
+		player.setMaxHealth(20.0);
 		
 	}
 

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -29,17 +30,11 @@ public class TeleportLate implements Listener {
 	public void onStart(StartEvent event) {
 		
 		players.clear();
-		List<UUID> teleport = new ArrayList<UUID>();
+		List<UUID> alives = GameUtils.getAlives();
 		
-		for (UUID player : GameUtils.getAlives()) {
+		for (UUID player : alives) {
 			
 			if (Bukkit.getPlayer(player) == null) continue;
-			
-			if (GameUtils.getPlayers().containsKey(player) && !GameUtils.getTeleported(player)) {
-				
-				teleport.add(player);
-				
-			}
 			
 			players.add(player);
 			
@@ -47,7 +42,11 @@ public class TeleportLate implements Listener {
 		
 		List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
 		
-		for (UUID player : teleport) {
+		for (UUID player : alives) {
+			
+			if (Bukkit.getPlayer(player) == null) continue;
+			
+			if (GameUtils.getTeleported(player)) continue;
 		
 			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
 			
@@ -89,6 +88,8 @@ public class TeleportLate implements Listener {
 				
 				for (UUID uuid : new ArrayList<UUID>(players)) {
 					
+					if (Bukkit.getPlayer(uuid) == null) continue;
+					
 					GameUtils.setOnGround(uuid, true);
 					players.remove(uuid);
 					
@@ -107,25 +108,19 @@ public class TeleportLate implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		UUID uuid = event.getPlayer().getUniqueId();
+		Status status = GameUtils.getStatus();
 		
-		if (GameUtils.getOnGround(event.getPlayer().getUniqueId())) return;
+		if (status != Status.PLAY) return;
 		
-		if (start != null) {
+		if (GameUtils.getOnGround(uuid)) return;
 		
-			if (players.contains(event.getPlayer().getUniqueId())) {
-			
-				players.remove(event.getPlayer().getUniqueId());
-			
-			}
-			
-		}
+		if (start != null && players.contains(uuid)) players.remove(uuid);
 		
-		if (timers.containsKey(event.getPlayer().getUniqueId())) {
+		if (timers.containsKey(uuid)) {
 			
-			timers.get(event.getPlayer().getUniqueId()).cancel();
-			timers.put(event.getPlayer().getUniqueId(), null);
-			timers.remove(event.getPlayer().getUniqueId());
+			timers.get(uuid).cancel();
+			timers.remove(uuid);
 			
 		}
 		
@@ -134,18 +129,21 @@ public class TeleportLate implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || !GameUtils.getPlayers().containsKey(event.getPlayer().getUniqueId())) return;
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		Status status = GameUtils.getStatus();
 		
-		if (!GameUtils.getTeleported(event.getPlayer().getUniqueId())) {
+		if (status != Status.PLAY || GameUtils.getSpectate(uuid) || GameUtils.getDeath(uuid) ||!player.isWhitelisted()) return;
+		
+		if (!GameUtils.getTeleported(uuid)) {
 			
-			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
+			player.setWhitelisted(true);
 			
-			event.getPlayer().setWhitelisted(true);
-			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(event.getPlayer().getUniqueId());
+			if (status == Status.TELEPORT || status == Status.PLAY) GameUtils.addPlayer(uuid);
 			
-			Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
+			Map.Entry<String, UUID> entry = new Map.Entry<String, UUID>() {
 				
-				UUID uuid = event.getPlayer().getUniqueId();
+				UUID uuid = player.getUniqueId();
 
 				@Override
 				public String getKey() {
@@ -171,36 +169,28 @@ public class TeleportLate implements Listener {
 			
 			};
 			
-			uuids.add(uuid);
+			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
+			uuids.add(entry);
 			TeleportUtils.loadSpawnsAndTeleport(uuids);
 			
-			new BukkitRunnable() {
-				
-				public void run() {
-					
-					Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + event.getPlayer().getName() + "§7'...");
-					
-				}
-				
-			}.runTaskLater(Main.uhc, 1);
+			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + player.getName() + "§7'...");
 			
 		}
 		
-		if (!GameUtils.getOnGround(event.getPlayer().getUniqueId())) {
+		if (!GameUtils.getOnGround(uuid)) {
 		
-			timers.put(event.getPlayer().getUniqueId(), new BukkitRunnable() {
+			timers.put(uuid, new BukkitRunnable() {
 				
 				public void run() {
 					
-					GameUtils.setOnGround(event.getPlayer().getUniqueId(), true);;
-					timers.put(event.getPlayer().getUniqueId(), null);
-					timers.remove(event.getPlayer().getUniqueId());
+					GameUtils.setOnGround(uuid, true);;
+					timers.remove(uuid);
 					
 				}
 				
 			});
 			
-			timers.get(event.getPlayer().getUniqueId()).runTaskLater(Main.uhc, 600);
+			timers.get(uuid).runTaskLater(Main.uhc, 600);
 		
 		}
 		

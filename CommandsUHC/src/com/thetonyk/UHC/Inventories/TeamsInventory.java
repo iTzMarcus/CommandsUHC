@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,7 +25,7 @@ public class TeamsInventory implements Listener {
 	public static Inventory getTeams(int page) {
 		
 		Inventory inventory = Bukkit.createInventory(null, 54, "§8⫸ §4Teams");
-		Inventory inventory2 = Bukkit.createInventory(null, 54, "§8⫸ §4Teams");
+		Inventory inventory1 = Bukkit.createInventory(null, 54, "§8⫸ §4Teams");
 		
 		ArrayList<String> lore = new ArrayList<String>();
 		
@@ -97,7 +98,9 @@ public class TeamsInventory implements Listener {
 					
 					for (String player : teams.getString("members").split(";")) {
 						
-						lore.add("§8⫸ " + (GameUtils.getDeath(UUID.fromString(player)) ? "§c☠ " : "  ") + PlayerUtils.getRank(UUID.fromString(player)).getPrefix() + ((TeamsUtils.getTeam(UUID.fromString(player)) != null) ? TeamsUtils.getTeamPrefix(UUID.fromString(player)) : "§7") + PlayerUtils.getName(PlayerUtils.getId(UUID.fromString(player))));
+						UUID uuid = UUID.fromString(player);
+						
+						lore.add("§8⫸ " + (GameUtils.getDeath(uuid) ? "§c☠ " : "  ") + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + PlayerUtils.getName(PlayerUtils.getId(uuid)));
 						
 					}
 					
@@ -109,7 +112,7 @@ public class TeamsInventory implements Listener {
 					else {
 						
 						int slot = (count + 9) - 54;
-						inventory2.setItem(slot, item);
+						inventory1.setItem(slot, item);
 						
 					}
 					
@@ -121,13 +124,13 @@ public class TeamsInventory implements Listener {
 				if (count > 44) {
 					
 					inventory.setItem(52, ItemsUtils.getSkull("§7Next §8⫸", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjJmM2EyZGZjZTBjM2RhYjdlZTEwZGIzODVlNTIyOWYxYTM5NTM0YThiYTI2NDYxNzhlMzdjNGZhOTNiIn19fQ=="));
-					inventory2.setItem(52, ItemsUtils.getSkull("§8⫷ §7Previous", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmIwZjZlOGFmNDZhYzZmYWY4ODkxNDE5MWFiNjZmMjYxZDY3MjZhNzk5OWM2MzdjZjJlNDE1OWZlMWZjNDc3In19fQ=="));
+					inventory1.setItem(52, ItemsUtils.getSkull("§8⫷ §7Previous", "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmIwZjZlOGFmNDZhYzZmYWY4ODkxNDE5MWFiNjZmMjYxZDY3MjZhNzk5OWM2MzdjZjJlNDE1OWZlMWZjNDc3In19fQ=="));
 					
 				}
 					
 				ItemStack item = ItemsUtils.createItem(Material.BARRIER, "§8⫸ §cClose", 1, 0);
 				inventory.setItem(53, item);
-				inventory2.setItem(53, item);
+				inventory1.setItem(53, item);
 				
 			}
 			
@@ -139,8 +142,8 @@ public class TeamsInventory implements Listener {
 			
 		}
 		
-		if (page == 1) return inventory;
-		if (page == 2) return inventory2;
+		if (page == 0) return inventory;
+		if (page == 1) return inventory1;
 		
 		return null;
 		
@@ -153,25 +156,30 @@ public class TeamsInventory implements Listener {
 		
 		event.setCancelled(true);
 		
-		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+		if (!(event.getWhoClicked() instanceof Player)) return;
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§7Next §8⫸")) {
+		Player player = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		
+		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
+		
+		if (item.getItemMeta().getDisplayName().equals("§7Next §8⫸")) {
 			
-			Bukkit.getPlayer(event.getWhoClicked().getName()).openInventory(TeamsInventory.getTeams(2));
+			player.openInventory(TeamsInventory.getTeams(2));
 			return;
 			
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§8⫷ §7Previous")) {
+		if (item.getItemMeta().getDisplayName().equals("§8⫷ §7Previous")) {
 			
-			Bukkit.getPlayer(event.getWhoClicked().getName()).openInventory(TeamsInventory.getTeams(1));
+			player.openInventory(TeamsInventory.getTeams(1));
 			return;
 			
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§8⫸ §cClose")) {
+		if (item.getItemMeta().getDisplayName().equals("§8⫸ §cClose")) {
 			
-			event.getWhoClicked().closeInventory();
+			player.closeInventory();
 			
 		}
 		

@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ import com.thetonyk.UHC.Utils.TeleportUtils;
 
 public class TeleportCommand implements CommandExecutor, TabCompleter, Listener {
 	
-	private Boolean teleport = false;
+	private static Boolean teleport = false;
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
@@ -38,14 +39,25 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 		}
 		
-		if (GameUtils.getWorld() == null) {
+		Status status = GameUtils.getStatus();
+		String gameWorld = GameUtils.getWorld();
+		World world = Bukkit.getWorld(gameWorld);
+		
+		if (gameWorld == null) {
 			
 			sender.sendMessage(Main.PREFIX + "You need to setup the game first.");
 			return true;
 			
 		}
 		
-		if (GameUtils.getStatus() == Status.NONE) {
+		if (world == null) {
+			
+			sender.sendMessage(Main.PREFIX + "The game world is not loaded.");
+			return true;
+			
+		}
+		
+		if (status == Status.NONE || status == Status.OPEN) {
 			
 			sender.sendMessage(Main.PREFIX + "The game is not ready.");
 			return true;
@@ -59,30 +71,22 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 			for (int i = 0; i < args.length; i++) {
 				
-				if (Bukkit.getPlayer(args[i]) == null) {
+				Player player = Bukkit.getPlayer(args[i]);
+				
+				if (player == null) {
 					
-					sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
+					sender.sendMessage(Main.PREFIX + "The player '§6" + args[i] + "§7' is not online.");
 					return true;
 					
 				}
 				
-				players.add(Bukkit.getPlayer(args[i]).getUniqueId());
+				players.add(player.getUniqueId());
 				
-				if (i == 0) {
-					
-					playersMessage = "'§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
-					continue;
-					
-				}
+				if (i == 0) playersMessage = "'§6";
+				else if (i == (args.length - 1)) playersMessage += " and '§6" ;
+				else playersMessage += ", '§6";
 				
-				if (i == (args.length - 1)) {
-					
-					playersMessage += " and '§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
-					continue;
-					
-				}
-				
-				playersMessage += ", '§6" + Bukkit.getPlayer(args[i]).getName() + "§7'";
+				playersMessage += player.getName() + "§7'";
 				
 			}
 			
@@ -90,14 +94,17 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
 			
-			for (UUID player : players) {
+			for (UUID toAdd : players) {
 				
-				Bukkit.getPlayer(player).setWhitelisted(true);
-				if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY) GameUtils.addPlayer(Bukkit.getPlayer(player).getUniqueId());
+				Player player = Bukkit.getPlayer(toAdd);
+				
+				player.setWhitelisted(true);
+				
+				if (status == Status.TELEPORT || status == Status.PLAY) GameUtils.addPlayer(toAdd);
 			
 				Map.Entry<String, UUID> uuid = new Map.Entry<String, UUID>() {
 				
-					UUID uuid = Bukkit.getPlayer(player).getUniqueId();
+					UUID uuid = toAdd;
 	
 					@Override
 					public String getKey() {
@@ -139,16 +146,12 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 		}
 		
-		if (teleport) {
+		if (TeleportCommand.teleport) {
 			
 			sender.sendMessage(Main.PREFIX + "You have already started the teleportation.");
 			return true;
 			
 		}
-		
-		GameUtils.setStatus(Status.TELEPORT);
-		Bukkit.setWhitelist(true);
-		teleport = true;
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			
@@ -158,6 +161,9 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 			
 		}
 		
+		GameUtils.setStatus(Status.TELEPORT);
+		Bukkit.setWhitelist(true);
+		TeleportCommand.teleport = true;
 		GameUtils.setupPlayers();
 		
 		int teams = 0;
@@ -165,6 +171,8 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 		List<Map.Entry<String, ?>> teleport = new ArrayList<Map.Entry<String, ?>>();
 		
 		for (OfflinePlayer whitelisted : Bukkit.getWhitelistedPlayers()) {
+			
+			if (GameUtils.getSpectate(whitelisted.getUniqueId())) continue;
 			
 			List<String> teamsDone = new ArrayList<String>();
 			
@@ -176,13 +184,15 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 				
 			}
 			
-			if (TeamsUtils.getTeam(whitelisted.getUniqueId()) != null) {
+			String playerTeam = TeamsUtils.getTeam(whitelisted.getUniqueId());
+			
+			if (playerTeam != null) {
 				
-				if (teamsDone.contains(TeamsUtils.getTeam(whitelisted.getUniqueId()))) continue;
+				if (teamsDone.contains(playerTeam)) continue;
 				
 				Map.Entry<String, String> team = new Map.Entry<String, String>() {
 					
-					String team = TeamsUtils.getTeam(whitelisted.getUniqueId());
+					String team = playerTeam;
 
 					@Override
 					public String getKey() {
@@ -257,9 +267,9 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 		
 		}.runTaskLater(Main.uhc, 10);
 		
-		Bukkit.getWorld(GameUtils.getWorld()).setStorm(false);
-		Bukkit.getWorld(GameUtils.getWorld()).setThundering(false);
-		Bukkit.getWorld(GameUtils.getWorld()).setTime(0);
+		world.setStorm(false);
+		world.setThundering(false);
+		world.setTime(6000);
 		
 		Bukkit.broadcastMessage(Main.PREFIX + "Started to teleport §a" + teams + "§7 teams and §a" + solo + "§7 solos...");
 		
@@ -283,6 +293,10 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 		List<String> complete = new ArrayList<String>();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			if (GameUtils.getSpectate(player.getUniqueId())) continue;
+			
+			if (GameUtils.getTeleported(player.getUniqueId()) && !GameUtils.getDeath(player.getUniqueId())) continue;
 			
 			complete.add(player.getName());
 			
@@ -316,7 +330,7 @@ public class TeleportCommand implements CommandExecutor, TabCompleter, Listener 
 	public void onTeleportFinish (TeleportEvent event) {
 		
 		GameUtils.setTeleported(true);
-		teleport = false;
+		TeleportCommand.teleport = false;
 		
 		Bukkit.broadcastMessage(Main.PREFIX + "All players have been teleported.");
 		

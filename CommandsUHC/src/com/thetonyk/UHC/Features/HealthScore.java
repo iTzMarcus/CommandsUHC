@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.thetonyk.UHC.Main;
 
@@ -16,11 +18,7 @@ public class HealthScore implements Listener {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			player.getScoreboard().registerNewObjective("below", "dummy");
-			player.getScoreboard().getObjective("below").setDisplaySlot(DisplaySlot.BELOW_NAME);
-			player.getScoreboard().getObjective("below").setDisplayName("§4♥");
-			player.getScoreboard().registerNewObjective("list", "dummy");
-			player.getScoreboard().getObjective("list").setDisplaySlot(DisplaySlot.PLAYER_LIST);
+			update(player);
 			
 		}
 		
@@ -28,12 +26,17 @@ public class HealthScore implements Listener {
 			
 			public void run() {
 				
-				for (Player scoreboard : Bukkit.getOnlinePlayers()) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					Scoreboard scoreboard = player.getScoreboard();
+					Objective below = scoreboard.getObjective("below");
+					Objective list = scoreboard.getObjective("list");
 				
-					for (Player player : Bukkit.getOnlinePlayers()) {
+					for (Player score : Bukkit.getOnlinePlayers()) {
 						
-						scoreboard.getScoreboard().getObjective("below").getScore(player.getName()).setScore((int) (((player.getHealth()) / 2) * 10));
-						scoreboard.getScoreboard().getObjective("list").getScore(player.getName()).setScore((int) (((player.getHealth()) / 2) * 10));
+						int health = (int) (player.getHealth() / 2) * 10;
+						below.getScore(score.getName()).setScore(health);
+						list.getScore(score.getName()).setScore(health);
 						
 					}
 					
@@ -48,11 +51,31 @@ public class HealthScore implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 
-		event.getPlayer().getScoreboard().registerNewObjective("below", "dummy");
-		event.getPlayer().getScoreboard().getObjective("below").setDisplaySlot(DisplaySlot.BELOW_NAME);
-		event.getPlayer().getScoreboard().getObjective("below").setDisplayName("§4♥");
-		event.getPlayer().getScoreboard().registerNewObjective("list", "dummy");
-		event.getPlayer().getScoreboard().getObjective("list").setDisplaySlot(DisplaySlot.PLAYER_LIST);
+		update(event.getPlayer());
+		
+	}
+	
+	private static void update(Player player) {
+		
+		Scoreboard scoreboard = player.getScoreboard();
+		Objective below = scoreboard.getObjective("below");
+		Objective list = scoreboard.getObjective("list");
+		
+		if (below == null) {
+			
+			below = scoreboard.registerNewObjective("below", "dummy");
+			below.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			below.setDisplayName("§4♥");
+			
+		}
+		
+		if (list == null) {
+			
+			list = scoreboard.registerNewObjective("list", "dummy");
+			list.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+			list.setDisplayName("§4♥");
+			
+		}
 		
 	}
 

@@ -2,9 +2,10 @@ package com.thetonyk.UHC.Features;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -31,33 +32,33 @@ public class ChatSettings implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onChat (AsyncPlayerChatEvent event) {
 		
-		Set<Player> players = new HashSet<Player>();
-		players.addAll(event.getRecipients());
+		UUID uuid = event.getPlayer().getUniqueId();
+		String name = event.getPlayer().getName();
+		String team = TeamsUtils.getTeam(uuid);
+		World world = event.getPlayer().getWorld();
+		Set<Player> players = new HashSet<Player>(event.getRecipients());
+		Set<Player> receivers = event.getRecipients();
+		String oldMessage = event.getMessage();
+		Status status = GameUtils.getStatus();
 		
 		for (Player receiver : players) {
 			
 			if (PlayerUtils.getChatVisibility(receiver) == 1) continue;
 				
-			event.getRecipients().remove(receiver);
+			receivers.remove(receiver);
 			
 		}
 		
-		if (GameUtils.getStatus() == Status.PLAY && event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) {
+		if (status == Status.PLAY && world.getName().equalsIgnoreCase("lobby")) {
 			
-			for (Player player : Bukkit.getWorld("lobby").getPlayers()) {
-				
-				player.sendMessage("§6DeathChat §8| " + PlayerUtils.getRank(event.getPlayer().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()) : "§7") + event.getPlayer().getName() + "§r §8⫸ §f" + event.getMessage());
-				
-			}
-			
-			event.setCancelled(true);
-			return;
-			
+			receivers.clear();
+			receivers.addAll(world.getPlayers());
+
 		}
 		
 		ChatColor rankColor = GRAY;
 		
-		switch (PlayerUtils.getRank(event.getPlayer().getUniqueId())) {
+		switch (PlayerUtils.getRank(uuid)) {
 		
 			case PLAYER:
 				break;
@@ -89,22 +90,24 @@ public class ChatSettings implements Listener {
 				
 		}
 		
-		for (Player receiver : event.getRecipients()) {
+		for (Player receiver : receivers) {
 		
 			ComponentBuilder message = new ComponentBuilder("");
-			if (GameUtils.getSpectate(event.getPlayer().getUniqueId())) message.append("Spec").color(GRAY).italic(true).append(" | ").color(DARK_GRAY).italic(false);
-			if (PlayerUtils.getRank(event.getPlayer().getUniqueId()) != Rank.PLAYER) message.append(PlayerUtils.getRank(event.getPlayer().getUniqueId()).getName().substring(2)).color(rankColor).append(" | ").color(DARK_GRAY);
-			message.append(event.getPlayer().getName()).color((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? ChatColor.getByChar(TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()).charAt(1)) : GRAY).bold((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()).contains("l") : false).italic((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()).contains("o") : false).underlined((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()).contains("n") : false).strikethrough((TeamsUtils.getTeam(event.getPlayer().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getPlayer().getUniqueId()).contains("m") : false);
-			if (!receiver.equals(event.getPlayer())) message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(GameUtils.getSpectate(receiver.getUniqueId()) ? "Teleport to " : "Send a message to ").color(GRAY).append(event.getPlayer().getName()).color(GREEN).append(".").color(GRAY).create()));
-			if (!receiver.equals(event.getPlayer())) message.event(new ClickEvent(GameUtils.getSpectate(receiver.getUniqueId()) ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND, GameUtils.getSpectate(receiver.getUniqueId()) ? "/tp " + event.getPlayer().getName() : "/msg " + event.getPlayer().getName() + " "));
+			if (GameUtils.getSpectate(uuid)) message.append("Spec").color(GRAY).italic(true).append(" | ").color(DARK_GRAY).italic(false);
+			if (GameUtils.getStatus() == Status.PLAY && world.getName().equalsIgnoreCase("lobby")) message.append("DeathChat").color(GOLD).append(" | ").color(DARK_GRAY);
+			if (PlayerUtils.getRank(uuid) != Rank.PLAYER) message.append(PlayerUtils.getRank(uuid).getName().substring(2)).color(rankColor).append(" | ").color(DARK_GRAY);
+			message.append(name).color(GRAY);
+			if (team != null) message.color(ChatColor.getByChar(TeamsUtils.getTeamPrefix(uuid).charAt(1))).bold(TeamsUtils.getTeamPrefix(uuid).contains("l")).italic(TeamsUtils.getTeamPrefix(uuid).contains("o")).underlined(TeamsUtils.getTeamPrefix(uuid).contains("n")).strikethrough(TeamsUtils.getTeamPrefix(uuid).contains("m"));
+			if (!receiver.equals(event.getPlayer())) message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(GameUtils.getSpectate(receiver.getUniqueId()) ? "Teleport to " : "Send a message to ").color(GRAY).append(receiver.getName()).color(GREEN).append(".").color(GRAY).create()));
+			if (!receiver.equals(event.getPlayer())) message.event(new ClickEvent(GameUtils.getSpectate(receiver.getUniqueId()) ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND, GameUtils.getSpectate(receiver.getUniqueId()) ? "/tp " + receiver.getName() : "/msg " + receiver.getName() + " "));
 			message.append(" ⫸ ").retain(FormatRetention.NONE).color(DARK_GRAY);
 			
-			if (PlayerUtils.getMentionsState(receiver) == 1 && event.getMessage().contains(receiver.getName())) {
+			if (PlayerUtils.getMentionsState(receiver) == 1 && oldMessage.contains(receiver.getName())) {
 				
-				message.append(event.getMessage().replaceAll(receiver.getName(), "§a§l" + receiver.getName() + "§r")).color(WHITE);
+				message.append(oldMessage.replaceAll(receiver.getName(), "§a§l" + receiver.getName() + "§r")).color(WHITE);
 				receiver.playSound(receiver.getLocation(), Sound.ORB_PICKUP, 1, 1);
 				
-			} else message.append(event.getMessage()).color(WHITE);
+			} else message.append(oldMessage).color(WHITE);
 			
 			receiver.spigot().sendMessage(message.create());
 			

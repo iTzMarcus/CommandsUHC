@@ -12,8 +12,10 @@ public class HealthRegeneration implements Listener {
 	public void onHeal(EntityRegainHealthEvent event) {
 		
 		if (!(event.getEntity() instanceof Player)) return;
+		
+		RegainReason reason = event.getRegainReason();
 			
-		if (event.getRegainReason() != RegainReason.REGEN && event.getRegainReason() != RegainReason.SATIATED) return;
+		if (reason != RegainReason.REGEN && reason != RegainReason.SATIATED) return;
 				
 		event.setCancelled(true);
 		

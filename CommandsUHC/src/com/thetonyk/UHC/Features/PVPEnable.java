@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Features;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,7 +18,11 @@ public class PVPEnable implements Listener {
 	@EventHandler
 	public void onPVPEnable(PVPEvent event) {
 		
-		Bukkit.getWorld(GameUtils.getWorld()).setPVP(true);
+		World world = Bukkit.getWorld(GameUtils.getWorld());
+		
+		if (world == null) return;
+		
+		world.setPVP(true);
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			

@@ -2,6 +2,7 @@ package com.thetonyk.UHC.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -41,14 +42,16 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 				
 		}
 		
-		if (PlayerUtils.getUUID(args[0]) == null) {
+		UUID uuid = PlayerUtils.getUUID(args[0]);
+		Player player = Bukkit.getPlayer(uuid);
+		Rank rank = null;
+		
+		if (uuid == null) {
 			
 			sender.sendMessage(Main.PREFIX + "This player is not known on this server");
 			return true;
 		
 		}
-			
-		Rank rank = null;
 		
 		try {
 			
@@ -68,16 +71,15 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 			
 		}
 			
-		PlayerUtils.setRank(PlayerUtils.getUUID(args[0]), rank);
-		if (Bukkit.getPlayer(args[0]) != null) DisplayNametags.updateNametag(Bukkit.getPlayer(args[0]));
-		
-		if (Bukkit.getPlayer(args[0]) != null && sender.getName() != Bukkit.getPlayer(args[0]).getName()) {
-				
-			Bukkit.getPlayer(args[0]).getPlayer().sendMessage(Main.PREFIX + "Your rank was set to '§6" + rank.toString().toLowerCase() + "§7'.");
-			
-		}
+		PlayerUtils.setRank(uuid, rank);
 		
 		sender.sendMessage(Main.PREFIX + "The rank of '§6" + args[0] + "§7' has been set to '§6" + rank.toString().toLowerCase() + "§7'.");
+		
+		if (player == null) return true;
+		
+		DisplayNametags.updateNametag(player);
+		
+		if (sender.getName() != player.getName()) player.sendMessage(Main.PREFIX + "Your rank was set to '§6" + rank.toString().toLowerCase() + "§7'.");
 		
 		return true;
 		

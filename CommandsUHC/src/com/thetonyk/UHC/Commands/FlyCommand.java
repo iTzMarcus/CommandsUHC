@@ -24,19 +24,18 @@ public class FlyCommand implements CommandExecutor, TabCompleter {
     		
 		}
 		
-		if (args.length < 1) {
-			
-			sender.sendMessage(Main.PREFIX + "Usage: /" + label + " <player>");
-			return true;
-			
-		}
+		Player player = Bukkit.getPlayer(sender.getName());
 		
-		Player player = Bukkit.getPlayer(args[0]);
+		if (args.length > 0) {
 		
-		if (player == null) {
+			player = Bukkit.getPlayer(args[0]);
 			
-			sender.sendMessage(Main.PREFIX + "'§6" + args[0] + "§7' is not online.");
-			return true;
+			if (player == null) {
+				
+				sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
+				return true;
+				
+			}
 			
 		}
 		

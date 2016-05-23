@@ -22,31 +22,35 @@ import net.md_5.bungee.api.chat.HoverEvent;
 
 import static net.md_5.bungee.api.ChatColor.*;
 
+import java.util.UUID;
+
 public class DeathRespawn implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
+		UUID uuid = event.getEntity().getUniqueId();
+		Player death = event.getEntity();
+		Status status = GameUtils.getStatus();
+		
 		new BukkitRunnable() {
 			
 			public void run() {
 				
-				event.getEntity().spigot().respawn();
+				death.spigot().respawn();
 				
 			}
 			
 		}.runTaskLater(Main.uhc, 2);
 		
-		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) return;
-		
-		event.getEntity().setWhitelisted(false);
+		if (status != Status.PLAY || GameUtils.getDeath(uuid)) return;
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			player.hidePlayer(event.getEntity());
+			player.hidePlayer(death);
 			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) event.getEntity().showPlayer(player);
-			else event.getEntity().hidePlayer(player);
+			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) death.showPlayer(player);
+			else death.hidePlayer(player);
 			
 		}
 		
@@ -55,34 +59,40 @@ public class DeathRespawn implements Listener {
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		
+		if (status != Status.PLAY) return;
 		
 		event.setRespawnLocation(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
-		event.getPlayer().setGameMode(GameMode.ADVENTURE);
-		event.getPlayer().setMaxHealth(20.0);
-		event.getPlayer().sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or spoil please.");
+		player.setGameMode(GameMode.ADVENTURE);
+		player.setMaxHealth(20.0);
+		player.sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or spoil please.");
 		
 		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);
 		text.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to see our ").color(GRAY).append("Twitter").color(GREEN).append(".").color(GRAY).create()));
 		text.event(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://twitter.com/commandspvp"));
 		text.append(" for next games.").retain(FormatRetention.NONE).color(GRAY);
 		
-		event.getPlayer().spigot().sendMessage(text.create());
+		player.spigot().sendMessage(text.create());
 		
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		Status status = GameUtils.getStatus();
+		Player death = event.getPlayer();
+		
+		if (status != Status.PLAY) return;
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			if (GameUtils.getDeath(event.getPlayer().getUniqueId())) player.hidePlayer(event.getPlayer());
-			else player.showPlayer(event.getPlayer());
+			if (GameUtils.getDeath(death.getUniqueId())) player.hidePlayer(death);
+			else player.showPlayer(death);
 			
-			if (!GameUtils.getDeath(player.getUniqueId())) event.getPlayer().showPlayer(player);
-			else event.getPlayer().hidePlayer(player);
+			if (!GameUtils.getDeath(player.getUniqueId())) death.showPlayer(player);
+			else death.hidePlayer(player);
 			
 		}
 		

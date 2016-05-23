@@ -31,21 +31,24 @@ public class ButcherCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (!WorldUtils.exist(args[0]) && !args[0].equalsIgnoreCase("lobby")) {
+		String name = args[0];
+		World world = Bukkit.getWorld(name);
+		
+		if (!WorldUtils.exist(name) && !name.equalsIgnoreCase("lobby")) {
 			
-			sender.sendMessage(Main.PREFIX + "The world '§6" + args[0] + "§7' doesn't exist.");
+			sender.sendMessage(Main.PREFIX + "The world '§6" + name + "§7' doesn't exist.");
 			return true;
 			
 		}
 						
-		if (Bukkit.getWorld(args[0]) == null) {
+		if (world == null) {
 				
-			sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' is not loaded.");
+			sender.sendMessage(Main.PREFIX + "The world '§6" + name + "§7' is not loaded.");
 			return true;
 			
 		}
 		
-		int count = WorldUtils.butcher(Bukkit.getWorld(args[0]));
+		int count = WorldUtils.butcher(world);
 		
 		Bukkit.broadcastMessage(Main.PREFIX + "§a" + count + "§7 entites killed.");
 		return true;

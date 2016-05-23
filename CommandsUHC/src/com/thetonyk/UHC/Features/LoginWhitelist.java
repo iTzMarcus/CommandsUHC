@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Features;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,19 +16,23 @@ public class LoginWhitelist implements Listener {
 	@EventHandler
 	public void onConnect(PlayerLoginEvent event) {
 		
-		PermissionsUtils.setPermissions(event.getPlayer());
-		PermissionsUtils.updateBungeePermissions(event.getPlayer());
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		Result result = event.getResult();
 		
-		if (event.getPlayer().isOp() || event.getPlayer().hasPermission("global.bypasswhitelist")) {
+		PermissionsUtils.setPermissions(player);
+		PermissionsUtils.updateBungeePermissions(player);
+		
+		if (player.isOp() || player.hasPermission("global.bypasswhitelist")) {
 			
 			event.allow();
 			return;
 			
 		}
 		
-		if (event.getResult() == Result.KICK_WHITELIST) {
+		if (result == Result.KICK_WHITELIST) {
 				
-			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+			if (status == Status.TELEPORT || status == Status.PLAY || status == Status.END) {
 				
 				event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cThe UHC has already begun.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
 				return;
@@ -40,14 +45,8 @@ public class LoginWhitelist implements Listener {
 		
 		if (GameUtils.getPlayersCount() >= GameUtils.getSlots()) {
 			
-			if (event.getPlayer().isOp() || event.getPlayer().hasPermission("global.bypasswhitelist")) {
-				
-				event.allow();
-				return;
-				
-			}
-			
 			event.disallow(Result.KICK_FULL, "§8⫸ §7The server is currently full. §8⫷\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+			return;
 			
 		}
 		
@@ -56,9 +55,12 @@ public class LoginWhitelist implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onConnectMonitor(PlayerLoginEvent event) {
 		
-		if (event.getResult() == Result.ALLOWED) return;
+		Player player = event.getPlayer();
+		Result result = event.getResult();
 		
-		PermissionsUtils.clearPermissions(event.getPlayer());
+		if (result == Result.ALLOWED) return;
+		
+		PermissionsUtils.clearPermissions(player);
 		
 	}
 	

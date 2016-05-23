@@ -3,6 +3,7 @@ package com.thetonyk.UHC.Features;
 import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,7 +29,7 @@ public class DisplayTab implements Listener {
 				
 			}
 			
-		}.runTaskTimer(Main.uhc, 0, 20);
+		}.runTaskTimer(Main.uhc, 0, 5);
 		
 	}
 	
@@ -41,12 +42,16 @@ public class DisplayTab implements Listener {
 	
 	private void updateTab () {
 		
-		double rawTps = MinecraftServer.getServer().recentTps[0];
 		DecimalFormat format = new DecimalFormat("##.##");
+		int pvpTime = DisplayTimers.getTimeLeftPVP();
+		int meetupTime = DisplayTimers.getTimeLeftMeetup();
+		World world = Bukkit.getWorld(GameUtils.getWorld());
+		
+		double rawTps = MinecraftServer.getServer().recentTps[0];
 		String tps = format.format(rawTps);
-		String pvp = DisplayTimers.getTimeLeftPVP() > 0 ? DisplayTimers.getOtherFormatedTime(DisplayTimers.getTimeLeftPVP()) : "ON";
-		String meetup = DisplayTimers.getTimeLeftMeetup() > 0 ? DisplayTimers.getOtherFormatedTime(DisplayTimers.getTimeLeftMeetup()) : "Now";
-		String border = GameUtils.getWorld() != null ? (Bukkit.getWorld(GameUtils.getWorld()) != null ? (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§a" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() : "Not ready") : "Not ready";
+		String pvp = pvpTime > 0 ? DisplayTimers.getOtherFormatedTime(pvpTime) : "ON";
+		String meetup = meetupTime > 0 ? DisplayTimers.getOtherFormatedTime(meetupTime) : "Now";
+		String border = world != null ? (int) world.getWorldBorder().getSize() + "§7x§a" + (int) world.getWorldBorder().getSize() : "Not ready";
 		int players = GameUtils.getPlayersCount();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {

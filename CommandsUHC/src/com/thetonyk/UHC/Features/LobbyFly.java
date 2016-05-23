@@ -1,6 +1,8 @@
 package com.thetonyk.UHC.Features;
 
 import org.bukkit.GameMode;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -12,45 +14,56 @@ public class LobbyFly implements Listener {
 	@EventHandler
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		
-		if (event.getPlayer().getGameMode() == GameMode.CREATIVE || event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
+		Player player = event.getPlayer();
+		GameMode gamemode = player.getGameMode();
+		World world = player.getWorld();
 		
-		if (event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && event.getPlayer().hasPermission("global.fly")) {
+		if (gamemode == GameMode.CREATIVE || gamemode == GameMode.SPECTATOR) return;
+		
+		if (world.getName().equalsIgnoreCase("lobby") && player.hasPermission("global.fly")) {
 			
-			event.getPlayer().setAllowFlight(true);
+			player.setAllowFlight(true);
 			return;
 			
 		}
 		
-		event.getPlayer().setAllowFlight(false);
-		event.getPlayer().setFlying(false);
+		player.setAllowFlight(false);
+		player.setFlying(false);
 		
 	}
 	
 	@EventHandler
 	public void onChangeGameMode(PlayerGameModeChangeEvent event) {
-		 
-		if (event.getNewGameMode() == GameMode.CREATIVE || event.getNewGameMode() == GameMode.SPECTATOR) return;
 		
-		if (event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby") && event.getPlayer().hasPermission("global.fly")) {
+		Player player = event.getPlayer();
+		GameMode gamemode = event.getNewGameMode();
+		World world = player.getWorld();
+		 
+		if (gamemode == GameMode.CREATIVE || gamemode == GameMode.SPECTATOR) return;
+		
+		if (world.getName().equalsIgnoreCase("lobby") && player.hasPermission("global.fly")) {
 			
-			event.getPlayer().setAllowFlight(true);
+			player.setAllowFlight(true);
 			return;
 			
 		}
 		
-		event.getPlayer().setAllowFlight(false);
-		event.getPlayer().setFlying(false);
+		player.setAllowFlight(false);
+		player.setFlying(false);
 		
 	}
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (!event.getPlayer().hasPermission("global.fly")) return;
+		Player player = event.getPlayer();
+		World world = player.getWorld();
 		
-		if (!event.getPlayer().getWorld().getName().equalsIgnoreCase("lobby")) return;
+		if (!player.hasPermission("global.fly")) return;
+		
+		if (!world.getName().equalsIgnoreCase("lobby")) return;
 			
-		event.getPlayer().setAllowFlight(true);
+		player.setAllowFlight(true);
 		
 	}
 

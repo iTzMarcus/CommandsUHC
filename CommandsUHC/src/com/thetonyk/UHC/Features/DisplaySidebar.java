@@ -11,6 +11,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
@@ -24,9 +26,6 @@ public class DisplaySidebar implements Listener {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			player.getScoreboard().registerNewObjective("sidebar", "dummy");
-			player.getScoreboard().getObjective("sidebar").setDisplaySlot(DisplaySlot.SIDEBAR);
-			player.getScoreboard().getObjective("sidebar").setDisplayName("§a§lUHC §8⫸ §7CommandsPVP");
 			update(player);
 			
 		}
@@ -36,9 +35,6 @@ public class DisplaySidebar implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 
-		event.getPlayer().getScoreboard().registerNewObjective("sidebar", "dummy");
-		event.getPlayer().getScoreboard().getObjective("sidebar").setDisplaySlot(DisplaySlot.SIDEBAR);
-		event.getPlayer().getScoreboard().getObjective("sidebar").setDisplayName("§a§lUHC §8⫸ §7CommandsPVP");
 		update(event.getPlayer());
 		
 	}
@@ -46,7 +42,30 @@ public class DisplaySidebar implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) return;
+		UUID uuid = event.getEntity().getUniqueId();
+		Player killer = event.getEntity().getKiller();
+		
+		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(uuid)) return;
+		
+		if (killer == null) {
+			
+			addPVE();
+			return;
+			
+		}
+		
+		String deathTeam = TeamsUtils.getTeam(uuid);
+		String killerTeam = TeamsUtils.getTeam(killer.getUniqueId());
+		
+		if (deathTeam != null && killerTeam != null && deathTeam.equalsIgnoreCase(killerTeam)) return;
+		
+		if (killer.equals(event.getEntity())) return;
+		
+		Map<UUID, Integer> kills = GameUtils.getKills();
+		int kill = kills.containsKey(killer.getUniqueId()) ? kills.get(killer.getUniqueId()) + 1 : 1;
+		
+		kills.put(killer.getUniqueId(), kill);
+		GameUtils.setKills(kills);
 		
 		new BukkitRunnable() {
 			
@@ -62,64 +81,63 @@ public class DisplaySidebar implements Listener {
 			
 		}.runTaskLater(Main.uhc, 10);
 		
-		if (event.getEntity().getKiller() == null) {
-			
-			addPVE();
-			return;
-			
-		}
-		
-		if (TeamsUtils.getTeam(event.getEntity().getUniqueId()) != null && TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()) != null && TeamsUtils.getTeam(event.getEntity().getUniqueId()).equalsIgnoreCase(TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()))) return;
-		
-		if (event.getEntity().getKiller().equals(event.getEntity())) return;
-		
-		Map<UUID, Integer> kills = GameUtils.getKills();
-		
-		kills.put(event.getEntity().getKiller().getUniqueId(), (kills.containsKey(event.getEntity().getKiller().getUniqueId())) ? (kills.get(event.getEntity().getKiller().getUniqueId()) + 1) : 1);
-		
-		GameUtils.setKills(kills);
-		
 	}
 	
 	public static void update(Player player) {
 		
-		for (String entry : player.getScoreboard().getEntries()) {
+		Status status = GameUtils.getStatus();
+		Scoreboard scoreboard = player.getScoreboard();
+		Objective sidebar = scoreboard.getObjective("sidebar");
+		
+		for (String entry : scoreboard.getEntries()) {
 			
 			if (!entry.startsWith("  ")) continue;
 			
-			player.getScoreboard().resetScores(entry);
+			scoreboard.resetScores(entry);
 			
 		}
 		
-		if (GameUtils.getStatus() != Status.PLAY && GameUtils.getStatus() != Status.END) {
+		if (sidebar == null) {
+		
+			sidebar = scoreboard.registerNewObjective("sidebar", "dummy");
+			sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+			sidebar.setDisplayName("§a§lUHC §8⫸ §7CommandsPVP");
+		
+		}
+		
+		if (status != Status.PLAY && status != Status.END) {
 
-			player.getScoreboard().getObjective("sidebar").getScore("   ").setScore(5);
-			player.getScoreboard().getObjective("sidebar").getScore("  §6Help").setScore(4);
-			player.getScoreboard().getObjective("sidebar").getScore("    §8⫸ §7/rules").setScore(3);
-			player.getScoreboard().getObjective("sidebar").getScore("    §8⫸ §7/helpop").setScore(2);
-			player.getScoreboard().getObjective("sidebar").getScore("  ").setScore(1);
-			player.getScoreboard().getObjective("sidebar").getScore("  §b@CommandsPVP").setScore(0);
-			return;
+			sidebar.getScore("   ").setScore(5);
+			sidebar.getScore("  §6Help").setScore(4);
+			sidebar.getScore("    §8⫸ §7/rules").setScore(3);
+			sidebar.getScore("    §8⫸ §7/helpop").setScore(2);
 			
+		} else {
+		
+			sidebar.getScore("   ").setScore(99);
+			sidebar.getScore("  §6PVE §8⫸ §a" + GameUtils.getPVE()).setScore(98);
+			
+			Map<UUID, Integer> kills = GameUtils.getKills();
+			
+			for (UUID killer : kills.keySet()) {
+				
+				String name = PlayerUtils.getName(PlayerUtils.getId(killer));
+				String score = "  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(killer).getPrefix() + ((TeamsUtils.getTeam(killer) != null) ? TeamsUtils.getTeamPrefix(killer) : "§7") + name;
+				sidebar.getScore(score).setScore(kills.get(killer));
+				
+			}
+		
 		}
 		
-		player.getScoreboard().getObjective("sidebar").getScore("    ").setScore(99);
-		player.getScoreboard().getObjective("sidebar").getScore("  §6PVE §8⫸ §a" + GameUtils.getPVE()).setScore(98);
-		
-		for (UUID killer : GameUtils.getKills().keySet()) {
-			
-			player.getScoreboard().getObjective("sidebar").getScore("  " + (GameUtils.getDeath(killer) ? "§c☠ " : "  ") + PlayerUtils.getRank(killer).getPrefix() + ((TeamsUtils.getTeam(killer) != null) ? TeamsUtils.getTeamPrefix(killer) : "§7") + PlayerUtils.getName(PlayerUtils.getId(killer))).setScore(GameUtils.getKills().get(killer));
-			
-		}
-		
-		player.getScoreboard().getObjective("sidebar").getScore("  ").setScore(-1);
-		player.getScoreboard().getObjective("sidebar").getScore("  §b@CommandsPVP").setScore(-2);
+		sidebar.getScore("  ").setScore(-1);
+		sidebar.getScore("  §b@CommandsPVP").setScore(-2);
 		
 	}
 	
 	public static void addPVE() {
 		
-		GameUtils.setPVE(GameUtils.getPVE() + 1);
+		int pve = GameUtils.getPVE();
+		GameUtils.setPVE(pve++);
 		
 	}
 

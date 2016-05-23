@@ -1,5 +1,7 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -7,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
@@ -20,28 +21,24 @@ public class DeathMessage implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onDeath(PlayerDeathEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(event.getEntity().getUniqueId())) {
+		UUID uuid = event.getEntity().getUniqueId();
+		String name = event.getEntity().getName();
+		String oldMessage = event.getDeathMessage();
+		Player killer = event.getEntity().getKiller();
+		Status status = GameUtils.getStatus();
+		
+		if (status != Status.PLAY || GameUtils.getDeath(uuid)) {
 			
 			event.setDeathMessage(null);
 			return;
 			
 		}
 		
-		String victim = PlayerUtils.getRank(event.getEntity().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getUniqueId()) : "§7") + event.getEntity().getName() + "§7";
-		String killer = event.getEntity().getKiller() == null ? null : PlayerUtils.getRank(event.getEntity().getKiller().getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(event.getEntity().getKiller().getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(event.getEntity().getKiller().getUniqueId()) : "§7") + event.getEntity().getKiller().getName() + "§7";		
-		String message = Main.PREFIX + "§7" + event.getDeathMessage().substring(0, event.getDeathMessage().contains("using") ? event.getDeathMessage().indexOf("using") : event.getDeathMessage().length()).replaceAll(event.getEntity().getName(), victim).replaceAll(event.getEntity().getKiller() != null ? event.getEntity().getKiller().getName() : "", event.getEntity().getKiller() != null ? killer : "");
+		String victimName = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + name + "§7";
+		String killerName = killer == null ? null : PlayerUtils.getRank(killer.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(killer.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(killer.getUniqueId()) : "§7") + killer.getName() + "§7";		
+		String message = Main.PREFIX + "§7" + oldMessage.substring(0, oldMessage.contains("using") ? oldMessage.indexOf("using") : oldMessage.length()).replaceAll(name, victimName).replaceAll(killer != null ? killer.getName() : "", killer != null ? killerName : "");
 		
 		event.setDeathMessage(message);
-		
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
-			
-			}
-			
-		}.runTaskLater(Main.uhc, 1);
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
@@ -51,7 +48,9 @@ public class DeathMessage implements Listener {
 			
 		}
 		
-		GameUtils.setDeath(event.getEntity().getUniqueId(), true);
+		GameUtils.setDeath(uuid, true);
+		event.getEntity().setWhitelisted(false);
+		Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
 		
 	}
 	

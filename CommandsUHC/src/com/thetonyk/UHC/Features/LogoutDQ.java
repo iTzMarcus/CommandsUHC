@@ -30,11 +30,15 @@ public class LogoutDQ implements Listener {
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
-		if (GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
+		if (status != Status.PLAY) return;
 		
-		startTimer(event.getPlayer());
+		if (GameUtils.getDeath(uuid)) return;
+		
+		startTimer(player);
 		
 	}
 	
@@ -45,9 +49,11 @@ public class LogoutDQ implements Listener {
 			
 			if (GameUtils.getDeath(player)) continue;
 			
-			if (Bukkit.getPlayer(player) != null && Bukkit.getPlayer(player).isOnline()) continue;
+			OfflinePlayer offline = Bukkit.getOfflinePlayer(player);
 			
-			startTimer(Bukkit.getOfflinePlayer(player));
+			if (offline.isOnline()) continue;
+			
+			startTimer(offline);
 			
 		}
 		
@@ -56,15 +62,18 @@ public class LogoutDQ implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		if (GameUtils.getStatus() != Status.PLAY) return;
+		Status status = GameUtils.getStatus();
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
-		if (GameUtils.getDeath(event.getPlayer().getUniqueId())) return;
+		if (status != Status.PLAY) return;
 		
-		if (!offlineTimers.containsKey(event.getPlayer().getUniqueId()) || offlineTimers.get(event.getPlayer().getUniqueId()) == null) return;
+		if (GameUtils.getDeath(uuid)) return;
 		
-		offlineTimers.get(event.getPlayer().getUniqueId()).cancel();
-		offlineTimers.put(event.getPlayer().getUniqueId(), null);
-		offlineTime.remove(event.getPlayer().getUniqueId());
+		if (!offlineTimers.containsKey(uuid) || offlineTimers.get(uuid) == null) return;
+		
+		offlineTimers.get(uuid).cancel();
+		offlineTime.remove(uuid);
 		
 	}
 	
@@ -85,19 +94,20 @@ public class LogoutDQ implements Listener {
 	
 	public static void startTimer(OfflinePlayer player) {
 		
+		UUID uuid = player.getUniqueId();
+		
 		BukkitRunnable counter = new BukkitRunnable() {
 		
 			public void run() {
 				
 				player.setWhitelisted(false);
-				offlineTimers.put(player.getUniqueId(), null);
-				offlineTimers.remove(player.getUniqueId());
-				offlineTime.remove(player.getUniqueId());
+				offlineTimers.remove(uuid);
+				offlineTime.remove(uuid);
 				
-				if (GameUtils.getDeath(player.getUniqueId())) return;
+				if (GameUtils.getDeath(uuid)) return;
 				
-				GameUtils.setDeath(player.getUniqueId(), true);
-				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(player.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7") + player.getName() + "§7" + " died offline");
+				GameUtils.setDeath(uuid, true);
+				Bukkit.broadcastMessage(Main.PREFIX + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + player.getName() + "§7" + " died offline");
 				DisplaySidebar.addPVE();
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
@@ -110,15 +120,7 @@ public class LogoutDQ implements Listener {
 					
 				}
 				
-				new BukkitRunnable() {
-					
-					public void run() {
-						
-						Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
-					
-					}
-					
-				}.runTaskLater(Main.uhc, 1);
+				Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
 				
 			}
 			
@@ -129,9 +131,11 @@ public class LogoutDQ implements Listener {
 		else if (DisplayTimers.getTimeLeftMeetup() > 0) time = 12000;
 		else time = 600;
 		
-		offlineTime.put(player.getUniqueId(), new Date().getTime());
-		offlineTimers.put(player.getUniqueId(), counter);
-		offlineTimers.get(player.getUniqueId()).runTaskLater(Main.uhc, time);
+		long date = new Date().getTime();
+		
+		offlineTime.put(uuid, date);
+		offlineTimers.put(uuid, counter);
+		offlineTimers.get(uuid).runTaskLater(Main.uhc, time);
 			
 	}
 	
@@ -139,7 +143,11 @@ public class LogoutDQ implements Listener {
 		
 		if (!offlineTime.containsKey(uuid)) return 0;
 		
-		return (int) (new Date().getTime() - offlineTime.get(uuid)) / 1000;
+		long date = new Date().getTime();
+		long time = date - offlineTime.get(uuid);
+		int seconds = (int) time / 1000;
+		
+		return seconds;
 		
 	}
 	

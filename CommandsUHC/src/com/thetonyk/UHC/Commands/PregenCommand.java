@@ -40,7 +40,9 @@ public class PregenCommand implements CommandExecutor, TabCompleter{
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator fill pause");
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
+				
 				DisplayUtils.sendActionBar(player, "");
+				
 			}
 			
 			return true;
@@ -52,29 +54,37 @@ public class PregenCommand implements CommandExecutor, TabCompleter{
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator fill cancel");
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
+				
 				DisplayUtils.sendActionBar(player, "");
+				
 			}
 			
 			return true;
 			
 		}
 		
-		if (!WorldUtils.exist(args[0])) {
+		String name = args[0];
+		World world = Bukkit.getWorld(name);
+		
+		if (!WorldUtils.exist(name)) {
 			
-			sender.sendMessage(Main.PREFIX + "The world '§6" + args[0] + "§7' doesn't exist.");
+			sender.sendMessage(Main.PREFIX + "The world '§6" + name + "§7' doesn't exist.");
 			return true;
 			
 		}
 		
-		if (Bukkit.getWorld(args[0]) == null) {
+		if (world == null) {
 			
-			sender.sendMessage(Main.PREFIX + "The world '§6" + args[1] + "§7' is not loaded.");
+			sender.sendMessage(Main.PREFIX + "The world '§6" + name + "§7' is not loaded.");
 			return true;
 			
 		}
 		
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + args[0] + " set " + WorldUtils.getSize(args[0]) / 2 + " " + WorldUtils.getSize(args[0]) / 2 + " 0 0");
-		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + args[0] + " fill 500");
+		int radius = WorldUtils.getSize(name) / 2;
+		int x = world.getWorldBorder().getCenter().getBlockX();
+		int z = world.getWorldBorder().getCenter().getBlockZ();
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + name + " set " + radius + " " + radius + " " + x + " " + z);
+		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator " + name + " fill 500");
 		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pregenerator fill confirm");
 	
 		return true;
@@ -91,6 +101,8 @@ public class PregenCommand implements CommandExecutor, TabCompleter{
 		if (args.length == 1) {
 
 			for (World world : Bukkit.getWorlds()) {
+				
+				if (world.getName().equalsIgnoreCase("lobby")) continue;
 				
 				complete.add(world.getName());
 				

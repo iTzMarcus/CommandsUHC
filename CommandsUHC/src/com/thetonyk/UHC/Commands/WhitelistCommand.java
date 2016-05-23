@@ -27,64 +27,149 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (args.length > 0) {
+		if (args.length < 1) {
 			
-			if (args[0].equalsIgnoreCase("add")) {
+			sender.sendMessage(Main.PREFIX + "Usage of /whitelist:");
+			sender.sendMessage("§8⫸ §6/" + label + " add <player> §8- §7Add a player.");
+			sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove a player.");
+			sender.sendMessage("§8⫸ §6/" + label + " status [player] §8- §7See status of whitelist.");
+			sender.sendMessage("§8⫸ §6/" + label + " list §8- §7List whitelisted players.");
+			
+			if (sender.hasPermission("global.whitelist")) {
 				
-				if (args.length < 2) {
-					
-					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " add <player>");
-					return true;
-					
-				}
+				sender.sendMessage("§8⫸ §6/" + label + " on|off §8- §7Enable/Disable the whitelist.");
+				sender.sendMessage("§8⫸ §6/" + label + " all §8- §7Whitelist all players.");
+				sender.sendMessage("§8⫸ §6/" + label + " clear §8- §7Clear the whitelist.");
 				
-				Bukkit.getOfflinePlayer(args[1]).setWhitelisted(true);
-				Bukkit.broadcastMessage(Main.PREFIX + "The player '§6" + Bukkit.getOfflinePlayer(args[1]).getName() + "§7' has been whitelisted.");
+			}
+			
+			return true;
+			
+		}
+		
+		if (args[0].equalsIgnoreCase("add")) {
+				
+			if (args.length < 2) {
+				
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " add <player>");
+				return true;
+				
+			}
+				
+			OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+			
+			player.setWhitelisted(true);
+			Bukkit.broadcastMessage(Main.PREFIX + "The player '§6" + player.getName() + "§7' has been whitelisted.");
+			return true;
+				
+		}
+			
+		if (args[0].equalsIgnoreCase("remove")) {
+			
+			if (args.length < 2) {
+				
+				sender.sendMessage(Main.PREFIX + "Usage: /" + label + " remove <player>");
 				return true;
 				
 			}
 			
-			if (args[0].equalsIgnoreCase("remove")) {
+			OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+			
+			if (!player.isWhitelisted()) {
 				
-				if (args.length < 2) {
-					
-					sender.sendMessage(Main.PREFIX + "Usage: /" + label + " remove <player>");
-					return true;
-					
-				}
-				
-				if (!Bukkit.getOfflinePlayer(args[1]).isWhitelisted()) {
-					
-					sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getOfflinePlayer(args[1]).getName() + "§7' is not whitelisted.");
-					return true;
-					
-				}
-				
-				Bukkit.getOfflinePlayer(args[1]).setWhitelisted(false);
-				Bukkit.broadcastMessage(Main.PREFIX + "The player '§6" + Bukkit.getOfflinePlayer(args[1]).getName() + "§7' is not longer whitelisted.");
+				sender.sendMessage(Main.PREFIX + "The player '§6" + player.getName() + "§7' is not whitelisted.");
 				return true;
 				
 			}
 			
-			if (args[0].equalsIgnoreCase("status")) {
+			player.setWhitelisted(false);
+			Bukkit.broadcastMessage(Main.PREFIX + "The player '§6" + player.getName() + "§7' is not longer whitelisted.");
+			return true;
+			
+		}
+			
+		if (args[0].equalsIgnoreCase("status")) {
+			
+			if (args.length < 2) {
 				
-				if (args.length < 2) {
-					
-					String status = Bukkit.hasWhitelist() ? "on" : "off";
-					sender.sendMessage(Main.PREFIX + "The whitelist is §6" + status + "§7.");
-					sender.sendMessage(Main.PREFIX + "There are §6" + Bukkit.getWhitelistedPlayers().size() + "§7 whitelisted players.");
-					return true;
-					
-				}
-				
-				String status = Bukkit.getOfflinePlayer(args[1]).isWhitelisted() ? "is" : "is not";
-					
-				sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getOfflinePlayer(args[1]).getName() + "§7' " + status + " whitelisted.");
+				String status = Bukkit.hasWhitelist() ? "on" : "off";
+				sender.sendMessage(Main.PREFIX + "The whitelist is §6" + status + "§7.");
+				sender.sendMessage(Main.PREFIX + "There are §6" + Bukkit.getWhitelistedPlayers().size() + "§7 whitelisted players.");
 				return true;
 				
 			}
 			
-			if (args[0].equalsIgnoreCase("list")) {
+			OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+				
+			sender.sendMessage(Main.PREFIX + "The player '§6" + player.getName() + "§7' " + (player.isWhitelisted() ? "is" : "is not") + " whitelisted.");
+			return true;
+			
+		}
+			
+		if (args[0].equalsIgnoreCase("list")) {
+			
+			if (Bukkit.getWhitelistedPlayers().size() <= 0) {
+				
+				sender.sendMessage(Main.PREFIX + "There are no whitelised players.");
+				return true;
+				
+			}
+			
+			sender.sendMessage(Main.PREFIX + "List of whitelisted players:");
+			
+			for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+				
+				int offlineTime = LogoutDQ.offlineSince(player.getUniqueId());
+				
+				sender.sendMessage("§8⫸ §7'" + (player.isOnline() ? "§a" : "§c") + "" + player.getName() + "§7'" + (offlineTime > 0 ? " §8- §7" + DisplayTimers.getFormatedTime(offlineTime) : ""));
+				
+			}
+			
+			sender.sendMessage(Main.PREFIX + "§6" + Bukkit.getWhitelistedPlayers().size() + "§7 whitelisted players listed.");
+			return true;
+			
+		}
+			
+		if (sender.hasPermission("global.whitelist")) {
+				
+			if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
+				
+				Boolean setWhitelist = args[0].equalsIgnoreCase("on") ? true : false;
+				
+				if (args[0].equalsIgnoreCase("on") && Bukkit.hasWhitelist()) {
+					
+					sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
+					return true;
+					
+				}
+				
+				if (args[0].equalsIgnoreCase("off") && !Bukkit.hasWhitelist()) {
+					
+					sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
+					return true;
+					
+				}
+
+				Bukkit.setWhitelist(setWhitelist);
+				Bukkit.broadcastMessage(Main.PREFIX + "The whitelist is now §a" + args[0].toLowerCase() + "§7.");
+				return true;
+				
+			}
+				
+			if (args[0].equalsIgnoreCase("all")) {
+					
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					player.setWhitelisted(true);
+					
+				}
+				
+				Bukkit.broadcastMessage(Main.PREFIX + "All players has been whitelisted.");
+				return true;
+				
+			}
+				
+			if (args[0].equalsIgnoreCase("clear")) {
 				
 				if (Bukkit.getWhitelistedPlayers().size() <= 0) {
 					
@@ -93,80 +178,17 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				sender.sendMessage(Main.PREFIX + "List of whitelisted players:");
-				
 				for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 					
-					sender.sendMessage("§8⫸ §7'" + (player.isOnline() ? "§a" : "§c") + "" + player.getName() + "§7'" + (LogoutDQ.offlineSince(player.getUniqueId()) > 0 ? " §8- §7" + DisplayTimers.getFormatedTime(LogoutDQ.offlineSince(player.getUniqueId())) : ""));
+					player.setWhitelisted(false);
 					
 				}
 				
-				sender.sendMessage(Main.PREFIX + "§6" + Bukkit.getWhitelistedPlayers().size() + "§7 whitelisted players listed.");
+				Bukkit.broadcastMessage(Main.PREFIX + "The whitelist has been cleared.");
 				return true;
 				
 			}
-			
-			if (sender.hasPermission("global.whitelist")) {
 				
-				if (args[0].equalsIgnoreCase("on") || args[0].equalsIgnoreCase("off")) {
-					
-					Boolean setWhitelist = args[0].equalsIgnoreCase("on") ? true : false;
-					
-					if (args[0].equalsIgnoreCase("on") && Bukkit.hasWhitelist()) {
-						
-						sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
-						return true;
-						
-					}
-					
-					if (args[0].equalsIgnoreCase("off") && !Bukkit.hasWhitelist()) {
-						
-						sender.sendMessage(Main.PREFIX + "The whitelist is already §a" + args[0].toLowerCase() + "§7.");
-						return true;
-						
-					}
-	
-					Bukkit.setWhitelist(setWhitelist);
-					Bukkit.broadcastMessage(Main.PREFIX + "The whitelist is now §a" + args[0].toLowerCase() + "§7.");
-					return true;
-					
-				}
-				
-				if (args[0].equalsIgnoreCase("all")) {
-						
-					for (Player player : Bukkit.getOnlinePlayers()) {
-						
-						player.setWhitelisted(true);
-						
-					}
-					
-					Bukkit.broadcastMessage(Main.PREFIX + "All players has been whitelisted.");
-					return true;
-					
-				}
-				
-				if (args[0].equalsIgnoreCase("clear")) {
-					
-					if (Bukkit.getWhitelistedPlayers().size() <= 0) {
-						
-						sender.sendMessage(Main.PREFIX + "There are no whitelised players.");
-						return true;
-						
-					}
-					
-					for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
-						
-						player.setWhitelisted(false);
-						
-					}
-					
-					Bukkit.broadcastMessage(Main.PREFIX + "The whitelist has been cleared.");
-					return true;
-					
-				}
-				
-			}
-			
 		}
 		
 		sender.sendMessage(Main.PREFIX + "Usage of /whitelist:");
@@ -211,7 +233,31 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 			
 		} else if (args.length == 2) {
 			
-			if (args[0].equalsIgnoreCase("add") || args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("status")) {
+			if (args[0].equalsIgnoreCase("add")) {
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					if (player.isWhitelisted()) continue;
+					
+					complete.add(player.getName());
+					
+				}
+				
+			}
+			
+			if (args[0].equalsIgnoreCase("remove")) {
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					if (!player.isWhitelisted()) continue;
+					
+					complete.add(player.getName());
+					
+				}
+				
+			}
+
+			if (args[0].equalsIgnoreCase("status")) {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					

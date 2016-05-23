@@ -19,6 +19,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 
 public class HelpopCommand implements CommandExecutor {
 	
@@ -71,7 +72,10 @@ public class HelpopCommand implements CommandExecutor {
 			
 		}
 		
-		sender.sendMessage(Main.PREFIX + "Your help has been send. Use /rules to see the rules.");
+		ComponentBuilder confirm = Main.getPrefixComponent().append("Your message has been sent. Use ").color(GRAY).append("/rules").color(GOLD);
+		confirm.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/rules"));
+		confirm.append(" to see the rules.").retain(FormatRetention.NONE).color(GRAY);
+		Bukkit.getPlayer(sender.getName()).spigot().sendMessage(confirm.create());
 		
 		muteHelpop.add(sender.getName());
 		

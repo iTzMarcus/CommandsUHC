@@ -26,37 +26,37 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		if (args.length == 0) {
+		String gameWorld = GameUtils.getWorld();
+		
+		if (args.length == 0 || !sender.hasPermission("uhc.setborder")) {
 			
-			if (GameUtils.getWorld() == null || Bukkit.getWorld(GameUtils.getWorld()) == null) {
+			if (gameWorld == null || Bukkit.getWorld(gameWorld) == null) {
 				
 				sender.sendMessage(Main.PREFIX + "The game is not ready.");
 				return true;
 				
 			}
 			
-			sender.sendMessage(Main.PREFIX + "Border size: §6" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7x§6" + (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getSize() + "§7.");
+			int size = (int) Bukkit.getWorld(gameWorld).getWorldBorder().getSize();
+			sender.sendMessage(Main.PREFIX + "Border size: §6" + size + "§7x§6" + size + "§7.");
 			return true;
 			
 		}
 		
-		if (!sender.hasPermission("uhc.setborder")) {
-			
-			sender.sendMessage(Main.NO_PERMS);
-			return true;
-			
-		}
+		String name = args[0];
+		World world = Bukkit.getWorld(name);
 		
-		if (!WorldUtils.exist(args[0])) {
+		if (!WorldUtils.exist(name)) {
 			
-			sender.sendMessage(Main.PREFIX + "The world '§6" + args[0] + "§7' doesn't exist.");
+			sender.sendMessage(Main.PREFIX + "The world '§6" + name + "§7' doesn't exist.");
 			return true;
 			
 		}
 		
 		if (args.length == 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7': §a" + (int) WorldUtils.getSize(args[0]) + "§7x§a" + (int) WorldUtils.getSize(args[0]) + "§7.");
+			int size = world == null ? (int) WorldUtils.getSize(name) : (int) world.getWorldBorder().getSize();
+			sender.sendMessage(Main.PREFIX + "Size of world '§6" + name + "§7': §a" + size + "§7x§a" + size + "§7.");
 			return true;
 			
 		}
@@ -81,15 +81,11 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		WorldUtils.setSize(args[0], size);
-			
-		if (Bukkit.getWorld(args[0]) != null) {
-			
-			Bukkit.getWorld(args[0]).getWorldBorder().setSize(size);
-			
-		}
+		WorldUtils.setSize(name, size);
 		
-		Bukkit.broadcastMessage(Main.PREFIX + "Size of world '§6" + args[0] + "§7' set to: §a" + size + "§7x§a" + size + "§7.");
+		if (world != null) world.getWorldBorder().setSize(size);
+		
+		Bukkit.broadcastMessage(Main.PREFIX + "Size of world '§6" + name + "§7' set to: §a" + size + "§7x§a" + size + "§7.");
 		return true;
 		
 	}
@@ -97,7 +93,7 @@ public class BorderCommand implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (!sender.hasPermission("uhc.border")) return null;
+		if (!sender.hasPermission("uhc.setborder")) return null;
 		
 		List<String> complete = new ArrayList<String>();
 		

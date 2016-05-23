@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Inventories.RulesInventory;
@@ -21,7 +22,9 @@ public class RulesCommand implements CommandExecutor {
 			
 		}
 		
-		Bukkit.getPlayer(sender.getName()).openInventory(RulesInventory.getRules());
+		Player player = Bukkit.getPlayer(sender.getName());
+		
+		player.openInventory(RulesInventory.getRules());
 		return true;
 		
 	}

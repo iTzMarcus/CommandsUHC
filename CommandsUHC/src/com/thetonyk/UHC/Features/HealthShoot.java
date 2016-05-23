@@ -20,35 +20,43 @@ public class HealthShoot implements Listener {
 		
 		if (!(event.getEntity() instanceof Player)) return;
 		if (!(event.getDamager() instanceof Arrow)) return;
-		if (!(((Arrow) event.getDamager()).getShooter() instanceof Player)) return;
+		
+		Player victim = (Player) event.getEntity();
+		Arrow arrow = (Arrow) event.getDamager();
+		
+		if (!(arrow.getShooter() instanceof Player)) return;
+		
+		Player attacker = (Player) arrow.getShooter();
 				
 		new BukkitRunnable() {
 			
 			public void run() {
 				
-				double health = ((Player) event.getEntity()).getHealth();
+				double health = victim.getHealth();
+				double maxHealth = victim.getMaxHealth();
+				double hearts = Math.floor(health / 2);
 				String display = "§4";
 				
-				for (int i = 0; i < Math.floor((((Player) event.getEntity()).getHealth() / 2)); i++) {
+				for (int i = 0; i < hearts; i++) {
 					
 					display += "❤";
 					health -= 2;
 					
 				}
 				
-				if (Math.floor(health) > 0) display += "§c❤";
+				if (hearts > 0) display += "§c❤";
 				
 				display += "§f";
 				
-				for (int i = 0; i < Math.floor((((Player) event.getEntity()).getMaxHealth() / 2) - (((Player) event.getEntity()).getHealth() / 2)); i++) {
+				for (int i = 0; i < Math.floor((maxHealth / 2) - (health / 2)); i++) {
 					
 					display += "❤";
 					
 				}
 				
 				NumberFormat format = new DecimalFormat("##.#");
-				display += " §7⫸ §6" + format.format(((((Player) event.getEntity()).getHealth()) / 2) * 10) + "%";
-				DisplayUtils.sendActionBar((Player) (((Arrow) event.getDamager()).getShooter()), display);
+				display += " §7⫸ §6" + format.format((health / 2) * 10) + "%";
+				DisplayUtils.sendActionBar(attacker, display);
 				
 			}
 			

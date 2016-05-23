@@ -1,12 +1,15 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scoreboard.NameTagVisibility;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
@@ -35,9 +38,11 @@ public class DisplayNametags implements Listener {
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			
-			if (online.getScoreboard().getTeam(event.getPlayer().getName()) == null) continue;
+			Team team = online.getScoreboard().getTeam(event.getPlayer().getName());
+			
+			if (team == null) continue;
 				
-			online.getScoreboard().getTeam(event.getPlayer().getName()).unregister();
+			team.unregister();
 			
 		}
 		
@@ -47,36 +52,41 @@ public class DisplayNametags implements Listener {
 		
 		for (Player players : Bukkit.getOnlinePlayers()) {
 			
-			if (players.getScoreboard().getTeam(player.getName()) == null) {
+			Scoreboard scoreboard = players.getScoreboard();
+			Team team = scoreboard.getTeam(player.getName());
+			UUID uuid = player.getUniqueId();
+			String prefix = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
+			
+			if (team == null) {
 				
-				players.getScoreboard().registerNewTeam(player.getName());
-				players.getScoreboard().getTeam(player.getName()).setAllowFriendlyFire(true);
-				players.getScoreboard().getTeam(player.getName()).setCanSeeFriendlyInvisibles(true);
-				players.getScoreboard().getTeam(player.getName()).setDisplayName(player.getName());
-				players.getScoreboard().getTeam(player.getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
+				team = scoreboard.registerNewTeam(player.getName());
+				team.setDisplayName(player.getName());
 				
 			}
 			
-			players.getScoreboard().getTeam(player.getName()).setPrefix(PlayerUtils.getRank(player.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7"));
-			players.getScoreboard().getTeam(player.getName()).setSuffix("§7");
-			players.getScoreboard().getTeam(player.getName()).addEntry(player.getName());
-			player.setPlayerListName(((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "") + PlayerUtils.getRank(player.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(player.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(player.getUniqueId()) : "§7") + player.getName());
+			team.setPrefix(prefix);
+			team.setSuffix("§7");
+			team.addEntry(player.getName());
 			
 			if (players.equals(player)) continue;
 			
-			if (player.getScoreboard().getTeam(players.getName()) == null) {
+			scoreboard = player.getScoreboard();
+			team = scoreboard.getTeam(players.getName());
+			uuid = players.getUniqueId();
+			prefix = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
+			
+			if (team == null) {
 				
-				player.getScoreboard().registerNewTeam(players.getName());
-				player.getScoreboard().getTeam(players.getName()).setAllowFriendlyFire(true);
-				player.getScoreboard().getTeam(players.getName()).setCanSeeFriendlyInvisibles(true);
-				player.getScoreboard().getTeam(players.getName()).setDisplayName(players.getName());
-				player.getScoreboard().getTeam(players.getName()).setNameTagVisibility(NameTagVisibility.ALWAYS);
+				team = scoreboard.registerNewTeam(players.getName());
+				team.setDisplayName(players.getName());
 				
 			}
 			
-			player.getScoreboard().getTeam(players.getName()).setPrefix(PlayerUtils.getRank(players.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(players.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(players.getUniqueId()) : "§7"));
-			player.getScoreboard().getTeam(players.getName()).setSuffix("§7");
-			player.getScoreboard().getTeam(players.getName()).addEntry(players.getName());
+			team.setPrefix(prefix);
+			team.setSuffix("§7");
+			team.addEntry(players.getName());
+			
+			player.setPlayerListName(((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "") + prefix + player.getName());
 		
 		}
 		

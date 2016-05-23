@@ -16,13 +16,15 @@ public class HealthFood implements Listener {
 	@EventHandler
 	public void onItemConsume(PlayerItemConsumeEvent event) {
 		
-		float saturation = event.getPlayer().getSaturation();
+		Player player = event.getPlayer();
+		float saturation = player.getSaturation();
 		
 		new BukkitRunnable() {
 			
 			public void run() {
 				
-				event.getPlayer().setSaturation((float) (saturation + (event.getPlayer().getSaturation()) * 2.5D));
+				double newSaturation = player.getSaturation() * 2.5D;
+				player.setSaturation((float) (saturation + newSaturation));
 				
 			}
 			
@@ -35,7 +37,9 @@ public class HealthFood implements Listener {
 		
 		if (!(event.getEntity() instanceof Player)) return;
 		
-		if (event.getFoodLevel() < ((Player) event.getEntity()).getFoodLevel()) {
+		Player player = (Player) event.getEntity();
+		
+		if (event.getFoodLevel() < player.getFoodLevel()) {
 			
 			event.setCancelled(new Random().nextInt(100) < 66);
 			

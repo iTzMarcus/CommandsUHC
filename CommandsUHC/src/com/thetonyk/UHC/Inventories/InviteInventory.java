@@ -39,22 +39,25 @@ public class InviteInventory implements Listener {
 		
 		event.setCancelled(true);
 		
-		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
-			
 		if (!(event.getWhoClicked() instanceof Player)) return;
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§8⫸ §7Invite §6")) {
+		Player player = (Player) event.getWhoClicked();
+		ItemStack item = event.getCurrentItem();
+		
+		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
+		
+		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Invite §6")) {
 					
 			String invite = event.getInventory().getTitle().substring(13);
-			((Player) event.getWhoClicked()).performCommand("team invite " + invite);
-			event.getWhoClicked().closeInventory();
+			player.performCommand("team invite " + invite);
+			player.closeInventory();
 			return;
 				
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§8⫸ §cCancel")) {
+		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §cCancel")) {
 				
-			event.getWhoClicked().closeInventory();
+			player.closeInventory();
 			return;
 				
 		}

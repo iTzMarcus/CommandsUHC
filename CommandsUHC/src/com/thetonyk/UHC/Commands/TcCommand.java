@@ -20,39 +20,40 @@ public class TcCommand implements CommandExecutor {
 			
 		}
 		
-		if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
+		Player player = Bukkit.getPlayer(sender.getName());
+		String team = TeamsUtils.getTeam(player.getUniqueId());
+		
+		if (team == null) {
 			
 			sender.sendMessage(Main.PREFIX + "You are not in a team.");
 			return true;
 			
 		}
 		
-		Player player = Bukkit.getPlayer(sender.getName());
-		
 		String world = "Overworld";
 		String color = "§7";
 		
 		switch (player.getWorld().getEnvironment().toString()) {
 		
-		case "NORMAL":
-			world = "Overworld";
-			color = "§a";
-			break;
-		case "NETHER":
-			world = "Nether";
-			color = "§c";
-			break;
-		case "THE_END":
-			world = "The End";
-			color = "§9";
-			break;
-		default:
-			world = "Unknown";
-			break;
+			case "NORMAL":
+				world = "Overworld";
+				color = "§a";
+				break;
+			case "NETHER":
+				world = "Nether";
+				color = "§c";
+				break;
+			case "THE_END":
+				world = "The End";
+				color = "§9";
+				break;
+			default:
+				world = "Unknown";
+				break;
 			
 		}
 		
-		TeamsUtils.sendMessage(TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()), "§6Team §8| §7" + sender.getName() + " §8⫸ §7x: §6" + player.getLocation().getBlockX() + " §7y: §6" + player.getLocation().getBlockY() + " §7z: §6" + player.getLocation().getBlockZ() + " §8| " + color + world);
+		TeamsUtils.sendMessage(team, "§6Team §8| §7" + player.getName() + " §8⫸ §7x: §6" + player.getLocation().getBlockX() + " §7y: §6" + player.getLocation().getBlockY() + " §7z: §6" + player.getLocation().getBlockZ() + " §8| " + color + world);
 		return true;
 		
 	}

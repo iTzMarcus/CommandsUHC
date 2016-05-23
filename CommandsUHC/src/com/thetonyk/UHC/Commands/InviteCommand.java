@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
-import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
@@ -37,35 +36,33 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length > 0) {
 			
-			if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) {
+			Status status = GameUtils.getStatus();
+			Player player = Bukkit.getPlayer(sender.getName());
+			Player invited = Bukkit.getPlayer(args[0]);
+			String team = TeamsUtils.getTeam(player.getUniqueId());
+			
+			if (status == Status.TELEPORT || status == Status.PLAY || status == Status.END) {
 				
 				sender.sendMessage(Main.PREFIX + "The game has already started.");
 				return true;
 				
 			}
 				
-			if (Bukkit.getPlayer(args[0]) == null) {
+			if (invited == null) {
 				
 				sender.sendMessage(Main.PREFIX + "The player '§6" + args[0] + "§7' is not online.");
 				return true;
 				
 			}
 			
-			if (!Bukkit.getPlayer(args[0]).isOnline()) {
-				
-				sender.sendMessage(Main.PREFIX + "The player '§6" + Bukkit.getPlayer(args[0]) + "§7' is not online.");
-				return true;
-				
-			}
-			
-			if (sender.getName().equalsIgnoreCase(Bukkit.getPlayer(args[0]).getName())) {
+			if (player.getName().equalsIgnoreCase(invited.getName())) {
 				
 				sender.sendMessage(Main.PREFIX + "You can't invite yourslef.");
 				return true;
 				
 			}
 			
-			if (TeamsUtils.getTeam(Bukkit.getPlayer(sender.getName()).getUniqueId()) == null) {
+			if (team == null) {
 				
 				if (TeamsUtils.getTeamsLeft() < 1) {
 					
@@ -74,23 +71,32 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				TeamsUtils.createTeam(Bukkit.getPlayer(sender.getName()).getUniqueId());
+				TeamsUtils.createTeam(player.getUniqueId());
+				
+			} else {
+				
+				if (TeamsUtils.getTeamMembers(team).size() >= TeamCommand.size) {
+					
+					sender.sendMessage(Main.PREFIX + "Your team is already full.");
+					return true;
+					
+				}
 				
 			}
 			
-			if (!TeamsUtils.invitations.containsKey(Bukkit.getPlayer(sender.getName()).getUniqueId())) TeamsUtils.invitations.put(Bukkit.getPlayer(sender.getName()).getUniqueId(), new ArrayList<UUID>());
+			if (!TeamsUtils.invitations.containsKey(player.getUniqueId())) TeamsUtils.invitations.put(player.getUniqueId(), new ArrayList<UUID>());
 			
-			TeamsUtils.invitations.get(Bukkit.getPlayer(sender.getName()).getUniqueId()).add(PlayerUtils.getUUID(args[0]));
+			TeamsUtils.invitations.get(player.getUniqueId()).add(invited.getUniqueId());
 			
-			Bukkit.getPlayer(args[0]).sendMessage(Main.PREFIX + "You have received an invitation from '§6" + sender.getName() + "§7'.");
+			invited.sendMessage(Main.PREFIX + "You have received an invitation from '§6" + player.getName() + "§7'.");
 			
 			ComponentBuilder message = Main.getPrefixComponent().append("To join his team, ").color(GRAY).append("accept the invitation").color(AQUA).italic(true);
-			message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept the invitation of ").color(GRAY).append(sender.getName()).color(GREEN).append(".").color(GRAY).create()));
-			message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team accept " + sender.getName()));
+			message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to accept the invitation of ").color(GRAY).append(player.getName()).color(GREEN).append(".").color(GRAY).create()));
+			message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team accept " + player.getName()));
 			message.append(".").retain(FormatRetention.NONE).color(GRAY);
-			Bukkit.getPlayer(args[0]).spigot().sendMessage(message.create());
+			invited.spigot().sendMessage(message.create());
 	        
-	        sender.sendMessage(Main.PREFIX + "Invitation send to player '§6" + Bukkit.getPlayer(args[0]).getName() + "§7'.");
+	        TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
 	        return true;
 			
 		}	
@@ -111,7 +117,7 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				
-				if (player.getName().equalsIgnoreCase(sender.getName())) continue;
+				if (player.getName().equalsIgnoreCase(sender.getName()) || GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) continue;
 				
 				complete.add(player.getName());
 				
