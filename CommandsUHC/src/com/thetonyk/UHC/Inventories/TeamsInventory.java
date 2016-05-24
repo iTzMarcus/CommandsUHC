@@ -96,12 +96,16 @@ public class TeamsInventory implements Listener {
 					
 					lore.add(" ");
 					
-					for (String player : teams.getString("members").split(";")) {
+					if (teams.getString("members").length() > 0) {
 						
-						UUID uuid = UUID.fromString(player);
-						
-						lore.add("§8⫸ " + (GameUtils.getDeath(uuid) ? "§c☠ " : "  ") + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + PlayerUtils.getName(PlayerUtils.getId(uuid)));
-						
+						for (String player : teams.getString("members").split(";")) {
+							
+							UUID uuid = UUID.fromString(player);
+							
+							lore.add("§8⫸ " + (GameUtils.getDeath(uuid) ? "§c☠ " : "  ") + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + PlayerUtils.getName(PlayerUtils.getId(uuid)));
+							
+						}
+					
 					}
 					
 					lore.add(" ");
@@ -165,14 +169,14 @@ public class TeamsInventory implements Listener {
 		
 		if (item.getItemMeta().getDisplayName().equals("§7Next §8⫸")) {
 			
-			player.openInventory(TeamsInventory.getTeams(2));
+			player.openInventory(TeamsInventory.getTeams(1));
 			return;
 			
 		}
 		
 		if (item.getItemMeta().getDisplayName().equals("§8⫷ §7Previous")) {
 			
-			player.openInventory(TeamsInventory.getTeams(1));
+			player.openInventory(TeamsInventory.getTeams(0));
 			return;
 			
 		}

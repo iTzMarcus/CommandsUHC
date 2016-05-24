@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -7,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,9 +38,10 @@ public class SpecPlayer implements Listener {
 		GameUtils.setSpectate(uuid, true);
 		
 		if (TeamsUtils.invitations.containsKey(uuid)) TeamsUtils.invitations.remove(uuid);
-		TeamsUtils.leaveTeam(uuid);
 		
-		if (Bukkit.getPlayer(uuid) == null || !Bukkit.getPlayer(uuid).isOnline()) return;
+		if (TeamsUtils.getTeam(uuid) != null) TeamsUtils.leaveTeam(uuid);
+		
+		if (Bukkit.getPlayer(uuid) == null) return;
 		
 		Player spectator = Bukkit.getPlayer(uuid);
 		
@@ -56,9 +59,8 @@ public class SpecPlayer implements Listener {
 		PlayerUtils.clearEffects(spectator);
 		PlayerUtils.clearXp(spectator);
 		spectator.setGameMode(GameMode.SPECTATOR);
-		spectator.setPlayerListName(PlayerUtils.getRank(spectator.getUniqueId()).getPrefix() + "§7§o" + spectator.getName());
-		
-		
+		setItems(spectator);
+		DisplayNametags.updateNametag(spectator);
 		
 	}
 	
@@ -66,7 +68,7 @@ public class SpecPlayer implements Listener {
 		
 		GameUtils.setSpectate(uuid, false);
 		
-		if (Bukkit.getPlayer(uuid) == null || !Bukkit.getPlayer(uuid).isOnline()) return;
+		if (Bukkit.getPlayer(uuid) == null) return;
 		
 		Player spectator = Bukkit.getPlayer(uuid);
 		
@@ -84,7 +86,7 @@ public class SpecPlayer implements Listener {
 		spectator.setGameMode(GameMode.ADVENTURE);
 		spectator.setPlayerListName(null);
 		spectator.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
-		setItems(spectator);
+		DisplayNametags.updateNametag(spectator);
 		
 	}
 	
@@ -110,23 +112,33 @@ public class SpecPlayer implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void onChat(AsyncPlayerChatEvent event) {
 		
-		if (!GameUtils.getSpectate(event.getPlayer().getUniqueId())) return;
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		Rank rank = PlayerUtils.getRank(uuid);
 		
-		if (PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.ADMIN || PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.HOST || PlayerUtils.getRank(event.getPlayer().getUniqueId()) == Rank.STAFF) return;
+		if (!GameUtils.getSpectate(uuid)) return;
+		
+		if (rank == Rank.ADMIN || rank == Rank.HOST || rank == Rank.STAFF) return;
 		
 		event.setCancelled(true);
-		event.getPlayer().sendMessage(Main.PREFIX + "You can't speak in chat when you are spectator.");
+		player.sendMessage(Main.PREFIX + "You can't speak in chat when you are spectator.");
 		
 	}
 	
 	@EventHandler
 	public void onLeftClick(PlayerInteractEvent event) {
 		
-		if (!GameUtils.getSpectate(event.getPlayer().getUniqueId())) return;
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		Action action = event.getAction();
 		
-		if (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+		if (!GameUtils.getSpectate(uuid)) return;
 		
-		if (GameUtils.getAlives().isEmpty()) {
+		if (action != Action.LEFT_CLICK_AIR && action != Action.LEFT_CLICK_BLOCK) return;
+		
+		List<UUID> alives = GameUtils.getAlives();
+		
+		if (alives.isEmpty()) {
 			
 			event.getPlayer().sendMessage(Main.PREFIX + "There are no players alives.");
 			return;
@@ -137,11 +149,12 @@ public class SpecPlayer implements Listener {
 		
 		while (teleport == null) {
 			
-			teleport = Bukkit.getPlayer(GameUtils.getAlives().get(new Random().nextInt(GameUtils.getAlives().size())));
+			int random = new Random().nextInt(alives.size());
+			teleport = Bukkit.getPlayer(alives.get(random));
 			
 		}
 		
-		event.getPlayer().teleport(teleport);
+		player.teleport(teleport);
 		
 	}
 	
@@ -155,26 +168,37 @@ public class SpecPlayer implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		
-		if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+		if (!(event.getWhoClicked() instanceof Player)) return;
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6Night Vision §7(Click on it)")) {
+		ItemStack item = event.getCurrentItem();
+		Player player = (Player) event.getWhoClicked();
+		
+		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
+		
+		ItemMeta meta = item.getItemMeta();
+		
+		if (meta.getDisplayName().equals("§6Night Vision §7(Click on it)")) {
 			
 			event.setCancelled(true);
 			
-			if (event.getWhoClicked().hasPotionEffect(PotionEffectType.NIGHT_VISION)) event.getWhoClicked().removePotionEffect(PotionEffectType.NIGHT_VISION);
-			else event.getWhoClicked().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
+			if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+			else player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 			
 			return;
 			
 		}
 		
-		if (event.getCurrentItem().getItemMeta().getDisplayName().equals("§6Teleport to the middle §7(Click on it)")) {
+		if (meta.getDisplayName().equals("§6Teleport to the middle §7(Click on it)")) {
 			
 			event.setCancelled(true);
 			
-			Location center = Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getCenter();
-			center.setY(WorldUtils.getHighestY((int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getCenter().getX(), (int) Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getCenter().getZ(), Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().getCenter().getWorld()));
-			event.getWhoClicked().teleport(center);
+			World world = Bukkit.getWorld(GameUtils.getWorld());
+			
+			if (world == null) return;
+			
+			Location center = world.getWorldBorder().getCenter();
+			center.setY(WorldUtils.getHighestY((int) center.getX(), (int) center.getZ(), world));
+			player.teleport(center);
 			
 			return;
 			

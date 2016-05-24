@@ -86,7 +86,6 @@ public class TeleportProtection implements Listener {
 	public void onInteract(PlayerInteractEvent event) {
 		
 		Action action = event.getAction();
-		Material type = event.getClickedBlock().getType();
 	
 		if (GameUtils.getStatus() != Status.TELEPORT) return;
 		
@@ -96,6 +95,10 @@ public class TeleportProtection implements Listener {
 			return;
 			
 		}
+		
+		if (event.getClickedBlock() == null) return;
+		
+		Material type = event.getClickedBlock().getType();
 			
 		switch(type) {
 		

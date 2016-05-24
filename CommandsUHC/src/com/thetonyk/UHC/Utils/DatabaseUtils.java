@@ -19,6 +19,16 @@ public class DatabaseUtils {
     	if (connection != null) return connection;
     	
     	try {
+        	
+            Class.forName("com.mysql.jdbc.Driver");
+            
+        } catch (Exception exception) {
+        	
+            Main.uhc.getLogger().severe("[DatabaseUtils] Unable to load the JDBC Driver.");
+            
+        }
+    	
+    	try {
     		
     		connection = DriverManager.getConnection("jdbc:mysql://localhost/commandspvp", PassUtils.user, PassUtils.pass);
     		
@@ -43,7 +53,6 @@ public class DatabaseUtils {
     		
     	} catch (SQLException exception) {
     		
-    		exception.printStackTrace();
     		return null;
     		
     	}
@@ -64,7 +73,7 @@ public class DatabaseUtils {
 		    		
 		    	} catch (SQLException exception) {
 		    		
-		    		exception.printStackTrace();
+		    		return;
 		    		
 		    	}
 		    	

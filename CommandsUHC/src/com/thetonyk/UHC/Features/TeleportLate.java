@@ -7,16 +7,22 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.TeleportUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
@@ -126,7 +132,7 @@ public class TeleportLate implements Listener {
 		
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onJoin(PlayerJoinEvent event) {
 		
 		Player player = event.getPlayer();
@@ -140,6 +146,36 @@ public class TeleportLate implements Listener {
 			player.setWhitelisted(true);
 			
 			if (status == Status.TELEPORT || status == Status.PLAY) GameUtils.addPlayer(uuid);
+			
+			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + player.getName() + "§7'...");
+			
+			String team = TeamsUtils.getTeam(uuid);
+			
+			if (team != null && TeamsUtils.getTeamMembers(team) != null) {
+				
+				for (UUID mate : TeamsUtils.getTeamMembers(team)) {
+					
+					if (Bukkit.getPlayer(mate) == null) continue;
+					
+					player.teleport(Bukkit.getPlayer(mate));
+					player.closeInventory();
+					player.setGameMode(GameMode.SURVIVAL);
+					PlayerUtils.clearEffects(player);
+					PlayerUtils.clearInventory(player);
+					PlayerUtils.clearXp(player);
+					PlayerUtils.feed(player);
+					PlayerUtils.heal(player);
+					DisplaySidebar.update(player);
+					
+					player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 15, 255, false, false));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 15, 255, false, false));
+					
+					GameUtils.addLocation(uuid, GameUtils.getLocations().get(mate));
+					return;
+					
+				}
+				
+			}
 			
 			Map.Entry<String, UUID> entry = new Map.Entry<String, UUID>() {
 				
@@ -172,8 +208,6 @@ public class TeleportLate implements Listener {
 			List<Map.Entry<String, ?>> uuids = new ArrayList<Map.Entry<String, ?>>();
 			uuids.add(entry);
 			TeleportUtils.loadSpawnsAndTeleport(uuids);
-			
-			Bukkit.broadcastMessage(Main.PREFIX + "Teleporting '§6" + player.getName() + "§7'...");
 			
 		}
 		

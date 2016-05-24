@@ -30,6 +30,8 @@ public class DisplayTimers {
 		}
 		
 		time = GameUtils.getTime();
+		pvpTime = GameUtils.getPVP();
+		meetupTime = GameUtils.getMeetup();
 		timer = new BukkitRunnable() {
 			
 			public void run() {

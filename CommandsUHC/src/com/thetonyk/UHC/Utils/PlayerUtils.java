@@ -232,7 +232,7 @@ public class PlayerUtils {
 			ResultSet req = DatabaseUtils.sqlQuery("SELECT * FROM users WHERE name = '" + name + "';");
 			
 			if (req.next()) uuid = UUID.fromString(req.getString("uuid"));
-			
+
 			req.close();
 			
 		} catch (SQLException exception) {

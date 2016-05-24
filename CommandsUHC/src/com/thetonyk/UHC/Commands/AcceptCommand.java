@@ -125,7 +125,7 @@ public class AcceptCommand implements CommandExecutor, TabCompleter {
 				
 				String name = PlayerUtils.getName(PlayerUtils.getId(uuid));
 				
-				if (TeamsUtils.invitations.get(player).contains(Bukkit.getPlayer(sender.getName()).getUniqueId())) complete.add(name);
+				if (TeamsUtils.invitations.get(uuid).contains(player.getUniqueId())) complete.add(name);
 				
 			}
 			

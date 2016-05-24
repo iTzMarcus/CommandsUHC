@@ -96,7 +96,9 @@ public class InviteCommand implements CommandExecutor, TabCompleter {
 			message.append(".").retain(FormatRetention.NONE).color(GRAY);
 			invited.spigot().sendMessage(message.create());
 	        
-	        TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
+			if (team == null) sender.sendMessage(Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
+			else TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
+			
 	        return true;
 			
 		}	

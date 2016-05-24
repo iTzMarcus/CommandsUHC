@@ -14,6 +14,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedServerPing;
 import com.thetonyk.UHC.Main;
 
+import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
@@ -25,6 +26,8 @@ public class DisplayUtils {
 	
 	public static void sendTitle(Player player, String title, String subtitle, int fadeIn, int stay, int fadeOut) {
 
+		EntityPlayer entity = ((CraftPlayer) player).getHandle();
+		
 		IChatBaseComponent jsonTitle = ChatSerializer.a("{'text':'" + title + "'}");
 		IChatBaseComponent jsonSubtitle = ChatSerializer.a("{'text':'" + subtitle + "'}");
 
@@ -32,22 +35,26 @@ public class DisplayUtils {
 		PacketPlayOutTitle sendTitle = new PacketPlayOutTitle(EnumTitleAction.TITLE, jsonTitle, fadeIn, stay, fadeOut);
 		PacketPlayOutTitle sendSubtitle = new PacketPlayOutTitle(EnumTitleAction.SUBTITLE, jsonSubtitle);
 
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(sendTime);
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(sendSubtitle);
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(sendTitle);
+		entity.playerConnection.sendPacket(sendTime);
+		entity.playerConnection.sendPacket(sendSubtitle);
+		entity.playerConnection.sendPacket(sendTitle);
 		
 	}
 	
 	public static void sendActionBar(Player player, String message){
 		
+		EntityPlayer entity = ((CraftPlayer) player).getHandle();
+		
 		IChatBaseComponent jsonText = IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + message + "\"}");
 		PacketPlayOutChat packet = new PacketPlayOutChat(jsonText, (byte) 2);
 		
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+		entity.playerConnection.sendPacket(packet);
 	}
 
 	public static void sendTab(Player player, String header, String footer) {
 	
+		EntityPlayer entity = ((CraftPlayer) player).getHandle();
+		
 		IChatBaseComponent jsonHeader = ChatSerializer.a("{'text':'" + header + "'}");
 		IChatBaseComponent jsonFooter = ChatSerializer.a("{'text':'" + footer + "'}");
 		
@@ -66,7 +73,7 @@ public class DisplayUtils {
 			
 		}
 		
-		((CraftPlayer)player).getHandle().playerConnection.sendPacket(tabHeader);
+		entity.playerConnection.sendPacket(tabHeader);
 		
 	}
 	

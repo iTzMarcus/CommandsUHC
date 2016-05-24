@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 
@@ -50,12 +51,13 @@ public class DisplayNametags implements Listener {
 	
 	public static void updateNametag(Player player) {
 		
+		UUID uuid = player.getUniqueId();
+		String prefix = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
+		
 		for (Player players : Bukkit.getOnlinePlayers()) {
 			
 			Scoreboard scoreboard = players.getScoreboard();
 			Team team = scoreboard.getTeam(player.getName());
-			UUID uuid = player.getUniqueId();
-			String prefix = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
 			
 			if (team == null) {
 				
@@ -72,8 +74,8 @@ public class DisplayNametags implements Listener {
 			
 			scoreboard = player.getScoreboard();
 			team = scoreboard.getTeam(players.getName());
-			uuid = players.getUniqueId();
-			prefix = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
+			UUID playerUUID = players.getUniqueId();
+			String playerPrefix = PlayerUtils.getRank(playerUUID).getPrefix() + ((TeamsUtils.getTeam(playerUUID) != null) ? TeamsUtils.getTeamPrefix(playerUUID) : "§7");
 			
 			if (team == null) {
 				
@@ -82,13 +84,14 @@ public class DisplayNametags implements Listener {
 				
 			}
 			
-			team.setPrefix(prefix);
+			team.setPrefix(playerPrefix);
 			team.setSuffix("§7");
 			team.addEntry(players.getName());
-			
-			player.setPlayerListName(((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "") + prefix + player.getName());
 		
 		}
+		
+		if (GameUtils.getSpectate(uuid)) player.setPlayerListName("§r" + PlayerUtils.getRank(uuid).getPrefix() + "§7§o" + player.getName());
+		else player.setPlayerListName(((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "") + prefix + player.getName());
 		
 	}
 	

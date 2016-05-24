@@ -99,7 +99,6 @@ public class LobbyProtection implements Listener {
 		Player player = event.getPlayer();
 		World world = player.getWorld();
 		Action action = event.getAction();
-		Material type = event.getClickedBlock().getType();
 	
 		if (!world.getName().equalsIgnoreCase("lobby")) return;
 		
@@ -111,6 +110,10 @@ public class LobbyProtection implements Listener {
 			return;
 			
 		}
+		
+		if (event.getClickedBlock() == null) return;
+		
+		Material type = event.getClickedBlock().getType();
 			
 		switch(type) {
 		

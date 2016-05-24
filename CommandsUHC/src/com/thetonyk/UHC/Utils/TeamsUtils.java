@@ -101,10 +101,14 @@ public class TeamsUtils {
 				
 				if (teams.getInt("exist") == 0) continue;
 				
-				for (String member : teams.getString("members").split(";")) {
-					
-					players.put(UUID.fromString(member), teams.getString("name"));
-					
+				if (teams.getString("members").length() > 0) {
+				
+					for (String member : teams.getString("members").split(";")) {
+						
+						players.put(UUID.fromString(member), teams.getString("name"));
+						
+					}
+				
 				}
 				
 			}
@@ -155,11 +159,11 @@ public class TeamsUtils {
 		DatabaseUtils.sqlInsert("UPDATE uhc_teams SET exist = 1, members = '" + player + ";' WHERE id = '" + id + "' AND server = '" + GameUtils.getServer() + "';");
 		players.put(player, name);
 		
-		if (Bukkit.getPlayer(player) == null) return;
-		
 		new BukkitRunnable() {
 			
 			public void run() {
+				
+				if (Bukkit.getPlayer(player) == null) return;
 			
 				DisplayNametags.updateNametag(Bukkit.getPlayer(player));
 		
@@ -345,7 +349,7 @@ public class TeamsUtils {
 			
 		}
 		
-		if (members.isEmpty()) return;
+		if (members == null || members.isEmpty() || members.length() < 1) return;
 		
 		for (String player : members.split(";")) {
 			
@@ -375,6 +379,8 @@ public class TeamsUtils {
 			return null;
 			
 		}
+		
+		if (members == null || members.isEmpty() || members.length() < 1) return null;
 		
 		List<UUID> list = new ArrayList<UUID>();
 		

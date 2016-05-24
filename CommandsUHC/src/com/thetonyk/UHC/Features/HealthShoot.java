@@ -34,17 +34,19 @@ public class HealthShoot implements Listener {
 				
 				double health = victim.getHealth();
 				double maxHealth = victim.getMaxHealth();
-				double hearts = Math.floor(health / 2);
+				double hearts = health / 2;
 				String display = "§4";
+				
+				double temp = hearts;
 				
 				for (int i = 0; i < hearts; i++) {
 					
 					display += "❤";
-					health -= 2;
+					temp =- 1;
 					
 				}
 				
-				if (hearts > 0) display += "§c❤";
+				if (temp > 0) display += "§c❤";
 				
 				display += "§f";
 				

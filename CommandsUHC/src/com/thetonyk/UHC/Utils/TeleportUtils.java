@@ -108,11 +108,26 @@ public class TeleportUtils {
 		while (iterator.hasNext()) {
 			
 			Map.Entry<String, ?> entry = iterator.next();
-			final int index = i;
+			
+			Location loc = null;
+			
+			if (GameUtils.getStatus() != Status.TELEPORT && entry.getKey().equalsIgnoreCase("uuid") && TeamsUtils.getTeam((UUID) entry.getValue()) != null && TeamsUtils.getTeamMembers(TeamsUtils.getTeam((UUID) entry.getValue())) != null) {
+				
+				for (UUID mate : TeamsUtils.getTeamMembers(TeamsUtils.getTeam(((UUID) entry.getValue())))) {
+					
+					if (!GameUtils.getLocations().containsKey(mate)) continue;
+					
+					loc = GameUtils.getLocations().get(mate);
+					
+				}
+				
+			}
+			
+			Location finalLoc = loc != null ? loc : spawns.get(i);
 			
 			Map.Entry<Map.Entry<String, ?>, Location> location = new Map.Entry<Map.Entry<String, ?>, Location>() {
 				
-				Location location = spawns.get(index);
+				Location location = finalLoc;
 	
 				@Override
 				public Map.Entry<String, ?> getKey() {

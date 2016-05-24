@@ -151,8 +151,10 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/team accept " + player.getName()));
 				message.append(".").retain(FormatRetention.NONE).color(GRAY);
 				invited.spigot().sendMessage(message.create());
-		        
-				TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
+				
+				if (team == null) sender.sendMessage(Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");
+				else TeamsUtils.sendMessage(team, Main.PREFIX + "The player '§6" + invited.getName() + "§7' was invited in the team.");		
+				
 		        return true;
 				
 			}
@@ -166,7 +168,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 					
 				}
 				
-				UUID uuid = PlayerUtils.getUUID(args[0]);
+				UUID uuid = PlayerUtils.getUUID(args[1]);
 				
 				if (uuid == null) {
 					
@@ -303,7 +305,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			
 			} else {
 				
-				uuid = PlayerUtils.getUUID(args[0]);
+				uuid = PlayerUtils.getUUID(args[1]);
 				
 				if (uuid == null) {
 					
