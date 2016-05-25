@@ -29,7 +29,7 @@ public class DisplayTab implements Listener {
 				
 			}
 			
-		}.runTaskTimer(Main.uhc, 0, 5);
+		}.runTaskTimer(Main.uhc, 5, 5);
 		
 	}
 	

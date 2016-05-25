@@ -173,9 +173,11 @@ public class GameUtils {
 	
 	public static void setupPlayers() {
 		
-		GameUtils.players = new HashMap<UUID, Map<String, String>>();
+		if (GameUtils.players == null) GameUtils.players = new HashMap<UUID, Map<String, String>>();
 		
 		for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
+			
+			if (GameUtils.getSpectate(player.getUniqueId())) continue;
 			
 			GameUtils.players.put(player.getUniqueId(), new HashMap<String, String>());
 			GameUtils.players.get(player.getUniqueId()).put("death", "false");
@@ -203,6 +205,7 @@ public class GameUtils {
 	
 	private static void resetPlayers() {
 		
+		GameUtils.players = null;
 		DatabaseUtils.sqlInsert("UPDATE uhc SET players = '' WHERE server = '" + GameUtils.getServer() + "';");
 		
 	}
@@ -430,6 +433,7 @@ public class GameUtils {
 	
 	private static void resetLocations() {
 		
+		GameUtils.locations = null;
 		DatabaseUtils.sqlInsert("UPDATE uhc SET locations = '' WHERE server = '" + GameUtils.getServer() + "';");
 		
 	}
@@ -645,6 +649,7 @@ public class GameUtils {
 	
 	private static void resetKills() {
 		
+		GameUtils.kills = null;
 		DatabaseUtils.sqlInsert("UPDATE uhc SET kills = '' WHERE server = '" + GameUtils.getServer() + "';");
 		
 	}
@@ -701,8 +706,8 @@ public class GameUtils {
 		if (DisplayTimers.timer != null) DisplayTimers.timer.cancel();
 		DisplayTimers.timer = null;
 		DisplayTimers.time = 0;
-		DisplayTimers.pvpTime = 120;
-		DisplayTimers.meetupTime = 180;
+		DisplayTimers.pvpTime = 900;
+		DisplayTimers.meetupTime = 3600;
 		LogoutDQ.reset();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {

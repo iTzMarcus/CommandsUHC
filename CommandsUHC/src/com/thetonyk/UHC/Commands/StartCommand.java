@@ -209,6 +209,8 @@ public class StartCommand implements CommandExecutor {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
+					if (GameUtils.getSpectate(player.getUniqueId())) continue;
+					
 					DisplayUtils.sendTitle(player, "", "§7Go§a! §7Go§a! §7Go§a!", 5, 30, 5);
 					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);

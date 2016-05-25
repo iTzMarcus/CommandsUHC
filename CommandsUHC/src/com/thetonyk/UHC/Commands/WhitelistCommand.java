@@ -29,7 +29,7 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 		
 		if (args.length < 1) {
 			
-			sender.sendMessage(Main.PREFIX + "Usage of /whitelist:");
+			sender.sendMessage(Main.PREFIX + "Usage of /" + label + ":");
 			sender.sendMessage("§8⫸ §6/" + label + " add <player> §8- §7Add a player.");
 			sender.sendMessage("§8⫸ §6/" + label + " remove <player> §8- §7Remove a player.");
 			sender.sendMessage("§8⫸ §6/" + label + " status [player] §8- §7See status of whitelist.");

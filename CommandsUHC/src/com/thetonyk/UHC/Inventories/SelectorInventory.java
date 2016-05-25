@@ -248,7 +248,7 @@ public class SelectorInventory implements Listener {
 		
 		for (UUID viewer : viewers.keySet()) {
 			
-			if (Bukkit.getPlayer(viewer) == null && !Bukkit.getPlayer(viewer).getOpenInventory().getTopInventory().equals(viewers.get(viewer))) {
+			if (Bukkit.getPlayer(viewer) == null || !Bukkit.getPlayer(viewer).getOpenInventory().getTopInventory().equals(viewers.get(viewer))) {
 				
 				viewers.remove(viewer);
 				
@@ -289,6 +289,8 @@ public class SelectorInventory implements Listener {
 			
 				public void run() {
 				
+					viewers.get(viewer).clear();
+					
 					int playersNumber = 36 * page.get(viewer);
 					
 					if (players.size() > 0) {

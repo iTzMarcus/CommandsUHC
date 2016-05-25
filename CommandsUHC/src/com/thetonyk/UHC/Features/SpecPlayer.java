@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -108,7 +109,7 @@ public class SpecPlayer implements Listener {
 		openSelectorMeta.setDisplayName("§6Open the selector §7(Click on it)");
 		openSelector.setItemMeta(openSelectorMeta);
 		
-		spectator.getInventory().setItem(2, teleportMiddle);
+		spectator.getInventory().setItem(4, openSelector);
 		
 		ItemStack nightVision = new ItemStack(Material.EYE_OF_ENDER);
 		ItemMeta nightVisionMeta = nightVision.getItemMeta();
@@ -117,6 +118,32 @@ public class SpecPlayer implements Listener {
 		if (spectator.hasPotionEffect(PotionEffectType.NIGHT_VISION)) nightVision = ItemsUtils.addGlow(nightVision);
 		
 		spectator.getInventory().setItem(6, nightVision);
+		
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onJoin(PlayerJoinEvent event) {
+		
+		Player spectator = event.getPlayer();
+		
+		if (!GameUtils.getSpectate(spectator.getUniqueId())) return;
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			if (!GameUtils.getDeath(player.getUniqueId())) player.hidePlayer(spectator);
+			else player.showPlayer(spectator);
+			
+			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) spectator.showPlayer(player);
+			else spectator.hidePlayer(player);
+			
+		}
+		
+		PlayerUtils.clearInventory(spectator);
+		PlayerUtils.clearEffects(spectator);
+		PlayerUtils.clearXp(spectator);
+		spectator.setGameMode(GameMode.SPECTATOR);
+		setItems(spectator);
+		DisplayNametags.updateNametag(spectator);
 		
 	}
 	
@@ -157,11 +184,15 @@ public class SpecPlayer implements Listener {
 		}
 		
 		Player teleport = null;
+		int i = 0;
 		
 		while (teleport == null) {
 			
+			if (i > alives.size()) return;
+			
 			int random = new Random().nextInt(alives.size());
 			teleport = Bukkit.getPlayer(alives.get(random));
+			i++;
 			
 		}
 		
@@ -243,7 +274,7 @@ public class SpecPlayer implements Listener {
 			if (world == null) return;
 			
 			Location center = world.getWorldBorder().getCenter();
-			center.setY(WorldUtils.getHighestY((int) center.getX(), (int) center.getZ(), world));
+			center.setY(WorldUtils.getHighestY((int) center.getX(), (int) center.getZ(), world) + 5);
 			player.teleport(center);
 			
 			return;

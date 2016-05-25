@@ -93,6 +93,7 @@ public class PlayerInventory implements Listener {
 		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 		
 		List<UUID> alives = GameUtils.getAlives();
+		Boolean spectate = GameUtils.getSpectate(uuid);
 		
 		ItemStack itemInHand = player.getItemInHand();
 		ItemStack itemOnCursor = player.getItemOnCursor();
@@ -171,7 +172,9 @@ public class PlayerInventory implements Listener {
 				ItemStack info = separator;
 				ItemStack ores = separator;
 				
-				if (alives.contains(uuid)) {
+				inventory.clear();
+				
+				if (!spectate) {
 					
 					List<String> lore = new ArrayList<String>();
 					
@@ -292,8 +295,8 @@ public class PlayerInventory implements Listener {
 				}
 				
 				inventory.setItem(0, separator);
-				inventory.setItem(1, healthBanner);
-				inventory.setItem(2, potion);
+				inventory.setItem(1, alives.contains(uuid) ? healthBanner : separator);
+				inventory.setItem(2, alives.contains(uuid) ? potion : separator);
 				inventory.setItem(3, separator);
 				inventory.setItem(4, team);
 				inventory.setItem(5, info);

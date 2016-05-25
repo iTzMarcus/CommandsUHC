@@ -103,3 +103,7 @@ commands:
     give:
         description: Give somethings to a player
         usage: /give
+    spectate:
+        description: Toggle spec mode of players
+        usage: /spectate
+        aliases: [spec]
