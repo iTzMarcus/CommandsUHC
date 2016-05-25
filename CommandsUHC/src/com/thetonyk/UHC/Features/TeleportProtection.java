@@ -163,10 +163,16 @@ public class TeleportProtection implements Listener {
 	@EventHandler
 	public void onHungerChange(FoodLevelChangeEvent event) {
 		
+		if (!(event.getEntity() instanceof Player)) return;
+		
+		Player player = (Player) event.getEntity();
+		
 		if (GameUtils.getStatus() != Status.TELEPORT) return;
 
 		event.setCancelled(true);
 		event.setFoodLevel(20);
+		player.setSaturation(20f);
+		player.setExhaustion(0f);
 	}
 	
 	@EventHandler

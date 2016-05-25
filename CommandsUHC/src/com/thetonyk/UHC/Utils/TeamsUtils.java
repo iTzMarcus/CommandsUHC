@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Inventories.PlayerInventory;
 
 public class TeamsUtils {
 
@@ -26,6 +27,7 @@ public class TeamsUtils {
 		
 		players.clear();
 		invitations.clear();
+		PlayerInventory.prefix.clear();
 		
 		DatabaseUtils.sqlInsert("TRUNCATE TABLE `uhc_teams`;");
 		
@@ -363,32 +365,13 @@ public class TeamsUtils {
 	
 	public static List<UUID> getTeamMembers(String team) {
 		
-		String members = null;
-		
-		try {
-			
-			ResultSet teams = DatabaseUtils.sqlQuery("SELECT * FROM uhc_teams WHERE name = '" + team + "' AND server = '" + GameUtils.getServer() + "';");
-			
-			if (teams.next()) members = teams.getString("members");
-			
-			teams.close();
-			
-		} catch (SQLException exception) {
-			
-			Bukkit.getLogger().severe("[TeamUtils] Error to fetch all teams.");
-			return null;
-			
-		}
-		
-		if (members == null || members.isEmpty() || members.length() < 1) return null;
-		
 		List<UUID> list = new ArrayList<UUID>();
 		
-		for (String member : members.split(";")) {
+		for (Map.Entry<UUID, String> entry : players.entrySet()) {
 			
-			if (member.length() < 1) continue;
+			if (!entry.getValue().equalsIgnoreCase(team)) continue;
 			
-			list.add(UUID.fromString(member));
+			list.add(entry.getKey());
 			
 		}
 
@@ -397,6 +380,8 @@ public class TeamsUtils {
 	}
 	
 	public static void setColors() {
+		
+		PlayerInventory.prefix.clear();
 		
 		ArrayList<String> list = new ArrayList<String>();
 		

@@ -20,6 +20,14 @@ public class LoginWhitelist implements Listener {
 		Player player = event.getPlayer();
 		Result result = event.getResult();
 		
+		if (GameUtils.reset) {
+			
+			event.setResult(Result.KICK_OTHER);
+			event.setKickMessage("§8⫸ §7Server is currently resetting the game §8⫷");
+			return;
+			
+		}
+		
 		PermissionsUtils.setPermissions(player);
 		PermissionsUtils.updateBungeePermissions(player);
 		

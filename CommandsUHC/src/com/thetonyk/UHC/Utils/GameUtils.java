@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Utils;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -19,11 +20,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Features.LogoutDQ;
 
 public class GameUtils {
+	
+	public static Boolean reset = false;
 	
 	private static Status status = GameUtils.getStatusSQL();
 	private static String world = GameUtils.getWorldSQL();
@@ -683,7 +685,7 @@ public class GameUtils {
 	
 	public static void resetGame() {
 		
-		GameUtils.setStatus(Status.NONE);
+		GameUtils.setStatus(Status.NONE);		
 		Bukkit.getWorld(GameUtils.getWorld()).getWorldBorder().setSize(WorldUtils.getSize(GameUtils.getWorld()));
 		Bukkit.getWorld(GameUtils.getWorld()).setPVP(false);
 		GameUtils.setWorld("");
@@ -724,19 +726,43 @@ public class GameUtils {
 			
 		}
 		
+		GameUtils.reset = true;
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			player.kickPlayer("§8⫸ §7Server is resetting the game §8⫷");
+			
+		}
+		
+		File[] folders = Bukkit.getWorld("lobby").getWorldFolder().listFiles();
+		
 		new BukkitRunnable() {
 			
 			public void run() {
-				
-				for (Player player : Bukkit.getOnlinePlayers()) {
+		
+				for (int i = 0; i < folders.length; i++) {
 					
-					DisplaySidebar.update(player);
+					if (!folders[i].isDirectory()) continue;
+					
+					if (!folders[i].getName().equalsIgnoreCase("playerdata") && !folders[i].getName().equalsIgnoreCase("stats")) continue;
+					
+					File[] files = folders[i].listFiles();
+					
+					for (int y = 0; y < files.length; y++) {
+						
+						if (files[y].isDirectory()) continue;
+						
+						files[y].delete();
+						
+					}
 					
 				}
 				
-			}
+				GameUtils.reset = false;
 			
-		}.runTaskLater(Main.uhc, 10);
+			}
+		
+		}.runTaskAsynchronously(Main.uhc);
 		
 	}
 

@@ -196,6 +196,8 @@ public class LobbyProtection implements Listener {
 
 		event.setCancelled(true);
 		event.setFoodLevel(20);
+		player.setSaturation(20f);
+		player.setExhaustion(0f);
 	}
 	
 	@EventHandler

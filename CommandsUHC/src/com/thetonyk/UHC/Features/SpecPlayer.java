@@ -24,6 +24,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Inventories.PlayerInventory;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -161,7 +162,7 @@ public class SpecPlayer implements Listener {
 	@EventHandler
 	public void onRightClickEntity(PlayerInteractEntityEvent event) {
 		
-		
+		event.getPlayer().openInventory(PlayerInventory.getInventory(event.getRightClicked().getUniqueId()));
 		
 	}
 	
