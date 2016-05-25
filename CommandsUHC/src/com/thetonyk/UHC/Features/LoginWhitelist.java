@@ -31,8 +31,9 @@ public class LoginWhitelist implements Listener {
 		PermissionsUtils.setPermissions(player);
 		PermissionsUtils.updateBungeePermissions(player);
 		
-		if (player.isOp() || player.hasPermission("global.bypasswhitelist")) {
+		if (player.isOp() || player.hasPermission("global.bypasswhitelist") || GameUtils.getSpectate(player.getUniqueId())) {
 			
+			event.setResult(Result.ALLOWED);
 			event.allow();
 			return;
 			

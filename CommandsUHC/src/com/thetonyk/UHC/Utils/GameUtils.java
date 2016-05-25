@@ -653,7 +653,7 @@ public class GameUtils {
 		
 		int players = (GameUtils.getStatus() == Status.NONE || GameUtils.getStatus() == Status.OPEN || GameUtils.getStatus() == Status.READY) ? Bukkit.getOnlinePlayers().size() : getAlives().size();
 		
-		if (GameUtils.getStatus() == Status.TELEPORT || GameUtils.getStatus() == Status.PLAY || GameUtils.getStatus() == Status.END) return players;
+		if (GameUtils.getStatus() != Status.TELEPORT || GameUtils.getStatus() != Status.PLAY || GameUtils.getStatus() != Status.END) return players;
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			

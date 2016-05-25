@@ -1,7 +1,7 @@
 package com.thetonyk.UHC.Utils;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Material;
@@ -30,7 +30,7 @@ public class ItemsUtils {
 		
 	}
 	
-	public static ItemStack createItem(Material material, String name, int number, int damage, ArrayList<String> lore) {
+	public static ItemStack createItem(Material material, String name, int number, int damage, List<String> lore) {
 		
 		ItemStack item = new ItemStack(material, number, (short) damage);
 		ItemMeta meta = item.getItemMeta();

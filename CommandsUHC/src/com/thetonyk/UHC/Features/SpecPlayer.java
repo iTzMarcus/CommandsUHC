@@ -18,12 +18,15 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Inventories.PlayerInventory;
+import com.thetonyk.UHC.Inventories.SelectorInventory;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -35,6 +38,7 @@ public class SpecPlayer implements Listener {
 	
 	public static void enable(UUID uuid) {
 		
+		if (!GameUtils.getPlayers().containsKey(uuid)) GameUtils.addPlayer(uuid);
 		GameUtils.setSpectate(uuid, true);
 		
 		if (TeamsUtils.invitations.containsKey(uuid)) TeamsUtils.invitations.remove(uuid);
@@ -99,6 +103,13 @@ public class SpecPlayer implements Listener {
 		
 		spectator.getInventory().setItem(2, teleportMiddle);
 		
+		ItemStack openSelector = new ItemStack(Material.COMPASS);
+		ItemMeta openSelectorMeta = openSelector.getItemMeta();
+		openSelectorMeta.setDisplayName("§6Open the selector §7(Click on it)");
+		openSelector.setItemMeta(openSelectorMeta);
+		
+		spectator.getInventory().setItem(2, teleportMiddle);
+		
 		ItemStack nightVision = new ItemStack(Material.EYE_OF_ENDER);
 		ItemMeta nightVisionMeta = nightVision.getItemMeta();
 		nightVisionMeta.setDisplayName("§6Night Vision §7(Click on it)");
@@ -159,9 +170,35 @@ public class SpecPlayer implements Listener {
 	}
 	
 	@EventHandler
+	public void onRightClick(PlayerInteractEvent event) {
+		
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		Action action = event.getAction();
+		
+		if (!GameUtils.getSpectate(uuid)) return;
+		
+		if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;
+		
+		if (action == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock() != null && event.getClickedBlock() instanceof InventoryHolder) return;
+		
+		player.openInventory(SelectorInventory.getSelector(uuid));
+		
+	}
+	
+	@EventHandler
 	public void onRightClickEntity(PlayerInteractEntityEvent event) {
 		
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
 		
+		if (!(event.getRightClicked() instanceof Player)) return;
+		
+		Player clicked = (Player) event.getRightClicked();
+		
+		if (!GameUtils.getSpectate(uuid) || GameUtils.getSpectate(clicked.getUniqueId())) return;
+		
+		player.openInventory(PlayerInventory.getInventory(clicked.getUniqueId()));	
 		
 	}
 	
@@ -184,6 +221,15 @@ public class SpecPlayer implements Listener {
 			if (player.hasPotionEffect(PotionEffectType.NIGHT_VISION)) player.removePotionEffect(PotionEffectType.NIGHT_VISION);
 			else player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, Integer.MAX_VALUE, 0, false, false));
 			
+			return;
+			
+		}
+		
+		if (meta.getDisplayName().equals("§6Open the selector §7(Click on it)")) {
+			
+			event.setCancelled(true);
+			
+			player.openInventory(SelectorInventory.getSelector(player.getUniqueId()));	
 			return;
 			
 		}

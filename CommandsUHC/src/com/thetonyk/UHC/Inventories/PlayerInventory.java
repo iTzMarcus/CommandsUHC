@@ -18,7 +18,9 @@ import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -132,7 +134,8 @@ public class PlayerInventory implements Listener {
 		}
 		
 		String teamPrefix = playerTeam == null ? "§7" : prefix.get(playerTeam);
-		int kills = GameUtils.getKills().containsKey(uuid) ? GameUtils.getKills().get(uuid) : 0;
+		Map<UUID, Integer> allKills = GameUtils.getKills();
+		int kills = allKills.containsKey(uuid) ? allKills.get(uuid) : 0;
 		int dealt = player.getStatistic(Statistic.DAMAGE_DEALT);
 		int taken = player.getStatistic(Statistic.DAMAGE_TAKEN);
 		int gappleEat = player.getStatistic(Statistic.USE_ITEM, Material.GOLDEN_APPLE);
@@ -341,6 +344,17 @@ public class PlayerInventory implements Listener {
 			}
 		
 		}.runTaskAsynchronously(Main.uhc);
+		
+	}
+	
+	@EventHandler
+	public void onClick(InventoryClickEvent event) {
+		
+		Inventory inventory = event.getClickedInventory();
+		
+		if (!inventory.getName().startsWith("§7Inventory ⫸ §4")) return;
+		
+		event.setCancelled(true);
 		
 	}
 	
