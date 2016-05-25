@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -28,6 +29,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
@@ -88,6 +90,8 @@ public class PlayerInventory implements Listener {
 		Player player = Bukkit.getPlayer(uuid);
 		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 		
+		List<UUID> alives = GameUtils.getAlives();
+		
 		ItemStack itemInHand = player.getItemInHand();
 		ItemStack itemOnCursor = player.getItemOnCursor();
 		ItemStack helmet = player.getInventory().getHelmet();
@@ -128,106 +132,170 @@ public class PlayerInventory implements Listener {
 		}
 		
 		String teamPrefix = playerTeam == null ? "§7" : prefix.get(playerTeam);
+		int kills = GameUtils.getKills().containsKey(uuid) ? GameUtils.getKills().get(uuid) : 0;
+		int dealt = player.getStatistic(Statistic.DAMAGE_DEALT);
+		int taken = player.getStatistic(Statistic.DAMAGE_TAKEN);
+		int gappleEat = player.getStatistic(Statistic.USE_ITEM, Material.GOLDEN_APPLE);
+		int gappleCraft = player.getStatistic(Statistic.CRAFT_ITEM, Material.GOLDEN_APPLE);
+		int level = player.getLevel();
+		float xp = player.getExp();
+		int minedGold = player.getStatistic(Statistic.MINE_BLOCK, Material.GOLD_ORE);
+		int goldInInventory = 0;
+		int minedDiamond = player.getStatistic(Statistic.MINE_BLOCK, Material.DIAMOND_ORE);
+		int diamondInInventory = 0;
+		
+		for (ItemStack item : content) {
+			
+			if (item == null) continue;
+			
+			if (item.getType() == Material.GOLD_ORE || item.getType() == Material.GOLD_INGOT) goldInInventory += item.getAmount();
+			
+			if (item.getType() == Material.DIAMOND_ORE || item.getType() == Material.DIAMOND) diamondInInventory += item.getAmount();
+			
+		}
+		
+		final int gold = goldInInventory;
+		final int diamond = diamondInInventory;
 		
 		new BukkitRunnable() {
 			
 			public void run() {
-		
+				
 				ItemStack separator = ItemsUtils.createItem(Material.STAINED_GLASS_PANE, "§7UHC by CommandsPVP", 1, 7);
+				ItemStack healthBanner = separator;
+				ItemStack potion = separator;
+				ItemStack team = separator;
+				ItemStack info = separator;
+				ItemStack ores = separator;
 				
-				List<String> lore = new ArrayList<String>();
-				
-				ItemStack healthBanner = new ItemStack(Material.BANNER);
-				BannerMeta healthMeta = (BannerMeta) healthBanner.getItemMeta();
-				healthMeta.setBaseColor(DyeColor.RED);
-				healthMeta.addPattern(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
-				healthMeta.addPattern(new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL));
-				healthMeta.addPattern(new Pattern(DyeColor.WHITE, PatternType.CIRCLE_MIDDLE));
-				healthMeta.addPattern(new Pattern(DyeColor.RED, PatternType.TRIANGLE_TOP));
-				healthMeta.setDisplayName("§8⫸ §6Health & Food §8⫷");
-				lore.add(" ");
-				lore.add("§8⫸ §7Health: §a" + (health / 2) * 10 + "%");
-				lore.add("§8⫸ §7Max Health: §a" + (maxHealth / 2) * 10 + "%");
-				lore.add("§8⫸ §7Absorption: §a" + (absorptionHealth / 2) * 10 + "%");
-				lore.add(" ");
-				lore.add("§8⫸ §7Remaining Air: " + (air < maxAir ? "§a" + (int) air / 20 + "s" : "§cNone"));
-				lore.add(" ");
-				lore.add("§8⫸ §7Food level: §a" + food);
-				lore.add("§8⫸ §7Saturation: §a" + saturation);
-				lore.add("§8⫸ §7Exhaustion: §a" + format.format(exhaustion));
-				lore.add(" ");
-				healthMeta.setLore(lore);
-				healthMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-				healthBanner.setItemMeta(healthMeta);
-				
-				lore.clear();
-				
-				ItemStack potion = new ItemStack(Material.POTION);
-				ItemMeta potionMeta = potion.getItemMeta();
-				potionMeta.setDisplayName("§8⫸ §6Potion effects §8⫷");
-				lore.add(" ");
-				
-				if (effects.size() < 1) {
+				if (alives.contains(uuid)) {
 					
-					lore.add("§8⫸ §cNone");
+					List<String> lore = new ArrayList<String>();
+					
+					healthBanner = new ItemStack(Material.BANNER);
+					BannerMeta healthMeta = (BannerMeta) healthBanner.getItemMeta();
+					healthMeta.setBaseColor(DyeColor.RED);
+					healthMeta.addPattern(new Pattern(DyeColor.WHITE, PatternType.RHOMBUS_MIDDLE));
+					healthMeta.addPattern(new Pattern(DyeColor.RED, PatternType.HALF_HORIZONTAL));
+					healthMeta.addPattern(new Pattern(DyeColor.WHITE, PatternType.CIRCLE_MIDDLE));
+					healthMeta.addPattern(new Pattern(DyeColor.RED, PatternType.TRIANGLE_TOP));
+					healthMeta.setDisplayName("§8⫸ §6Health & Food §8⫷");
+					lore.add(" ");
+					lore.add("§8⫸ §7Health: §a" + (health / 2) * 10 + "%");
+					lore.add("§8⫸ §7Max Health: §a" + (maxHealth / 2) * 10 + "%");
+					lore.add("§8⫸ §7Absorption: §a" + (absorptionHealth / 2) * 10 + "%");
+					lore.add(" ");
+					lore.add("§8⫸ §7Remaining Air: " + (air < maxAir ? "§a" + (int) air / 20 + "s" : "§cNone"));
+					lore.add(" ");
+					lore.add("§8⫸ §7Food level: §a" + food);
+					lore.add("§8⫸ §7Saturation: §a" + saturation);
+					lore.add("§8⫸ §7Exhaustion: §a" + format.format(exhaustion));
+					lore.add(" ");
+					healthMeta.setLore(lore);
+					healthMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+					healthBanner.setItemMeta(healthMeta);
+					
+					lore.clear();
+					
+					potion = new ItemStack(Material.POTION);
+					ItemMeta potionMeta = potion.getItemMeta();
+					potionMeta.setDisplayName("§8⫸ §6Potion effects §8⫷");
 					lore.add(" ");
 					
-				} else {
-			
-					for (PotionEffect effect : effects) {
+					if (effects.size() < 1) {
 						
-						lore.add("§8⫸ §6" + getPotionName(effect.getType()) + "§7:");
-						lore.add("§8⫸   §7Level: §a" + (effect.getAmplifier() + 1));
-						lore.add("§8⫸   §7Duration: §a" + effect.getDuration() / 20 + "s");
-						lore.add("");
+						lore.add("§8⫸ §cNone");
+						lore.add(" ");
+						
+					} else {
+				
+						for (PotionEffect effect : effects) {
+							
+							lore.add("§8⫸ §6" + getPotionName(effect.getType()) + "§7:");
+							lore.add("§8⫸   §7Level: §a" + (effect.getAmplifier() + 1));
+							lore.add("§8⫸   §7Duration: §a" + effect.getDuration() / 20 + "s");
+							lore.add("");
+							
+						}
+					
+					}
+	
+					potionMeta.setLore(lore);
+					potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+					potion.setItemMeta(potionMeta);
+					
+					lore.clear();
+					
+					team = new ItemStack(Material.NAME_TAG);
+					ItemMeta teamMeta = team.getItemMeta();
+					teamMeta.setDisplayName("§8⫸ §6Team §8⫷");
+					lore.add(" ");
+					lore.add("§8⫸ §7Team: " + (playerTeam == null ? "§cNone" : teamPrefix + playerTeam));
+					
+					if (playerTeam != null && !teammates.isEmpty()) {
+						
+						lore.add(" ");
+						lore.add("§8⫸ §6Teammates§7:");
+						
+						for (String mate : teammates) {
+							
+							lore.add("§8⫸   " + mate);
+							
+						}
 						
 					}
-				
-				}
-
-				potionMeta.setLore(lore);
-				potionMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-				potion.setItemMeta(potionMeta);
-				
-				lore.clear();
-				
-				ItemStack team = new ItemStack(Material.NAME_TAG);
-				ItemMeta teamMeta = team.getItemMeta();
-				teamMeta.setDisplayName("§8⫸ §6Team §8⫷");
-				lore.add(" ");
-				lore.add("§8⫸ §7Team: " + (playerTeam == null ? "§cNone" : teamPrefix + playerTeam));
-				
-				if (playerTeam != null && !teammates.isEmpty()) {
 					
 					lore.add(" ");
-					lore.add("§8⫸ §6Teammates§7:");
+					teamMeta.setLore(lore);
+					team.setItemMeta(teamMeta);
 					
-					for (String mate : teammates) {
-						
-						lore.add("§8⫸   " + mate);
-						
-					}
+					lore.clear();
 					
+					info = new ItemStack(Material.SIGN);
+					ItemMeta infoMeta = info.getItemMeta();
+					infoMeta.setDisplayName("§8⫸ §6Informations §8⫷");
+					lore.add(" ");
+					lore.add("§8⫸ §7Kills: §a" + kills);
+					lore.add("§8⫸ §7Damage Dealt: §a" + dealt);
+					lore.add("§8⫸ §7Damage Taken: §a" + taken);
+					lore.add(" ");
+					lore.add("§8⫸ §6Golden Apple§7:");
+					lore.add("§8⫸   §7Eated: §a" + gappleEat);
+					lore.add("§8⫸   §7Crafted: §a" + gappleCraft);
+					lore.add(" ");
+					infoMeta.setLore(lore);
+					info.setItemMeta(infoMeta);
+					
+					lore.clear();
+					
+					ores = new ItemStack(Material.EXP_BOTTLE);
+					ItemMeta oresMeta = ores.getItemMeta();
+					oresMeta.setDisplayName("§8⫸ §6Ores & XP §8⫷");
+					lore.add(" ");
+					lore.add("§8⫸ §7Level: §a" + level);
+					lore.add("§8⫸ §7XP: §a" + format.format(xp));
+					lore.add(" ");
+					lore.add("§8⫸ §6Gold§7:");
+					lore.add("§8⫸   §7Mined: §a" + minedGold);
+					lore.add("§8⫸   §7Inventory: §a" + gold);
+					lore.add(" ");
+					lore.add("§8⫸ §6Diamond§7:");
+					lore.add("§8⫸   §7Mined: §a" + minedDiamond);
+					lore.add("§8⫸   §7Inventory: §a" + diamond);
+					lore.add(" ");
+					oresMeta.setLore(lore);
+					ores.setItemMeta(oresMeta);
+				
 				}
-				
-				lore.add(" ");
-				teamMeta.setLore(lore);
-				team.setItemMeta(teamMeta);
-				
-				lore.clear();
-				
-				ItemStack kills = new ItemStack(Material.SIGN);
-				ItemMeta killsMeta = kills.getItemMeta();
-				
 				
 				inventory.setItem(0, separator);
 				inventory.setItem(1, healthBanner);
 				inventory.setItem(2, potion);
 				inventory.setItem(3, separator);
 				inventory.setItem(4, team);
-				//Kills
+				inventory.setItem(5, info);
 				inventory.setItem(6, separator);
-				//Ores/Mined ores/XP
+				inventory.setItem(7, ores);
 				inventory.setItem(8, separator);
 				
 				
