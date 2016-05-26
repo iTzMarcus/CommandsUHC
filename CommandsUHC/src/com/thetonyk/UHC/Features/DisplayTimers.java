@@ -3,9 +3,13 @@ package com.thetonyk.UHC.Features;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.FinalHealEvent;
 import com.thetonyk.UHC.Events.MeetupEvent;
@@ -13,12 +17,21 @@ import com.thetonyk.UHC.Events.PVPEvent;
 import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 
-public class DisplayTimers {
+public class DisplayTimers implements Listener {
 	
 	public static BukkitRunnable timer = null;
 	public static int time = GameUtils.getTime();
 	public static int pvpTime = GameUtils.getPVP();
 	public static int meetupTime = GameUtils.getMeetup();
+	
+	@EventHandler
+	public void onEnable(PluginEnableEvent event) {
+		
+		if (GameUtils.getStatus() != Status.PLAY) return;
+				
+		startTimer();
+				
+	}
 	
 	public static void startTimer() {
 		

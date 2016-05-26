@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -36,6 +37,17 @@ public class DisplaySidebar implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 
 		update(event.getPlayer());
+		
+	}
+	
+	@EventHandler
+	public void onEnable(PluginEnableEvent event) {
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+					
+			DisplaySidebar.update(player);
+			
+		}
 		
 	}
 	

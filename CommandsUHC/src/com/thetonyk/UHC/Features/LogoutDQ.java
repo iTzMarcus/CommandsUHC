@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
@@ -56,6 +57,23 @@ public class LogoutDQ implements Listener {
 			startTimer(offline);
 			
 		}
+		
+	}
+	
+	@EventHandler
+	public void onEnable(PluginEnableEvent event) {
+		
+		if (GameUtils.getStatus() != Status.PLAY) return;
+				
+		for (UUID player : GameUtils.getAlives()) {
+			
+			if (Bukkit.getPlayer(player) != null) continue;
+				
+			LogoutDQ.startTimer(Bukkit.getOfflinePlayer(player));
+			
+		}
+		
+		DisplayTimers.startTimer();
 		
 	}
 	

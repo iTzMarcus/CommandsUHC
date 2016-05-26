@@ -14,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -139,7 +140,7 @@ public class TeleportLate implements Listener {
 		UUID uuid = player.getUniqueId();
 		Status status = GameUtils.getStatus();
 		
-		if (status != Status.PLAY || GameUtils.getSpectate(uuid) || GameUtils.getDeath(uuid) ||!player.isWhitelisted()) return;
+		if (status != Status.PLAY || GameUtils.getSpectate(uuid) || GameUtils.getDeath(uuid)) return;
 		
 		if (!GameUtils.getTeleported(uuid)) {
 			
@@ -226,6 +227,38 @@ public class TeleportLate implements Listener {
 			
 			timers.get(uuid).runTaskLater(Main.uhc, 600);
 		
+		}
+		
+	}
+	
+	@EventHandler
+	public void onEnable(PluginEnableEvent event) {
+		
+		Status status = GameUtils.getStatus();
+		
+		if (status != Status.PLAY) return;
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			UUID uuid = player.getUniqueId();
+			
+			if (GameUtils.getOnGround(uuid)) continue;
+			
+			if (GameUtils.getDeath(uuid) || GameUtils.getDeath(uuid)) continue;
+			
+			timers.put(uuid, new BukkitRunnable() {
+				
+				public void run() {
+					
+					GameUtils.setOnGround(uuid, true);;
+					timers.remove(uuid);
+					
+				}
+				
+			});
+			
+			timers.get(uuid).runTaskLater(Main.uhc, 600);
+			
 		}
 		
 	}
