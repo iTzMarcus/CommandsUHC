@@ -113,3 +113,7 @@ commands:
     near:
         description: See nearby players
         usage: /near
+    specchat:
+        description: Send message to others spec
+        usage: /specchat
+        aliases: [sc, s]
