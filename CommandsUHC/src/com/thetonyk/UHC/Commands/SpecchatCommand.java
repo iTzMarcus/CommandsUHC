@@ -36,7 +36,7 @@ public class SpecchatCommand implements CommandExecutor {
 			
 		}
 		
-		String chat = "§6SpecChat §8| §7" + player.getName() + " §8⫸ §f" + message;
+		String chat = "§6SpecChat §8| §7§o" + player.getName() + " §8⫸ §f" + message;
 		
 		for (Player online : Bukkit.getOnlinePlayers()) {
 			

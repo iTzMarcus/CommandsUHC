@@ -136,7 +136,7 @@ public class SpecPlayer implements Listener {
 		if (rank == Rank.ADMIN || rank == Rank.HOST || rank == Rank.STAFF) return;
 		
 		event.setCancelled(true);
-		player.sendMessage(Main.PREFIX + "You can't speak in chat when you are spectator.");
+		player.performCommand("sc " + event.getMessage());
 		
 	}
 	

@@ -20,7 +20,7 @@ public class TpCommand implements CommandExecutor, TabCompleter {
 		
 		Player player = Bukkit.getPlayer(sender.getName());
 		
-		if (!GameUtils.getSpectate(player.getUniqueId())) {
+		if (!GameUtils.getSpectate(player.getUniqueId()) && !sender.hasPermission("uhc.spectate.all")) {
 			
 			sender.sendMessage(Main.NO_PERMS);
 			return true;
