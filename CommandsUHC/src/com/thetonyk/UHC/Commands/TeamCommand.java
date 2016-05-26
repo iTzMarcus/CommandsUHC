@@ -19,6 +19,7 @@ import static net.md_5.bungee.api.ChatColor.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -326,15 +327,27 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			List<UUID> members = TeamsUtils.getTeamMembers(teamInfo);
+			int kills = 0;
+			
+			for (Map.Entry<UUID, Integer> kill : GameUtils.getKills().entrySet()) {
+				
+				if (!members.contains(kill.getKey())) continue;
+				
+				kills++;
+				
+			}
+			
 			sender.sendMessage(Main.PREFIX + "Informations about the team:");
 			sender.sendMessage("§8⫸ §7Team: " + TeamsUtils.getTeamPrefix(uuid) + teamInfo + "§7.");
+			sender.sendMessage("§8⫸ §7Kills: §a" + kills + "§7.");
 			sender.sendMessage(Main.PREFIX + "Members of the team:");
 			
-			for (UUID member : TeamsUtils.getTeamMembers(teamInfo)) {
+			for (UUID member : members) {
 				
 				Player mate = Bukkit.getPlayer(member);
-				if (mate != null) sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + mate.getName() + "§8 - §f" + (int) (mate.getHealth() / 2) * 10 + "§4♥\n");
-				else sender.sendMessage("§8⫸ " + TeamsUtils.getTeamPrefix(member) + PlayerUtils.getName(PlayerUtils.getId(member)) + "§8 - §cOFFLINE\n");
+				if (mate != null) sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + mate.getName() + "§8 - §f" + (int) (mate.getHealth() / 2) * 10 + "§4♥\n");
+				else sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + PlayerUtils.getName(PlayerUtils.getId(member)) + "§8 - §cOFFLINE\n");
 				
 			}
 			

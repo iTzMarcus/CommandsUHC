@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -53,6 +54,14 @@ public class ChatSettings implements Listener {
 			
 			receivers.clear();
 			receivers.addAll(world.getPlayers());
+			
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				
+				if (!GameUtils.getSpectate(player.getUniqueId())) continue;
+				
+				receivers.add(player);
+				
+			}
 
 		}
 		
@@ -98,8 +107,8 @@ public class ChatSettings implements Listener {
 			if (PlayerUtils.getRank(uuid) != Rank.PLAYER) message.append(PlayerUtils.getRank(uuid).getName().substring(2)).color(rankColor).append(" | ").color(DARK_GRAY);
 			message.append(name).color(GRAY);
 			if (team != null) message.color(ChatColor.getByChar(TeamsUtils.getTeamPrefix(uuid).charAt(1))).bold(TeamsUtils.getTeamPrefix(uuid).contains("l")).italic(TeamsUtils.getTeamPrefix(uuid).contains("o")).underlined(TeamsUtils.getTeamPrefix(uuid).contains("n")).strikethrough(TeamsUtils.getTeamPrefix(uuid).contains("m"));
-			if (!receiver.equals(event.getPlayer())) message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(GameUtils.getSpectate(receiver.getUniqueId()) ? "Teleport to " : "Send a message to ").color(GRAY).append(receiver.getName()).color(GREEN).append(".").color(GRAY).create()));
-			if (!receiver.equals(event.getPlayer())) message.event(new ClickEvent(GameUtils.getSpectate(receiver.getUniqueId()) ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND, GameUtils.getSpectate(receiver.getUniqueId()) ? "/tp " + receiver.getName() : "/msg " + receiver.getName() + " "));
+			if (!receiver.equals(event.getPlayer())) message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(GameUtils.getSpectate(receiver.getUniqueId()) ? "Teleport to " : "Send a message to ").color(GRAY).append(name).color(GREEN).append(".").color(GRAY).create()));
+			if (!receiver.equals(event.getPlayer())) message.event(new ClickEvent(GameUtils.getSpectate(receiver.getUniqueId()) ? ClickEvent.Action.RUN_COMMAND : ClickEvent.Action.SUGGEST_COMMAND, GameUtils.getSpectate(receiver.getUniqueId()) ? "/tp " + name : "/msg " + name + " "));
 			message.append(" ⫸ ").retain(FormatRetention.NONE).color(DARK_GRAY);
 			
 			if (PlayerUtils.getMentionsState(receiver) == 1 && oldMessage.contains(receiver.getName())) {

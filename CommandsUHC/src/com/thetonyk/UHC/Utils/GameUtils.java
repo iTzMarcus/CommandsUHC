@@ -193,6 +193,8 @@ public class GameUtils {
 	
 	public static void addPlayer(UUID player) {
 		
+		if (GameUtils.players == null) GameUtils.players = new HashMap<UUID, Map<String, String>>();
+		
 		GameUtils.players.put(player, new HashMap<String, String>());
 		GameUtils.players.get(player).put("death", "false");
 		GameUtils.players.get(player).put("teleported", "false");
@@ -763,7 +765,15 @@ public class GameUtils {
 					
 				}
 				
-				GameUtils.reset = false;
+				new BukkitRunnable() {
+				
+					public void run() {
+					
+						GameUtils.reset = false;
+				
+					}
+				
+				}.runTask(Main.uhc);
 			
 			}
 		

@@ -107,3 +107,9 @@ commands:
         description: Toggle spec mode of players
         usage: /spectate
         aliases: [spec]
+    tp:
+        description: Teleport players
+        usage: /tp
+    near:
+        description: See nearby players
+        usage: /near

@@ -137,7 +137,7 @@ public class DisplaySidebar implements Listener {
 	public static void addPVE() {
 		
 		int pve = GameUtils.getPVE();
-		GameUtils.setPVE(pve++);
+		GameUtils.setPVE(pve + 1);
 		
 	}
 

@@ -34,7 +34,7 @@ public class HealthScore implements Listener {
 				
 					for (Player score : Bukkit.getOnlinePlayers()) {
 						
-						int health = (int) (player.getHealth() / 2) * 10;
+						int health = (int) (score.getHealth() / 2) * 10;
 						below.getScore(score.getName()).setScore(health);
 						list.getScore(score.getName()).setScore(health);
 						

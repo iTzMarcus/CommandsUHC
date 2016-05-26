@@ -50,15 +50,7 @@ public class SpecPlayer implements Listener {
 		
 		Player spectator = Bukkit.getPlayer(uuid);
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			if (!GameUtils.getDeath(player.getUniqueId())) player.hidePlayer(spectator);
-			else player.showPlayer(spectator);
-			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) spectator.showPlayer(player);
-			else spectator.hidePlayer(player);
-			
-		}
+		LoginPlayer.updateVisibility();
 		
 		PlayerUtils.clearInventory(spectator);
 		PlayerUtils.clearEffects(spectator);
@@ -77,14 +69,7 @@ public class SpecPlayer implements Listener {
 		
 		Player spectator = Bukkit.getPlayer(uuid);
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			player.hidePlayer(spectator);
-			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) spectator.showPlayer(player);
-			else spectator.hidePlayer(player);
-			
-		}
+		LoginPlayer.updateVisibility();
 		
 		PlayerUtils.clearInventory(spectator);
 		PlayerUtils.clearEffects(spectator);
@@ -128,15 +113,7 @@ public class SpecPlayer implements Listener {
 		
 		if (!GameUtils.getSpectate(spectator.getUniqueId())) return;
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			if (!GameUtils.getDeath(player.getUniqueId())) player.hidePlayer(spectator);
-			else player.showPlayer(spectator);
-			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) spectator.showPlayer(player);
-			else spectator.hidePlayer(player);
-			
-		}
+		LoginPlayer.updateVisibility();
 		
 		PlayerUtils.clearInventory(spectator);
 		PlayerUtils.clearEffects(spectator);

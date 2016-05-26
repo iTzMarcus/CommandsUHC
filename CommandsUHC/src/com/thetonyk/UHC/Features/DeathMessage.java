@@ -52,6 +52,8 @@ public class DeathMessage implements Listener {
 		event.getEntity().setWhitelisted(false);
 		Bukkit.broadcastMessage(Main.PREFIX + "There are §a" + GameUtils.getAlives().size() + " §7players alive.");
 		
+		LoginPlayer.updateVisibility();
+		
 	}
 	
 }

@@ -49,7 +49,7 @@ public class MeetupWarning implements Listener {
 		double smallest = Collections.min(compare);
 		final int distance = smallest >= 0 ? (int) Math.floor(smallest) : 0;
 		
-		DisplayUtils.sendActionBar(event.getPlayer(), "§8⫸ §6World Border is at §c" + (int) Math.floor(distance) + " §6blocks of you! §8⫷");
+		DisplayUtils.sendActionBar(event.getPlayer(), "§8⫸ §6Border is at §c" + (int) Math.floor(distance) + " §6blocks of you! §8⫷");
 		
 		runnables.put(uuid, new BukkitRunnable() {
 			

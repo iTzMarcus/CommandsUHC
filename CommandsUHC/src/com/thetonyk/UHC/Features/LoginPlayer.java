@@ -43,6 +43,8 @@ public class LoginPlayer implements Listener {
 		
 		if (player.isDead()) player.spigot().respawn();
 		
+		Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		player.setScoreboard(scoreboard);
 		player.setNoDamageTicks(0);
 		
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + player.getName());
@@ -60,6 +62,36 @@ public class LoginPlayer implements Listener {
 		PlayerUtils.heal(player);
 		PlayerUtils.clearEffects(player);
 		player.setMaxHealth(20.0);
+		
+	}
+	
+	public static void updateVisibility() {
+		
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				
+				if (player.equals(online)) continue;
+				
+				if (GameUtils.getDeath(online.getUniqueId())) {
+					
+					player.hidePlayer(online);
+					continue;
+					
+				}
+				
+				if (!GameUtils.getSpectate(player.getUniqueId()) && GameUtils.getSpectate(online.getUniqueId())) {
+					
+					player.hidePlayer(online);
+					continue;
+					
+				}
+				
+				player.showPlayer(online);
+				
+			}
+			
+		}
 		
 	}
 

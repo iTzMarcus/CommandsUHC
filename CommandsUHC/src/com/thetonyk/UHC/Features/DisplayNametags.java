@@ -91,7 +91,7 @@ public class DisplayNametags implements Listener {
 		}
 		
 		if (GameUtils.getSpectate(uuid)) player.setPlayerListName("§r" + PlayerUtils.getRank(uuid).getPrefix() + "§7§o" + player.getName());
-		else player.setPlayerListName(((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "") + prefix + player.getName());
+		else player.setPlayerListName(prefix + player.getName());
 		
 	}
 	

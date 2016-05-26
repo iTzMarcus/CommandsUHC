@@ -22,16 +22,12 @@ import net.md_5.bungee.api.chat.HoverEvent;
 
 import static net.md_5.bungee.api.ChatColor.*;
 
-import java.util.UUID;
-
 public class DeathRespawn implements Listener {
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
 		
-		UUID uuid = event.getEntity().getUniqueId();
 		Player death = event.getEntity();
-		Status status = GameUtils.getStatus();
 		
 		new BukkitRunnable() {
 			
@@ -41,18 +37,7 @@ public class DeathRespawn implements Listener {
 				
 			}
 			
-		}.runTaskLater(Main.uhc, 2);
-		
-		if (status != Status.PLAY || GameUtils.getDeath(uuid)) return;
-		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			player.hidePlayer(death);
-			
-			if (!GameUtils.getDeath(player.getUniqueId()) || GameUtils.getSpectate(player.getUniqueId())) death.showPlayer(player);
-			else death.hidePlayer(player);
-			
-		}
+		}.runTaskLater(Main.uhc, 10);
 		
 	}
 	
@@ -67,7 +52,7 @@ public class DeathRespawn implements Listener {
 		event.setRespawnLocation(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		player.setGameMode(GameMode.ADVENTURE);
 		player.setMaxHealth(20.0);
-		player.sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or spoil please.");
+		player.sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or insult please.");
 		
 		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);
 		text.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to see our ").color(GRAY).append("Twitter").color(GREEN).append(".").color(GRAY).create()));
@@ -82,19 +67,10 @@ public class DeathRespawn implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		
 		Status status = GameUtils.getStatus();
-		Player death = event.getPlayer();
 		
 		if (status != Status.PLAY) return;
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			
-			if (GameUtils.getDeath(death.getUniqueId())) player.hidePlayer(death);
-			else player.showPlayer(death);
-			
-			if (!GameUtils.getDeath(player.getUniqueId())) death.showPlayer(player);
-			else death.hidePlayer(player);
-			
-		}
+		LoginPlayer.updateVisibility();
 		
 	}
 	

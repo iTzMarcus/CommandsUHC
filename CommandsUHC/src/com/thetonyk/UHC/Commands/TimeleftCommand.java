@@ -25,7 +25,7 @@ public class TimeleftCommand implements CommandExecutor {
 			
 		}
 		
-		int finalHeal = 60 - DisplayTimers.time;
+		int finalHeal = 45 - DisplayTimers.time;
 		int pvp = DisplayTimers.getTimeLeftPVP();
 		int meetup = DisplayTimers.getTimeLeftMeetup();
 		

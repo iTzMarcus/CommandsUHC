@@ -187,14 +187,14 @@ public class PlayerInventory implements Listener {
 					healthMeta.addPattern(new Pattern(DyeColor.RED, PatternType.TRIANGLE_TOP));
 					healthMeta.setDisplayName("§8⫸ §6Health & Food §8⫷");
 					lore.add(" ");
-					lore.add("§8⫸ §7Health: §a" + (health / 2) * 10 + "%");
-					lore.add("§8⫸ §7Max Health: §a" + (maxHealth / 2) * 10 + "%");
-					lore.add("§8⫸ §7Absorption: §a" + (absorptionHealth / 2) * 10 + "%");
+					lore.add("§8⫸ §7Health: §a" + format.format((health / 2) * 10) + "%");
+					lore.add("§8⫸ §7Max Health: §a" + format.format((maxHealth / 2) * 10) + "%");
+					lore.add("§8⫸ §7Absorption: §a" + format.format((absorptionHealth / 2) * 10) + "%");
 					lore.add(" ");
 					lore.add("§8⫸ §7Remaining Air: " + (air < maxAir ? "§a" + (int) air / 20 + "s" : "§cNone"));
 					lore.add(" ");
 					lore.add("§8⫸ §7Food level: §a" + food);
-					lore.add("§8⫸ §7Saturation: §a" + saturation);
+					lore.add("§8⫸ §7Saturation: §a" + format.format(saturation));
 					lore.add("§8⫸ §7Exhaustion: §a" + format.format(exhaustion));
 					lore.add(" ");
 					healthMeta.setLore(lore);
@@ -354,6 +354,8 @@ public class PlayerInventory implements Listener {
 	public void onClick(InventoryClickEvent event) {
 		
 		Inventory inventory = event.getClickedInventory();
+		
+		if (inventory == null || inventory.getName() == null) return;
 		
 		if (!inventory.getName().startsWith("§7Inventory ⫸ §4")) return;
 		
