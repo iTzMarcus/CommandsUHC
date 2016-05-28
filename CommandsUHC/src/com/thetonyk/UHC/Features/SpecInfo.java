@@ -3,7 +3,10 @@ package com.thetonyk.UHC.Features;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,7 +29,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -37,15 +44,49 @@ import com.thetonyk.UHC.Utils.GameUtils;
 
 public class SpecInfo implements Listener {
 	
-	private static void send(String message) {
+	private static Map<UUID, List<UUID>> nearby = new HashMap<UUID, List<UUID>>();
+	
+	public SpecInfo() {
 		
-		for (Player online : Bukkit.getOnlinePlayers()) {
+		new BukkitRunnable() {
 			
-			if (!GameUtils.getSpectate(online.getUniqueId())) continue;
+			public void run() {
+				
+				List<UUID> alives = GameUtils.getAlives();
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					if (!alives.contains(player.getUniqueId())) continue;
+					
+					if (!nearby.containsKey(player.getUniqueId())) nearby.put(player.getUniqueId(), new ArrayList<UUID>());
+					
+					for (Player online : player.getWorld().getPlayers()) {
+						
+						if (player.equals(online)) continue;
+						
+						if (!alives.contains(online.getUniqueId())) continue;
+						
+						int distance = (int) player.getLocation().distance(online.getLocation());
+						
+						if (distance > 30 && nearby.get(player.getUniqueId()).contains(online.getUniqueId())) nearby.get(player.getUniqueId()).remove(online.getUniqueId());
+						
+						if (distance > 20) continue;
+						
+						if (nearby.get(player.getUniqueId()).contains(online.getUniqueId())) continue;
+						
+						nearby.get(player.getUniqueId()).add(online.getUniqueId());
+						
+						if (nearby.containsKey(online.getUniqueId()) && nearby.get(online.getUniqueId()).contains(player.getUniqueId())) continue;
+							
+						send("§6§oNearby §8| §7" + player.getName() + " §8& §7" + online.getName() + " §8| §a20 blocks");
+						
+					}
+					
+				}
+				
+			}
 			
-			online.sendMessage("§8⫸ " + message);
-			
-		}
+		}.runTaskTimer(Main.uhc, 10, 10);
 		
 	}
 	
@@ -315,7 +356,7 @@ public class SpecInfo implements Listener {
 		
 		for (PotionEffect effect : potion.getEffects()) {
 			
-			send("§6§oPotion §8| §7" + player.getName() + " §8| §a" + getPotionName(effect.getType()) + " " + (effect.getAmplifier() + 1) + (effect.getDuration() > 0 ? " §8| §7" + effect.getDuration() / 20 : ""));
+			send("§6§oSplash §8| §7" + player.getName() + " §8| §a" + getPotionName(effect.getType()) + " " + (effect.getAmplifier() + 1) + (effect.getDuration() > 0 ? " §8| §7" + effect.getDuration() / 20 : ""));
 			
 		}
 		
@@ -332,6 +373,60 @@ public class SpecInfo implements Listener {
 		if (oldEnvironment == null || newEnvironment == null) return;
 		
 		send("§6§oPortal §8| §7" + player.getName() + " §8| §c" + oldEnvironment + " §7⫸ §a" + newEnvironment);
+		
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onTeleport(PlayerTeleportEvent event) {
+		
+		if (event.getCause() != TeleportCause.ENDER_PEARL) return;
+				
+		if (event.getFrom() == null || event.getTo() == null) return;
+		
+		if (event.getFrom().getWorld() != event.getTo().getWorld()) return;
+		
+		Player player = event.getPlayer();
+		Format format = new DecimalFormat("##.#");
+		String distance = format.format(event.getFrom().distance(event.getTo()));
+		
+		send("§6§oPearl §8| §7" + player.getName() + " §8| §a" + distance);
+		
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onConsume(PlayerItemConsumeEvent event) {
+		
+		Player player = event.getPlayer();
+		ItemStack item = event.getItem();
+		
+		if (item.getType() != Material.GOLDEN_APPLE && item.getType() != Material.POTION) return;
+		
+		if (item.getType() == Material.GOLDEN_APPLE) {
+			
+			send("§6§oHealing §8| §7" + player.getName() + " §8| §a" + (item.getDurability() == 1 ? "Notch Apple" : "Golden Apple"));
+			return;
+			
+		}
+		
+		Potion potion = Potion.fromItemStack(item);
+		
+		for (PotionEffect effect : potion.getEffects()) {
+			
+			send("§6§o" + (effect.getType() == PotionEffectType.HEAL ? "Healing" : "Potion") + " §8| §7" + player.getName() + " §8| §a" + getPotionName(effect.getType()) + " " + (effect.getAmplifier() + 1) + (effect.getDuration() > 0 ? " §8| §7" + effect.getDuration() / 20 : ""));
+			
+		}
+		
+	}
+	
+	private static void send(String message) {
+		
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			
+			if (!GameUtils.getSpectate(online.getUniqueId())) continue;
+			
+			online.sendMessage("§8⫸ " + message);
+			
+		}
 		
 	}
 	
@@ -380,58 +475,61 @@ public class SpecInfo implements Listener {
 		
 	}
 	
-	//LeonTG77's method
-	public static String getPotionName(final PotionEffectType type) {
+	public static String getPotionName(PotionEffectType type) {
+		
         switch (type.getName().toLowerCase()) {
-        case "speed":
-            return "Speed";
-        case "slow":
-            return "Slowness";
-        case "fast_digging":
-            return "Haste";
-        case "slow_digging":
-            return "Mining fatigue";
-        case "increase_damage":
-            return "Strength";
-        case "heal":
-            return "Instant Health";
-        case "harm":
-            return "Instant Damage";
-        case "jump":
-            return "Jump Boost";
-        case "confusion":
-            return "Nausea";
-        case "regeneration":
-            return "Regeneration";
-        case "damage_resistance":
-            return "Resistance";
-        case "fire_resistance":
-            return "Fire Resistance";
-        case "water_breathing":
-            return "Water breathing";
-        case "invisibility":
-            return "Invisibility";
-        case "blindness":
-            return "Blindness";
-        case "night_vision":
-            return "Night Vision";
-        case "hunger":
-            return "Hunger";
-        case "weakness":
-            return "Weakness";
-        case "poison":
-            return "Poison";
-        case "wither":
-            return "Wither";
-        case "health_boost":
-            return "Health Boost";
-        case "absorption":
-            return "Absorption";
-        case "saturation":
-            return "Saturation";
-        default:
-            return "???";
+        
+	        case "speed":
+	            return "Speed";
+	        case "slow":
+	            return "Slowness";
+	        case "fast_digging":
+	            return "Haste";
+	        case "slow_digging":
+	            return "Mining fatigue";
+	        case "increase_damage":
+	            return "Strength";
+	        case "heal":
+	            return "Instant Health";
+	        case "harm":
+	            return "Instant Damage";
+	        case "jump":
+	            return "Jump Boost";
+	        case "confusion":
+	            return "Nausea";
+	        case "regeneration":
+	            return "Regeneration";
+	        case "damage_resistance":
+	            return "Resistance";
+	        case "fire_resistance":
+	            return "Fire Resistance";
+	        case "water_breathing":
+	            return "Water breathing";
+	        case "invisibility":
+	            return "Invisibility";
+	        case "blindness":
+	            return "Blindness";
+	        case "night_vision":
+	            return "Night Vision";
+	        case "hunger":
+	            return "Hunger";
+	        case "weakness":
+	            return "Weakness";
+	        case "poison":
+	            return "Poison";
+	        case "wither":
+	            return "Wither";
+	        case "health_boost":
+	            return "Health Boost";
+	        case "absorption":
+	            return "Absorption";
+	        case "saturation":
+	            return "Saturation";
+	        default:
+	            return "???";
+            
         }
-    }
+		
+	}
 
 }
