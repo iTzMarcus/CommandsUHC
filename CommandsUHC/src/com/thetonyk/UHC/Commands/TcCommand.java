@@ -33,17 +33,17 @@ public class TcCommand implements CommandExecutor {
 		String world = "Overworld";
 		String color = "§7";
 		
-		switch (player.getWorld().getEnvironment().toString()) {
+		switch (player.getWorld().getEnvironment()) {
 		
-			case "NORMAL":
+			case NORMAL:
 				world = "Overworld";
 				color = "§a";
 				break;
-			case "NETHER":
+			case NETHER:
 				world = "Nether";
 				color = "§c";
 				break;
-			case "THE_END":
+			case THE_END:
 				world = "The End";
 				color = "§9";
 				break;

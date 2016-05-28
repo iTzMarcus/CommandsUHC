@@ -27,10 +27,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Features.SpecInfo;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -217,7 +217,7 @@ public class PlayerInventory implements Listener {
 				
 						for (PotionEffect effect : effects) {
 							
-							lore.add("§8⫸ §6" + getPotionName(effect.getType()) + "§7:");
+							lore.add("§8⫸ §6" + SpecInfo.getPotionName(effect.getType()) + "§7:");
 							lore.add("§8⫸   §7Level: §a" + (effect.getAmplifier() + 1));
 							lore.add("§8⫸   §7Duration: §a" + effect.getDuration() / 20 + "s");
 							lore.add("");
@@ -362,59 +362,5 @@ public class PlayerInventory implements Listener {
 		event.setCancelled(true);
 		
 	}
-	
-	//LeonTG77's method
-	public static String getPotionName(final PotionEffectType type) {
-        switch (type.getName().toLowerCase()) {
-        case "speed":
-            return "Speed";
-        case "slow":
-            return "Slowness";
-        case "fast_digging":
-            return "Haste";
-        case "slow_digging":
-            return "Mining fatigue";
-        case "increase_damage":
-            return "Strength";
-        case "heal":
-            return "Instant Health";
-        case "harm":
-            return "Instant Damage";
-        case "jump":
-            return "Jump Boost";
-        case "confusion":
-            return "Nausea";
-        case "regeneration":
-            return "Regeneration";
-        case "damage_resistance":
-            return "Resistance";
-        case "fire_resistance":
-            return "Fire Resistance";
-        case "water_breathing":
-            return "Water breathing";
-        case "invisibility":
-            return "Invisibility";
-        case "blindness":
-            return "Blindness";
-        case "night_vision":
-            return "Night Vision";
-        case "hunger":
-            return "Hunger";
-        case "weakness":
-            return "Weakness";
-        case "poison":
-            return "Poison";
-        case "wither":
-            return "Wither";
-        case "health_boost":
-            return "Health Boost";
-        case "absorption":
-            return "Absorption";
-        case "saturation":
-            return "Saturation";
-        default:
-            return "???";
-        }
-    }
 
 }
