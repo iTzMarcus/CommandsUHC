@@ -3,7 +3,6 @@ package com.thetonyk.UHC;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Commands.AcceptCommand;
@@ -19,20 +18,22 @@ import com.thetonyk.UHC.Commands.HealthCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
 import com.thetonyk.UHC.Commands.LagCommand;
+import com.thetonyk.UHC.Commands.NearCommand;
 import com.thetonyk.UHC.Commands.NosoundCommand;
 import com.thetonyk.UHC.Commands.PVPCommand;
 import com.thetonyk.UHC.Commands.PmCommand;
-import com.thetonyk.UHC.Commands.PmcoordsCommand;
-import com.thetonyk.UHC.Commands.PmoresCommand;
 import com.thetonyk.UHC.Commands.PregenCommand;
 import com.thetonyk.UHC.Commands.RankCommand;
 import com.thetonyk.UHC.Commands.RulesCommand;
+import com.thetonyk.UHC.Commands.SpecchatCommand;
+import com.thetonyk.UHC.Commands.SpectateCommand;
 import com.thetonyk.UHC.Commands.StartCommand;
 import com.thetonyk.UHC.Commands.TCommand;
 import com.thetonyk.UHC.Commands.TcCommand;
 import com.thetonyk.UHC.Commands.TeamCommand;
 import com.thetonyk.UHC.Commands.TeleportCommand;
 import com.thetonyk.UHC.Commands.TimeleftCommand;
+import com.thetonyk.UHC.Commands.TpCommand;
 import com.thetonyk.UHC.Commands.WhitelistCommand;
 import com.thetonyk.UHC.Commands.WorldCommand;
 import com.thetonyk.UHC.Features.ChatCooldown;
@@ -55,6 +56,7 @@ import com.thetonyk.UHC.Features.MeetupWarning;
 import com.thetonyk.UHC.Features.HealthRegeneration;
 import com.thetonyk.UHC.Features.PVPEnable;
 import com.thetonyk.UHC.Features.PregenStates;
+import com.thetonyk.UHC.Features.SpecInfo;
 import com.thetonyk.UHC.Features.SpecPlayer;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.TeamsInvitations;
@@ -67,17 +69,14 @@ import com.thetonyk.UHC.Features.HealthFood;
 import com.thetonyk.UHC.Inventories.InviteInventory;
 import com.thetonyk.UHC.Inventories.PlayerInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
+import com.thetonyk.UHC.Inventories.SelectorInventory;
 import com.thetonyk.UHC.Inventories.TeamsInventory;
 import com.thetonyk.UHC.Utils.BiomesUtils;
 import com.thetonyk.UHC.Utils.DisplayUtils;
-import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.WorldUtils;
-import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import static net.md_5.bungee.api.ChatColor.*;
-
-import java.util.UUID;
 
 import net.md_5.bungee.api.chat.ComponentBuilder;
 
@@ -102,6 +101,8 @@ public class Main extends JavaPlugin {
 		BiomesUtils.removeOceansAndJungles();
 		DisplayUtils.redditHearts();
 		DisplayUtils.playersCount();
+		TeamsUtils.reload();
+		WorldUtils.loadAllWorlds();
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
@@ -116,8 +117,8 @@ public class Main extends JavaPlugin {
 		this.getCommand("invite").setExecutor(new InviteCommand());
 		this.getCommand("accept").setExecutor(new AcceptCommand());
 		this.getCommand("pm").setExecutor(new PmCommand());
-		this.getCommand("pmcoords").setExecutor(new PmcoordsCommand());
-		this.getCommand("pmores").setExecutor(new PmoresCommand());
+		this.getCommand("pmcoords").setExecutor(new PmCommand());
+		this.getCommand("pmores").setExecutor(new PmCommand());
 		this.getCommand("t").setExecutor(new TCommand());
 		this.getCommand("tc").setExecutor(new TcCommand());
 		this.getCommand("whitelist").setExecutor(new WhitelistCommand());
@@ -135,6 +136,10 @@ public class Main extends JavaPlugin {
 		this.getCommand("nosound").setExecutor(new NosoundCommand());
 		this.getCommand("lag").setExecutor(new LagCommand());
 		this.getCommand("give").setExecutor(new GiveCommand());
+		this.getCommand("spectate").setExecutor(new SpectateCommand());
+		this.getCommand("tp").setExecutor(new TpCommand());
+		this.getCommand("near").setExecutor(new NearCommand());
+		this.getCommand("specchat").setExecutor(new SpecchatCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
@@ -150,6 +155,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new DisplaySidebar(), this);
 		manager.registerEvents(new DisplayServerList(), this);
 		manager.registerEvents(new DisplayTab(), this);
+		manager.registerEvents(new DisplayTimers(), this);
 		manager.registerEvents(new HealthScore(), this);
 		manager.registerEvents(new HealthShoot(), this);
 		manager.registerEvents(new HealthRegeneration(), this);
@@ -165,6 +171,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new MeetupWarning(), this);
 		manager.registerEvents(new PregenStates(), this);
 		manager.registerEvents(new PVPEnable(), this);
+		manager.registerEvents(new SpecInfo(), this);
 		manager.registerEvents(new SpecPlayer(), this);
 		manager.registerEvents(new TeleportProtection(), this);
 		manager.registerEvents(new TeamsInvitations(), this);
@@ -172,39 +179,10 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new InviteInventory(), this);
 		manager.registerEvents(new PlayerInventory(), this);
 		manager.registerEvents(new RulesInventory(), this);
+		manager.registerEvents(new SelectorInventory(), this);
 		manager.registerEvents(new TeamsInventory(), this);
 		
 		manager.registerEvents(new TeleportCommand(), this);
-		
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				TeamsUtils.reload();
-				WorldUtils.loadAllWorlds();
-				
-				if (GameUtils.getStatus() != Status.PLAY) return;
-				
-				for (UUID player : GameUtils.getPlayers().keySet()) {
-					
-					if (GameUtils.getDeath(player)) continue;
-					
-					if (Bukkit.getPlayer(player) != null && Bukkit.getPlayer(player).isOnline()) {
-						
-						DisplaySidebar.update(Bukkit.getPlayer(player));
-						continue;
-						
-					}
-					
-					LogoutDQ.startTimer(Bukkit.getOfflinePlayer(player));
-					
-				}
-				
-				DisplayTimers.startTimer();
-				
-			}
-			
-		}.runTaskLater(this, 5);
 		
 	}
 	
