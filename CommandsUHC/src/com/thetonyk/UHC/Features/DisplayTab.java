@@ -12,9 +12,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 
+import static net.md_5.bungee.api.ChatColor.*;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 
 public class DisplayTab implements Listener {
@@ -57,7 +58,11 @@ public class DisplayTab implements Listener {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
 			int ping = ((CraftPlayer)player).getHandle().ping;
-			DisplayUtils.sendTab(player, "\n §7Welcome on the UHC, §a" + player.getName() + " §7! \n §b@CommandsPVP §7⋯ §aTS: §bcommandspvp.com \n §7Players: §a" + players + " §7⋯ Ping: §a" + ping + "ms §7⋯ TPS: §a" + tps + " \n", "\n §7PVP: §a" + pvp + " §7⋯ Meetup: §a" + meetup + " §7⋯ Border: §a" + border + " \n");
+			
+			ComponentBuilder header = new ComponentBuilder("\n Welcome on the UHC, ").color(GRAY).append(player.getName()).color(GREEN).append(" ! \n ").color(GRAY).append("@CommandsPVP").color(AQUA).append(" ⋯ ").color(GRAY).append("TS: ").color(GREEN).append("commandspvp.com").color(AQUA).append(" \n Players: ").color(GRAY).append(String.valueOf(players)).color(GREEN).append(" ⋯ Ping: ").color(GRAY).append(ping + "ms").color(GREEN).append(" ⋯ TPS: ").color(GRAY).append(tps + " \n").color(GREEN);
+			ComponentBuilder footer = new ComponentBuilder("\n PVP: ").color(GRAY).append(pvp).color(GREEN).append(" ⋯ Meetup: ").color(GRAY).append(meetup).color(GREEN).append(" ⋯ Border: ").color(GRAY).append(border + " \n").color(GREEN);
+			
+			player.setPlayerListHeaderFooter(header.create(), footer.create());
 		
 		}
 		

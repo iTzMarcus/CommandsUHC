@@ -41,6 +41,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class SpecInfo implements Listener {
 	
@@ -63,6 +64,8 @@ public class SpecInfo implements Listener {
 					for (Player online : player.getWorld().getPlayers()) {
 						
 						if (player.equals(online)) continue;
+						
+						if (TeamsUtils.getTeam(player.getUniqueId()) != null && TeamsUtils.getTeam(online.getUniqueId()) != null && TeamsUtils.getTeam(player.getUniqueId()).equalsIgnoreCase(TeamsUtils.getTeam(online.getUniqueId()))) continue;
 						
 						if (!alives.contains(online.getUniqueId())) continue;
 						
@@ -99,10 +102,8 @@ public class SpecInfo implements Listener {
 		
 		Player player = (Player) event.getEntity();
 		DamageCause type = event.getCause();
-		double damages = event.getFinalDamage();
+		double health = player.getHealth();
 		String damage = "Damage";
-		
-		if (damages <= 0) return;
 		
 		switch (type) {
 		
@@ -138,6 +139,10 @@ public class SpecInfo implements Listener {
 		
 			public void run() {
 			
+				double damages = health - player.getHealth();
+				
+				if (damages <= 0) return;
+				
 				send("§6§oPVE §8| §7" + player.getName() + " §8| §a" + finalDamage + " §8| §7" + (int) (damages / 2) * 10 + "%");
 			
 			}
@@ -152,18 +157,20 @@ public class SpecInfo implements Listener {
 		if (!(event.getEntity() instanceof Player)) return;
 		
 		Player player = (Player) event.getEntity();
-		double damages = event.getFinalDamage();
+		double health = player.getHealth();
 		Entity attacker = event.getDamager();
 		Format format = new DecimalFormat("##.#");
 		String distance = format.format(attacker.getLocation().distance(player.getLocation()));
-		
-		if (damages <= 0) return;
-		
+
 		if (attacker instanceof Player && GameUtils.getSpectate(attacker.getUniqueId())) return;
 		
 		new BukkitRunnable() {
 			
 			public void run() {
+				
+				double damages = health - player.getHealth();
+				
+				if (damages <= 0) return;
 		
 				if (attacker instanceof Projectile) {
 					

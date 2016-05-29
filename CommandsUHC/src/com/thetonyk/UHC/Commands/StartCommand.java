@@ -14,12 +14,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.github.paperspigot.Title;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTimers;
-import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -87,7 +87,8 @@ public class StartCommand implements CommandExecutor {
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			DisplayUtils.sendTitle(player, "§45", "", 0, 20, 0);
+			Title title = new Title("§45", "", 0, 20, 0);
+			player.sendTitle(title);
 			
 			nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
 			
@@ -103,7 +104,8 @@ public class StartCommand implements CommandExecutor {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayUtils.sendTitle(player, "§c4", "", 0, 20, 0);
+					Title title = new Title("§c4", "", 0, 20, 0);
+					player.sendTitle(title);
 					
 					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
 					
@@ -123,7 +125,8 @@ public class StartCommand implements CommandExecutor {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayUtils.sendTitle(player, "§63", "", 0, 20, 0);
+					Title title = new Title("§63", "", 0, 20, 0);
+					player.sendTitle(title);
 					
 					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
 					
@@ -143,7 +146,8 @@ public class StartCommand implements CommandExecutor {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayUtils.sendTitle(player, "§22", "", 0, 20, 0);
+					Title title = new Title("§22", "", 0, 20, 0);
+					player.sendTitle(title);
 					
 					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
 					
@@ -163,7 +167,8 @@ public class StartCommand implements CommandExecutor {
 				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayUtils.sendTitle(player, "§a1", "", 0, 20, 0);
+					Title title = new Title("§a1", "", 0, 20, 0);
+					player.sendTitle(title);
 					
 					if (!nosounds.containsKey(player.getUniqueId())) nosounds.put(player.getUniqueId(), PlayerUtils.getNosoundState(player) == 1 ? true : false);
 					
@@ -211,7 +216,8 @@ public class StartCommand implements CommandExecutor {
 					
 					if (GameUtils.getSpectate(player.getUniqueId())) continue;
 					
-					DisplayUtils.sendTitle(player, "", "§7Go§a! §7Go§a! §7Go§a!", 5, 30, 5);
+					Title title = new Title("", "§7Go§a! §7Go§a! §7Go§a!", 5, 30, 5);
+					player.sendTitle(title);
 					player.closeInventory();
 					player.setGameMode(GameMode.SURVIVAL);
 					PlayerUtils.clearEffects(player);

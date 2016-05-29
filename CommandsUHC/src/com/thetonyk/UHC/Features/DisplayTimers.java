@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.github.paperspigot.Title;
 
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
@@ -89,7 +90,8 @@ public class DisplayTimers implements Listener {
 						
 						Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(true, true);
 						
-						DisplayUtils.sendTitle(player, "§aFinal heal", "§7Do not ask for others heals.", 5, 30, 5);
+						Title title = new Title("§aFinal heal", "§7Do not ask for others heals.", 5, 30, 5);
+						player.sendTitle(title);
 						
 						if (PlayerUtils.getNosoundState(player) == 1) continue;
 						
