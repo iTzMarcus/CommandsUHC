@@ -59,6 +59,9 @@ public class TpCommand implements CommandExecutor, TabCompleter {
 			if (!player.equals(teleport) && !player.equals(destination)) player.sendMessage(Main.PREFIX + "The player '§6" + teleport.getName() + "§7' was teleported to the player '§6" + destination.getName() + "§7'.");
 			
 			teleport.sendMessage(Main.PREFIX + "Your where teleported to the player '§6" + destination.getName() + "§7'.");
+			
+			if (teleport.equals(destination)) return true; 
+			
 			destination.sendMessage(Main.PREFIX + "Your where teleported to the player '§6" + teleport.getName() + "§7'.");
 			
 		}

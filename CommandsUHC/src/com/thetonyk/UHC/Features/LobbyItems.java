@@ -191,7 +191,7 @@ public class LobbyItems implements Listener {
 		Status status = GameUtils.getStatus();
 		Player player = event.getPlayer();
 		
-		if ((status == Status.TELEPORT || status == Status.PLAY || status == Status.END) && !GameUtils.getDeath(player.getUniqueId())) return;
+		if ((status == Status.TELEPORT || status == Status.PLAY || status == Status.END) && !GameUtils.getDeath(player.getUniqueId()) && !GameUtils.getSpectate(player.getUniqueId())) return;
 			
 		giveItems(player);
 		
@@ -203,7 +203,7 @@ public class LobbyItems implements Listener {
 		Player player = event.getPlayer();
 		World world = player.getWorld();
 		
-		if (!world.getName().equalsIgnoreCase("lobby")) return;
+		if (!world.getName().equalsIgnoreCase("lobby") || GameUtils.getSpectate(player.getUniqueId())) return;
 		
 		giveItems(player);
 		

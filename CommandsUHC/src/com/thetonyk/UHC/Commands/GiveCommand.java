@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.GameUtils;
 
 import net.minecraft.server.v1_8_R3.Item;
 import net.minecraft.server.v1_8_R3.MinecraftKey;
@@ -99,6 +100,8 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
 		if (args[0].equalsIgnoreCase("*")) {
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
+				
+				if (GameUtils.getSpectate(player.getUniqueId())) continue;
 				
 				Map<Integer, ItemStack> items = player.getInventory().addItem(item);
 				

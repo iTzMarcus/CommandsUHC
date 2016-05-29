@@ -3,8 +3,11 @@ package com.thetonyk.UHC.Inventories;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -30,6 +33,8 @@ import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.StartEvent;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
+import com.thetonyk.UHC.Utils.PlayerUtils;
+import com.thetonyk.UHC.Utils.TeamsUtils;
 
 public class SelectorInventory implements Listener {
 	
@@ -132,9 +137,17 @@ public class SelectorInventory implements Listener {
 		
 		player.closeInventory();
 		
-		Player clicked = Bukkit.getPlayer(item.getItemMeta().getDisplayName().substring(6, item.getItemMeta().getDisplayName().length() - 4));
+		String names[] = item.getItemMeta().getDisplayName().substring(4, item.getItemMeta().getDisplayName().length() - 4).split("§");
+		String name = names[names.length - 1].substring(1);
 		
-		if (clicked == null) return;
+		Player clicked = Bukkit.getPlayer(name);
+		
+		if (clicked == null) {
+			
+			player.sendMessage(Main.PREFIX + "This player is not currently online.");
+			return;
+		
+		}
 		
 		if (action == InventoryAction.PICKUP_ALL) {
 			
@@ -245,8 +258,9 @@ public class SelectorInventory implements Listener {
 	public static void update() {
 		
 		List<UUID> alives = GameUtils.getAlives();
+		Set<UUID> viewersList = new HashSet<UUID>(viewers.keySet());
 		
-		for (UUID viewer : viewers.keySet()) {
+		for (UUID viewer : viewersList) {
 			
 			if (Bukkit.getPlayer(viewer) == null || !Bukkit.getPlayer(viewer).getOpenInventory().getTopInventory().equals(viewers.get(viewer))) {
 				
@@ -262,10 +276,41 @@ public class SelectorInventory implements Listener {
 			if (!page.containsKey(viewer)) page.put(viewer, 0);
 			if (!filters.containsKey(viewer)) filters.put(viewer, Filter.ALL);
 			
-			Map<UUID, String> players = new HashMap<UUID, String>();
+			Map<String, String> players = new HashMap<String, String>();
 			World world = Bukkit.getWorld(GameUtils.getWorld());
+			List<UUID> playersList = new ArrayList<UUID>();
+			
+			for (int i = 1; i <= 75; i++) {
+				
+				List<UUID> members = TeamsUtils.getTeamMembers("UHC" + i);
+				
+				if (members.isEmpty()) continue;
+				
+				for (UUID member : members) {
+					
+					if (GameUtils.getDeath(member) || GameUtils.getSpectate(member)) continue;
+					
+					playersList.add(member);
+					
+				}
+				
+			}
 			
 			for (UUID alive : alives) {
+				
+				if (TeamsUtils.getTeam(alive) != null) continue;
+				
+				if (GameUtils.getDeath(alive) || GameUtils.getSpectate(alive)) continue;
+				
+				playersList.add(alive);
+				
+			}
+			
+			Iterator<UUID> iterator = playersList.iterator();
+			
+			while (iterator.hasNext()) {
+				
+				UUID alive = iterator.next();
 				
 				Player player = Bukkit.getPlayer(alive);
 				
@@ -279,7 +324,7 @@ public class SelectorInventory implements Listener {
 				
 				if (filters.get(viewer) == Filter.END && player.getWorld().getEnvironment() != Environment.THE_END) continue;
 				
-				players.put(alive, player.getName());
+				players.put(player.getName(), PlayerUtils.getRank(alive).getPrefix() + ((TeamsUtils.getTeam(alive) != null) ? TeamsUtils.getTeamPrefix(alive) : "§7") + player.getName());
 				
 			}
 			
@@ -299,13 +344,14 @@ public class SelectorInventory implements Listener {
 							
 							if (players.size() <= i + playersNumber) break;
 							
-							String name = players.get(players.keySet().toArray()[i + playersNumber]);
+							String player = (String) players.keySet().toArray()[i + playersNumber];
+							String name = players.get(player);
 							List<String> lore = new ArrayList<String>();
 							
 							ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 							SkullMeta headMeta = (SkullMeta) head.getItemMeta();
-							headMeta.setOwner(name);
-							headMeta.setDisplayName("§8⫸ §a" + name + " §8⫷");
+							headMeta.setOwner(player);
+							headMeta.setDisplayName("§8⫸ " + name + " §8⫷");
 							lore.add(" ");
 							lore.add("§8⫸ §6Left-click §7to teleport");
 							lore.add("§8⫸ §6Right-click §7to see inventory");

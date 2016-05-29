@@ -59,6 +59,20 @@ public class DisplaySidebar implements Listener {
 		
 		if (GameUtils.getStatus() != Status.PLAY || GameUtils.getDeath(uuid)) return;
 		
+		new BukkitRunnable() {
+			
+			public void run() {
+				
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					update(player);
+					
+				}
+				
+			}
+			
+		}.runTaskLater(Main.uhc, 10);
+		
 		if (killer == null) {
 			
 			addPVE();
@@ -78,20 +92,6 @@ public class DisplaySidebar implements Listener {
 		
 		kills.put(killer.getUniqueId(), kill);
 		GameUtils.setKills(kills);
-		
-		new BukkitRunnable() {
-			
-			public void run() {
-				
-				for (Player player : Bukkit.getOnlinePlayers()) {
-					
-					update(player);
-					
-				}
-				
-			}
-			
-		}.runTaskLater(Main.uhc, 10);
 		
 	}
 	

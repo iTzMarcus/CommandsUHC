@@ -128,7 +128,7 @@ public class PlayerInventory implements Listener {
 			
 			for (UUID mate : TeamsUtils.getTeamMembers(playerTeam)) {
 				
-				teammates.add(PlayerUtils.getRank(mate).getPrefix() + prefix.get(playerTeam) + PlayerUtils.getName(PlayerUtils.getId(mate)));
+				teammates.add((GameUtils.getDeath(mate) ? "§c☠ " : "  ") + PlayerUtils.getRank(mate).getPrefix() + prefix.get(playerTeam) + PlayerUtils.getName(PlayerUtils.getId(mate)));
 				
 			}
 			

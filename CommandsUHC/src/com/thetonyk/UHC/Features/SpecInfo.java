@@ -241,6 +241,7 @@ public class SpecInfo implements Listener {
 					Player killer = (Player) attacker;
 					
 					send("§6§oPVP §8| §a" + killer.getName() + " §7⫸ §c" + player.getName() + " §8| §aMelee §8| §7" + (int) (damages / 2) * 10 + "% §8(§a" + distance + "m§8)");
+					return;
 					
 				}
 				

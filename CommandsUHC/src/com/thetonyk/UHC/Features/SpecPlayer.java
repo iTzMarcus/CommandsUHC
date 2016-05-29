@@ -135,6 +135,8 @@ public class SpecPlayer implements Listener {
 		
 		if (rank == Rank.ADMIN || rank == Rank.HOST || rank == Rank.STAFF) return;
 		
+		if (event.getMessage().equalsIgnoreCase("gg")) return;
+		
 		event.setCancelled(true);
 		player.performCommand("sc " + event.getMessage());
 		
