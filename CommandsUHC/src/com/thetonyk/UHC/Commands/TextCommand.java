@@ -68,13 +68,15 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 				
 				for (int i = 1; i < args.length; i++) {
 					
-					text.append(args[i] + " ");
+					text.append(args[i]);
+					
+					if (args.length > i + 1) text.append(" ");
 					
 				}
 				
 				for (ArmorStand stand : around) {
 					
-					if (!text.toString().equalsIgnoreCase(stand.getCustomName().replaceAll("§", "&"))) continue;
+					if (!text.toString().equalsIgnoreCase(stand.getCustomName().replaceAll("§", "&").replaceAll("⫸", "»").replaceAll("⫷", "«"))) continue;
 						
 					sender.sendMessage(Main.PREFIX + "The text '§r" + stand.getCustomName() + "§7' has been deleted.");
 					stand.remove();
@@ -104,7 +106,7 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 				
 				ComponentBuilder message = new ComponentBuilder("§8⫸ ");
 				message.append(stand.getCustomName());
-				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " remove " + stand.getCustomName().replaceAll("§", "&")));
+				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " remove " + stand.getCustomName().replaceAll("§", "&").replaceAll("⫸", "»").replaceAll("⫷", "«")));
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to choose.").color(GRAY).create()));
 				Bukkit.getPlayer(sender.getName()).spigot().sendMessage(message.create());
 				
@@ -118,21 +120,22 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 		
 		for (int i = 0; i < args.length; i++) {
 			
-			text.append(args[i] + " ");
+			text.append(args[i]);
+			
+			if (args.length > i + 1) text.append(" ");
 			
 		}
 		
-		text.substring(0, text.length() - 1);
-		
 		Location location = Bukkit.getPlayer(sender.getName()).getLocation();
 		ArmorStand stand = (ArmorStand) Bukkit.getPlayer(sender.getName()).getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+		String name = text.toString().replaceAll("&", "§").replaceAll("§§", "&").replaceAll("»", "⫸").replaceAll("«", "⫷");
 		
 		stand.setVisible(false);
 		stand.setSmall(true);
 		stand.setGravity(false);	
 		stand.setBasePlate(false);
 		stand.setArms(false);
-		stand.setCustomName(text.toString().replaceAll("&", "§"));
+		stand.setCustomName(name);
 		stand.setCustomNameVisible(true);
 		return true;
 		
