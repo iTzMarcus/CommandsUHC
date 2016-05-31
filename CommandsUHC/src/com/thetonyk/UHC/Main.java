@@ -9,7 +9,7 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
-import com.thetonyk.UHC.Commands.EndCommand;
+import com.thetonyk.UHC.Commands.EndgameCommand;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
@@ -34,6 +34,7 @@ import com.thetonyk.UHC.Commands.TCommand;
 import com.thetonyk.UHC.Commands.TcCommand;
 import com.thetonyk.UHC.Commands.TeamCommand;
 import com.thetonyk.UHC.Commands.TeleportCommand;
+import com.thetonyk.UHC.Commands.TextCommand;
 import com.thetonyk.UHC.Commands.TimeleftCommand;
 import com.thetonyk.UHC.Commands.TpCommand;
 import com.thetonyk.UHC.Commands.WhitelistCommand;
@@ -142,8 +143,9 @@ public class Main extends JavaPlugin {
 		this.getCommand("tp").setExecutor(new TpCommand());
 		this.getCommand("near").setExecutor(new NearCommand());
 		this.getCommand("specchat").setExecutor(new SpecchatCommand());
-		this.getCommand("end").setExecutor(new EndCommand());
+		this.getCommand("endgame").setExecutor(new EndgameCommand());
 		this.getCommand("list").setExecutor(new ListCommand());
+		this.getCommand("text").setExecutor(new TextCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

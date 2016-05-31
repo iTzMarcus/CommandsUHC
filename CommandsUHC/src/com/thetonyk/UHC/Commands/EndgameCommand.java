@@ -23,7 +23,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
-public class EndCommand implements CommandExecutor {
+public class EndgameCommand implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -198,7 +198,7 @@ public class EndCommand implements CommandExecutor {
 				if (entry.getKey().equalsIgnoreCase("team")) {
 					
 					String team = (String) entry.getValue();
-					ComponentBuilder message = new ComponentBuilder("§8⫸ ");
+					ComponentBuilder message = new ComponentBuilder("⫸ ").color(DARK_GRAY);
 					List<UUID> members = TeamsUtils.getTeamMembers(team);
 					int i = 1;
 					
@@ -207,6 +207,8 @@ public class EndCommand implements CommandExecutor {
 						String prefix = TeamsUtils.getTeamPrefix(member);
 						
 						message.append(PlayerUtils.getName(PlayerUtils.getId(member))).color(ChatColor.getByChar(prefix.charAt(1))).bold(prefix.contains("l")).italic(prefix.contains("o")).underlined(prefix.contains("n")).strikethrough(prefix.contains("m"));
+						message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " " + team));
+						message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to choose.").color(GRAY).create()));
 						
 						if (members.size() > 1 && i < members.size()) message.append("§7, ").color(GRAY);
 							
@@ -214,23 +216,21 @@ public class EndCommand implements CommandExecutor {
 						
 					}
 					
-					message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/end " + team));
-					message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to choose.").color(GRAY).create()));
-					
 					Bukkit.getPlayer(sender.getName()).spigot().sendMessage(message.create());
-					return true;
+					continue;
 					
 				}
 				
 				UUID player = (UUID) entry.getValue();
-				ComponentBuilder message = new ComponentBuilder("§8⫸ ");
+				ComponentBuilder message = new ComponentBuilder("⫸ ").color(DARK_GRAY);
 				message.append(PlayerUtils.getName(PlayerUtils.getId(player))).color(GRAY);
-				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/end " + PlayerUtils.getName(PlayerUtils.getId(player))));
+				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " " + PlayerUtils.getName(PlayerUtils.getId(player))));
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to choose.").color(GRAY).create()));
 				Bukkit.getPlayer(sender.getName()).spigot().sendMessage(message.create());
-				return true;
 				
 			}
+			
+			return true;
 			
 		}
 		
@@ -277,6 +277,7 @@ public class EndCommand implements CommandExecutor {
 		}
 		
 		Bukkit.broadcastMessage(Main.PREFIX + "The game is over!");
+		Bukkit.broadcastMessage(" ");
 		
 		if (winners.size() < 2) {
 			

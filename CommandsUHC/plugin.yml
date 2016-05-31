@@ -117,9 +117,12 @@ commands:
         description: Send message to others spec
         usage: /specchat
         aliases: [sc, s]
-    end:
+    endgame:
         description: End the game
         usage: /end
     list:
         description: List alives players
-        usage /list
+        usage: /list
+    text:
+        description: Spawn floating text
+        usage: /text
