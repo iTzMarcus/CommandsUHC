@@ -60,6 +60,7 @@ public class DisplayTimers implements Listener {
 				if (time % 60 == 0) GameUtils.setTime(time);
 				
 				int finalHeal = 45 - time;
+				int mobSpawn = 180 - time;
 				int pvp = pvpTime - time;
 				int meetup = meetupTime - time;
 				String message = "";
@@ -95,8 +96,6 @@ public class DisplayTimers implements Listener {
 						PlayerUtils.heal(player);
 						player.setFireTicks(0);
 						
-						Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(true, true);
-						
 						Title title = new Title("§aFinal heal", "§7Do not ask for others heals.", 5, 30, 5);
 						player.sendTitle(title);
 						
@@ -107,6 +106,12 @@ public class DisplayTimers implements Listener {
 					}
 					
 					Bukkit.broadcastMessage(Main.PREFIX + "All players were full healed.");
+					
+				}
+				
+				if (mobSpawn == 0) {
+					
+					Bukkit.getWorld(GameUtils.getWorld()).setSpawnFlags(true, true);
 					
 				}
 				

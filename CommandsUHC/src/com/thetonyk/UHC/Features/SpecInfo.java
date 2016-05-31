@@ -69,6 +69,8 @@ public class SpecInfo implements Listener {
 						
 						if (!alives.contains(online.getUniqueId())) continue;
 						
+						if (online.getWorld().getName().equalsIgnoreCase("lobby")) continue;
+						
 						int distance = (int) player.getLocation().distance(online.getLocation());
 						
 						if (distance > 30 && nearby.get(player.getUniqueId()).contains(online.getUniqueId())) nearby.get(player.getUniqueId()).remove(online.getUniqueId());
