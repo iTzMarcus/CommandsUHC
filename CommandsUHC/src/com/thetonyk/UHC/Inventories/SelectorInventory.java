@@ -163,13 +163,6 @@ public class SelectorInventory implements Listener {
 			
 		}
 		
-		if (action == InventoryAction.NOTHING) {
-			
-			player.setSpectatorTarget(clicked);
-			return;
-			
-		}
-		
 	}
 	
 	@EventHandler
@@ -361,7 +354,6 @@ public class SelectorInventory implements Listener {
 							headMeta.setDisplayName("§8⫸ " + name + " §8⫷");
 							lore.add(" ");
 							lore.add("§8⫸ §6Left-click §7to teleport");
-							lore.add("§8⫸ §6Middle-click §7to enter into him");
 							lore.add("§8⫸ §6Right-click §7to see inventory");
 							lore.add(" ");
 							headMeta.setLore(lore);

@@ -145,7 +145,7 @@ public class SpecInfo implements Listener {
 				
 				if (damages <= 0) return;
 				
-				send("§6§oPVE §8| §7" + player.getName() + " §8| §a" + finalDamage + " §8| §7" + (int) (damages / 2) * 10 + "%");
+				send("§6§oPVE §8| §7" + player.getName() + " §8| §a" + finalDamage + " §8| §7" + (int) ((damages / 2) * 10) + "%");
 			
 			}
 			
@@ -199,7 +199,7 @@ public class SpecInfo implements Listener {
 						
 						Player killer = (Player) projectile.getShooter();
 						
-						send("§6§oPVP §8| §a" + killer.getName() + " §7⫸ §c" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) (damages / 2) * 10 + "% §8(§a" + projDistance + "m§8)");
+						send("§6§oPVP §8| §a" + killer.getName() + " §7⫸ §c" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) ((damages / 2) * 10) + "% §8(§a" + projDistance + "m§8)");
 						return;
 						
 					}
@@ -235,12 +235,12 @@ public class SpecInfo implements Listener {
 						
 						}
 						
-						send("§6§oPVE §8| §a" + mob + " §7⫸ §c" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) (damages / 2) * 10 + "% §8(§a" + projDistance + "m§8)");
+						send("§6§oPVE §8| §a" + mob + " §7⫸ §c" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) ((damages / 2) * 10) + "% §8(§a" + projDistance + "m§8)");
 						return;
 						
 					}
 					
-					send("§6§oPVE §8| §7" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) (damages / 2) * 10 + "% §8(§a" + projDistance + "m§8)");
+					send("§6§oPVE §8| §7" + player.getName() + " §8| §a" + weapon + " §8| §7" + (int) ((damages / 2) * 10) + "% §8(§a" + projDistance + "m§8)");
 					return;
 					
 				}
@@ -249,7 +249,7 @@ public class SpecInfo implements Listener {
 					
 					Player killer = (Player) attacker;
 					
-					send("§6§oPVP §8| §a" + killer.getName() + " §7⫸ §c" + player.getName() + " §8| §aMelee §8| §7" + (int) (damages / 2) * 10 + "% §8(§a" + distance + "m§8)");
+					send("§6§oPVP §8| §a" + killer.getName() + " §7⫸ §c" + player.getName() + " §8| §aMelee §8| §7" + (int) ((damages / 2) * 10) + "% §8(§a" + distance + "m§8)");
 					return;
 					
 				}
@@ -281,7 +281,7 @@ public class SpecInfo implements Listener {
 				
 				}
 				
-				send("§6§oPVE §8| §a" + mob + " §7⫸ §c" + player.getName() + " §8| §7" + (int) (damages / 2) * 10 + "%");
+				send("§6§oPVE §8| §a" + mob + " §7⫸ §c" + player.getName() + " §8| §7" + (int) ((damages / 2) * 10) + "%");
 				
 			}
 		

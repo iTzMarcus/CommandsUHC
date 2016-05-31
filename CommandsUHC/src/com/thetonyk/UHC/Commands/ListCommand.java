@@ -38,7 +38,7 @@ public class ListCommand implements CommandExecutor {
 			
 			Player online = Bukkit.getPlayer(player);
 			
-			sender.sendMessage("§8⫸ " + PlayerUtils.getRank(player).getPrefix() + (TeamsUtils.getTeam(player) == null ? "§7" : TeamsUtils.getTeamPrefix(player)) + PlayerUtils.getName(PlayerUtils.getId(player)) + (online == null ? "" : " §8- §7" + ((online.getHealth() / 2) * 10) + "§4♥"));
+			sender.sendMessage("§8⫸ " + PlayerUtils.getRank(player).getPrefix() + (TeamsUtils.getTeam(player) == null ? "§7" : TeamsUtils.getTeamPrefix(player)) + PlayerUtils.getName(PlayerUtils.getId(player)) + (online == null ? "" : " §8- §7" + (int) ((online.getHealth() / 2) * 10) + "§4♥"));
 			
 		}
 		
