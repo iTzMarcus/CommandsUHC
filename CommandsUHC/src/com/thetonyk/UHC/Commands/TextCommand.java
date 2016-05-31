@@ -32,18 +32,10 @@ public class TextCommand implements CommandExecutor, TabCompleter {
     		
 		}
 		
-		if (args.length > 0) {
+		if (args.length < 1) {
 			
 			sender.sendMessage(Main.PREFIX + "Usage: /text <remove|text>");
 			return true;
-			
-		}
-		
-		StringBuilder text = new StringBuilder();
-		
-		for (int i = 1; i < args.length; i++) {
-			
-			text.append(args[i] + " ");
 			
 		}
 		
@@ -63,9 +55,22 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 				
 			}
 			
+			if (around.isEmpty()) {
+				
+				sender.sendMessage(Main.PREFIX + "There are no text around you.");
+				return true;
+				
+			}
+			
 			if (args.length > 1) {
 				
+				StringBuilder text = new StringBuilder();
 				
+				for (int i = 1; i < args.length; i++) {
+					
+					text.append(args[i] + " ");
+					
+				}
 				
 				for (ArmorStand stand : around) {
 					
@@ -99,7 +104,7 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 				
 				ComponentBuilder message = new ComponentBuilder("§8⫸ ");
 				message.append(stand.getCustomName());
-				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " " + stand.getCustomName().replaceAll("§", "&")));
+				message.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + label + " remove " + stand.getCustomName().replaceAll("§", "&")));
 				message.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to choose.").color(GRAY).create()));
 				Bukkit.getPlayer(sender.getName()).spigot().sendMessage(message.create());
 				
@@ -109,9 +114,17 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 			
 		}
 		
-		Location location = Bukkit.getPlayer(sender.getName()).getLocation();
-		location.setY(location.getY() - 1.25);
+		StringBuilder text = new StringBuilder();
 		
+		for (int i = 0; i < args.length; i++) {
+			
+			text.append(args[i] + " ");
+			
+		}
+		
+		text.substring(0, text.length() - 1);
+		
+		Location location = Bukkit.getPlayer(sender.getName()).getLocation();
 		ArmorStand stand = (ArmorStand) Bukkit.getPlayer(sender.getName()).getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
 		
 		stand.setVisible(false);
@@ -119,7 +132,7 @@ public class TextCommand implements CommandExecutor, TabCompleter {
 		stand.setGravity(false);	
 		stand.setBasePlate(false);
 		stand.setArms(false);
-		stand.setCustomName(text.toString());
+		stand.setCustomName(text.toString().replaceAll("&", "§"));
 		stand.setCustomNameVisible(true);
 		return true;
 		
