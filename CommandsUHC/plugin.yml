@@ -117,3 +117,6 @@ commands:
         description: Send message to others spec
         usage: /specchat
         aliases: [sc, s]
+    end:
+        description: End the game
+        usage: /end

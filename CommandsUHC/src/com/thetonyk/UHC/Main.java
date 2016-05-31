@@ -9,6 +9,7 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
+import com.thetonyk.UHC.Commands.EndCommand;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
 import com.thetonyk.UHC.Commands.GamemodeCommand;
@@ -140,6 +141,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("tp").setExecutor(new TpCommand());
 		this.getCommand("near").setExecutor(new NearCommand());
 		this.getCommand("specchat").setExecutor(new SpecchatCommand());
+		this.getCommand("end").setExecutor(new EndCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		
