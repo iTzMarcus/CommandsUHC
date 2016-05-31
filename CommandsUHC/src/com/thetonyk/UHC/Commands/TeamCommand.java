@@ -346,8 +346,8 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
 			for (UUID member : members) {
 				
 				Player mate = Bukkit.getPlayer(member);
-				if (mate != null) sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + mate.getName() + "§8 - §f" + (int) (mate.getHealth() / 2) * 10 + "§4♥\n");
-				else sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + PlayerUtils.getName(PlayerUtils.getId(member)) + "§8 - §cOFFLINE\n");
+				if (mate != null) sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + mate.getName() + "§8 - §f" + (int) (mate.getHealth() / 2) * 10 + "§4♥");
+				else sender.sendMessage("§8⫸ " + (GameUtils.getDeath(member) ? "§c☠ " : "  ") + TeamsUtils.getTeamPrefix(member) + PlayerUtils.getName(PlayerUtils.getId(member)) + "§8 - §cOFFLINE");
 				
 			}
 			

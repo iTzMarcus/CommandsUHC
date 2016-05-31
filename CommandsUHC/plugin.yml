@@ -120,3 +120,6 @@ commands:
     end:
         description: End the game
         usage: /end
+    list:
+        description: List alives players
+        usage /list

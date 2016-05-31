@@ -19,6 +19,7 @@ import com.thetonyk.UHC.Commands.HealthCommand;
 import com.thetonyk.UHC.Commands.HelpopCommand;
 import com.thetonyk.UHC.Commands.InviteCommand;
 import com.thetonyk.UHC.Commands.LagCommand;
+import com.thetonyk.UHC.Commands.ListCommand;
 import com.thetonyk.UHC.Commands.NearCommand;
 import com.thetonyk.UHC.Commands.NosoundCommand;
 import com.thetonyk.UHC.Commands.PVPCommand;
@@ -142,6 +143,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("near").setExecutor(new NearCommand());
 		this.getCommand("specchat").setExecutor(new SpecchatCommand());
 		this.getCommand("end").setExecutor(new EndCommand());
+		this.getCommand("list").setExecutor(new ListCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

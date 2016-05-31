@@ -280,7 +280,7 @@ public class EndCommand implements CommandExecutor {
 		
 		if (winners.size() < 2) {
 			
-			Bukkit.broadcastMessage(Main.PREFIX + "The winner is " + TeamsUtils.getTeamPrefix(winners.get(0)) + PlayerUtils.getName(PlayerUtils.getId(winners.get(0))) + " §8(§a" + (GameUtils.getKills().containsKey(winners.get(0)) ? GameUtils.getKills().get(winners.get(0)) : 0) + " §7kill(s)§8)");
+			Bukkit.broadcastMessage(Main.PREFIX + "The winner is " + (TeamsUtils.getTeam(winners.get(0)) == null ? "§7" : TeamsUtils.getTeamPrefix(winners.get(0))) + PlayerUtils.getName(PlayerUtils.getId(winners.get(0))) + " §8(§a" + (GameUtils.getKills().containsKey(winners.get(0)) ? GameUtils.getKills().get(winners.get(0)) : 0) + " §7kill(s)§8)");
 			
 		} else {
 			
@@ -293,7 +293,7 @@ public class EndCommand implements CommandExecutor {
 				int kills = GameUtils.getKills().containsKey(winner) ? GameUtils.getKills().get(winner) : 0;
 				total += kills;
 				
-				Bukkit.broadcastMessage("8⫸ " + TeamsUtils.getTeamPrefix(winner) + PlayerUtils.getName(PlayerUtils.getId(winner)) + " §8(§a" + kills + " §7kill(s)§8)");
+				Bukkit.broadcastMessage("8⫸ " + (TeamsUtils.getTeam(winner) == null ? "§7" : TeamsUtils.getTeamPrefix(winner)) + PlayerUtils.getName(PlayerUtils.getId(winner)) + " §8(§a" + kills + " §7kill(s)§8)");
 			
 			}
 			
