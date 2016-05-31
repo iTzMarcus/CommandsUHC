@@ -50,6 +50,13 @@ public class DisplayTimers implements Listener {
 			
 			public void run() {
 				
+				if (GameUtils.getStatus() == Status.END) {
+					
+					cancel();
+					return;
+					
+				}
+				
 				if (time % 60 == 0) GameUtils.setTime(time);
 				
 				int finalHeal = 45 - time;

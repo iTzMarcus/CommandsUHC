@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 import static net.md_5.bungee.api.ChatColor.*;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -54,6 +55,13 @@ public class DisplayTab implements Listener {
 		String meetup = meetupTime > 0 ? DisplayTimers.getOtherFormatedTime(meetupTime) : "Now";
 		String border = world != null ? (int) world.getWorldBorder().getSize() + "§7x§a" + (int) world.getWorldBorder().getSize() : "Not ready";
 		int players = GameUtils.getPlayersCount();
+		
+		if (GameUtils.getStatus() == Status.END) {
+			
+			pvp = "End";
+			meetup = "End";
+			
+		}
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			

@@ -6,6 +6,8 @@ import org.bukkit.command.CommandSender;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayTimers;
+import com.thetonyk.UHC.Utils.GameUtils;
+import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class TimeleftCommand implements CommandExecutor {
 	
@@ -21,6 +23,13 @@ public class TimeleftCommand implements CommandExecutor {
 		if (DisplayTimers.timer == null) {
 			
 			sender.sendMessage(Main.PREFIX + "The game has not started.");
+			return true;
+			
+		}
+		
+		if (GameUtils.getStatus() == Status.END) {
+			
+			sender.sendMessage(Main.PREFIX + "The game is over");
 			return true;
 			
 		}

@@ -36,6 +36,8 @@ public class PregenStates implements Listener {
 		}
 		
 		Bukkit.broadcastMessage(Main.PREFIX + "Pregeneration of world '§6" + world.getName() + "§7' finished.");
+		
+		System.gc();
 				
 	}
 	
