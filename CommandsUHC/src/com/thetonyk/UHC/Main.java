@@ -26,6 +26,7 @@ import com.thetonyk.UHC.Commands.PVPCommand;
 import com.thetonyk.UHC.Commands.PmCommand;
 import com.thetonyk.UHC.Commands.PregenCommand;
 import com.thetonyk.UHC.Commands.RankCommand;
+import com.thetonyk.UHC.Commands.RespawnCommand;
 import com.thetonyk.UHC.Commands.RulesCommand;
 import com.thetonyk.UHC.Commands.SpecchatCommand;
 import com.thetonyk.UHC.Commands.SpectateCommand;
@@ -148,6 +149,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("endgame").setExecutor(new EndgameCommand());
 		this.getCommand("list").setExecutor(new ListCommand());
 		this.getCommand("text").setExecutor(new TextCommand());
+		this.getCommand("respawn").setExecutor(new RespawnCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

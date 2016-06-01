@@ -31,7 +31,7 @@ public class TeleportLate implements Listener {
 	
 	List<UUID> players = new ArrayList<UUID>();
 	BukkitRunnable start = null;
-	Map<UUID, BukkitRunnable> timers = new HashMap<UUID, BukkitRunnable>();
+	private static Map<UUID, BukkitRunnable> timers = new HashMap<UUID, BukkitRunnable>();
 	
 	@EventHandler
 	public void onStart(StartEvent event) {
@@ -214,18 +214,7 @@ public class TeleportLate implements Listener {
 		
 		if (!GameUtils.getOnGround(uuid)) {
 		
-			timers.put(uuid, new BukkitRunnable() {
-				
-				public void run() {
-					
-					GameUtils.setOnGround(uuid, true);;
-					timers.remove(uuid);
-					
-				}
-				
-			});
-			
-			timers.get(uuid).runTaskLater(Main.uhc, 600);
+			startTimer(uuid);
 		
 		}
 		
@@ -246,20 +235,26 @@ public class TeleportLate implements Listener {
 			
 			if (GameUtils.getDeath(uuid) || GameUtils.getDeath(uuid)) continue;
 			
-			timers.put(uuid, new BukkitRunnable() {
-				
-				public void run() {
-					
-					GameUtils.setOnGround(uuid, true);;
-					timers.remove(uuid);
-					
-				}
-				
-			});
-			
-			timers.get(uuid).runTaskLater(Main.uhc, 600);
+			startTimer(uuid);
 			
 		}
+		
+	}
+	
+	public static void startTimer(UUID player) {
+		
+		timers.put(player, new BukkitRunnable() {
+			
+			public void run() {
+				
+				GameUtils.setOnGround(player, true);;
+				timers.remove(player);
+				
+			}
+			
+		});
+		
+		timers.get(player).runTaskLater(Main.uhc, 600);
 		
 	}
  

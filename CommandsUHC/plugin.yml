@@ -126,3 +126,6 @@ commands:
     text:
         description: Spawn floating text
         usage: /text
+    respawn:
+        description: Respawn a player
+        usage: /respawn

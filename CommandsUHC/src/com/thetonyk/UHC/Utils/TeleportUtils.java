@@ -19,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Events.TeleportEvent;
 import com.thetonyk.UHC.Features.DisplaySidebar;
+import com.thetonyk.UHC.Features.TeleportLate;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
 public class TeleportUtils {
@@ -197,6 +198,8 @@ public class TeleportUtils {
 													for (Map.Entry<UUID, Location> entry : saveLocations.entrySet()) {
 														
 														GameUtils.addLocation(entry.getKey(), entry.getValue());
+														
+														TeleportLate.startTimer(entry.getKey());
 														
 														Bukkit.getPlayer(entry.getKey()).closeInventory();
 														Bukkit.getPlayer(entry.getKey()).setGameMode(GameMode.SURVIVAL);
