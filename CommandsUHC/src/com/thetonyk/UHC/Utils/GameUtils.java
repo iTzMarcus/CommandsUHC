@@ -707,7 +707,7 @@ public class GameUtils {
 		
 		for (UUID uuid : players) {
 			
-			rawPlayers.add(uuid.toString());
+			rawPlayers.add("'" + uuid.toString() + "'");
 			
 		}
 		
@@ -715,7 +715,7 @@ public class GameUtils {
 		
 		try {
 			
-			ResultSet req = DatabaseUtils.sqlQuery("SELECT id, uuid FROM users WHERE uuid in (" + StringUtils.join(rawPlayers, ',') + ") AND server = '" + GameUtils.getServer() + "';");
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT id, uuid FROM users WHERE uuid IN (" + StringUtils.join(rawPlayers, ',') + ");");
 			
 			while (req.next()) {
 				

@@ -123,11 +123,19 @@ public class TeamsUtils {
 			
 		}
 		
-		for (Player player : Bukkit.getOnlinePlayers()) {
-		
-			DisplayNametags.updateNametag(player);
+		new BukkitRunnable() {
 			
-		}
+			public void run() {
+		
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					
+					DisplayNametags.updateNametag(player);
+					
+				}
+				
+			}
+		
+		}.runTaskLater(Main.uhc, 5);
 		
 	}
 	

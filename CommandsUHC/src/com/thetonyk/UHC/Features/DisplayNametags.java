@@ -1,5 +1,6 @@
 package com.thetonyk.UHC.Features;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -55,32 +56,37 @@ public class DisplayNametags implements Listener {
 		String fixedRank = PlayerUtils.getRank(uuid).getPrefix();
 		if (fixedRank.length() > 12) fixedRank.replaceAll("§8", "");
 		String prefix = fixedRank + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
-		String teamName = TeamsUtils.getTeam(uuid) == null ? player.getName() : TeamsUtils.getTeam(uuid);
+		String teamDisplayName = TeamsUtils.getTeam(uuid) == null ? player.getName() : TeamsUtils.getTeam(uuid);
+		Map<UUID, Integer> ids = GameUtils.getIDs();
+		String teamName = TeamsUtils.getTeam(uuid) == null ? String.valueOf(ids.get(uuid)) : TeamsUtils.getTeam(uuid) + "-" + String.valueOf(ids.get(uuid));
 		
 		for (Player players : Bukkit.getOnlinePlayers()) {
 			
 			Scoreboard scoreboard = players.getScoreboard();
-			Team team = scoreboard.getTeam(player.getName());
+			Team team = scoreboard.getTeam(teamName);
 			
-			if (team == null) team = scoreboard.registerNewTeam(player.getName());
+			if (team == null) team = scoreboard.registerNewTeam(teamName);
 			
-			team.setDisplayName(teamName);
+			team.setDisplayName(teamDisplayName);
 			team.setPrefix(prefix);
 			team.setSuffix("§7");
 			team.addEntry(player.getName());
 			
 			if (players.equals(player)) continue;
-			
-			scoreboard = player.getScoreboard();
-			team = scoreboard.getTeam(players.getName());
+	
 			UUID playerUUID = players.getUniqueId();
 			String playerFixedRank = PlayerUtils.getRank(playerUUID).getPrefix();
 			if (playerFixedRank.length() > 12) playerFixedRank.replaceAll("§8", "");
 			String playerPrefix = playerFixedRank + ((TeamsUtils.getTeam(playerUUID) != null) ? TeamsUtils.getTeamPrefix(playerUUID) : "§7");
+			String playerTeamDisplayName = TeamsUtils.getTeam(playerUUID) == null ? players.getName() : TeamsUtils.getTeam(playerUUID);
+			String playerTeamName = TeamsUtils.getTeam(playerUUID) == null ? String.valueOf(ids.get(playerUUID)) : TeamsUtils.getTeam(playerUUID) + "-" + String.valueOf(ids.get(playerUUID));
 			
-			if (team == null) team = scoreboard.registerNewTeam(players.getName());
+			scoreboard = player.getScoreboard();
+			team = scoreboard.getTeam(playerTeamName);
 			
-			team.setDisplayName(TeamsUtils.getTeam(playerUUID) == null ? players.getName() : TeamsUtils.getTeam(playerUUID));
+			if (team == null) team = scoreboard.registerNewTeam(playerTeamName);
+			
+			team.setDisplayName(playerTeamDisplayName);
 			team.setPrefix(playerPrefix);
 			team.setSuffix("§7");
 			team.addEntry(players.getName());

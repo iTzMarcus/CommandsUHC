@@ -59,6 +59,7 @@ public class DatabaseUtils {
     		
     	} catch (SQLException exception) {
     		
+    		exception.printStackTrace();
     		return null;
     		
     	}
