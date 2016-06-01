@@ -20,9 +20,11 @@ public class DisplayNametags implements Listener {
 	
 	public DisplayNametags() {
 		
+		Map<UUID, Integer> ids = GameUtils.getIDs();
+		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			
-			DisplayNametags.updateNametag(player);
+			DisplayNametags.updateNametag(player, ids);
 			
 		}
 		
@@ -31,7 +33,7 @@ public class DisplayNametags implements Listener {
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		
-		updateNametag(event.getPlayer());
+		updateNametag(event.getPlayer(), GameUtils.getIDs());
 		
 	}
 	
@@ -50,14 +52,13 @@ public class DisplayNametags implements Listener {
 		
 	}
 	
-	public static void updateNametag(Player player) {
+	public static void updateNametag(Player player, Map<UUID, Integer> ids) {
 		
 		UUID uuid = player.getUniqueId();
 		String fixedRank = PlayerUtils.getRank(uuid).getPrefix();
 		if (fixedRank.length() > 12) fixedRank.replaceAll("§8", "");
 		String prefix = fixedRank + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
 		String teamDisplayName = TeamsUtils.getTeam(uuid) == null ? player.getName() : TeamsUtils.getTeam(uuid);
-		Map<UUID, Integer> ids = GameUtils.getIDs();
 		String teamName = TeamsUtils.getTeam(uuid) == null ? String.valueOf(ids.get(uuid)) : TeamsUtils.getTeam(uuid) + "-" + String.valueOf(ids.get(uuid));
 		
 		for (Player players : Bukkit.getOnlinePlayers()) {

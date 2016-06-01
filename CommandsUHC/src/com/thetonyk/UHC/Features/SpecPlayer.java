@@ -57,7 +57,7 @@ public class SpecPlayer implements Listener {
 		PlayerUtils.clearXp(spectator);
 		spectator.setGameMode(GameMode.SPECTATOR);
 		setItems(spectator);
-		DisplayNametags.updateNametag(spectator);
+		DisplayNametags.updateNametag(spectator, GameUtils.getIDs());
 		
 	}
 	
@@ -76,7 +76,7 @@ public class SpecPlayer implements Listener {
 		spectator.setGameMode(GameMode.ADVENTURE);
 		spectator.setPlayerListName(null);
 		spectator.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
-		DisplayNametags.updateNametag(spectator);
+		DisplayNametags.updateNametag(spectator, GameUtils.getIDs());
 		
 	}
 	
@@ -120,7 +120,6 @@ public class SpecPlayer implements Listener {
 		PlayerUtils.clearXp(spectator);
 		spectator.setGameMode(GameMode.SPECTATOR);
 		setItems(spectator);
-		DisplayNametags.updateNametag(spectator);
 		
 	}
 	

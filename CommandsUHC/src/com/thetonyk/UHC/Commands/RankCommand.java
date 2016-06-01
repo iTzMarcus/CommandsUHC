@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayNametags;
+import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils.Rank;
 
@@ -77,7 +78,7 @@ public class RankCommand implements CommandExecutor, TabCompleter {
 		
 		if (player == null) return true;
 		
-		DisplayNametags.updateNametag(player);
+		DisplayNametags.updateNametag(player, GameUtils.getIDs());
 		
 		if (sender.getName() != player.getName()) player.sendMessage(Main.PREFIX + "Your rank was set to '§6" + rank.toString().toLowerCase() + "§7'.");
 		

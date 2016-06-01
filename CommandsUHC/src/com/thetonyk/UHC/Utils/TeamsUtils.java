@@ -81,9 +81,11 @@ public class TeamsUtils {
 			
 			public void run() {
 			
+				Map<UUID, Integer> ids = GameUtils.getIDs();
+				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayNametags.updateNametag(player);
+					DisplayNametags.updateNametag(player, ids);
 					
 				}
 		
@@ -127,9 +129,11 @@ public class TeamsUtils {
 			
 			public void run() {
 		
+				Map<UUID, Integer> ids = GameUtils.getIDs();
+				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayNametags.updateNametag(player);
+					DisplayNametags.updateNametag(player, ids);
 					
 				}
 				
@@ -175,7 +179,7 @@ public class TeamsUtils {
 				
 				if (Bukkit.getPlayer(player) == null) return;
 			
-				DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+				DisplayNametags.updateNametag(Bukkit.getPlayer(player), GameUtils.getIDs());
 		
 			}
 			
@@ -224,7 +228,7 @@ public class TeamsUtils {
 			
 			public void run() {
 			
-				DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+				DisplayNametags.updateNametag(Bukkit.getPlayer(player), GameUtils.getIDs());
 		
 			}
 			
@@ -284,7 +288,7 @@ public class TeamsUtils {
 			
 			public void run() {
 			
-				DisplayNametags.updateNametag(Bukkit.getPlayer(player));
+				DisplayNametags.updateNametag(Bukkit.getPlayer(player), GameUtils.getIDs());
 		
 			}
 			
@@ -429,9 +433,11 @@ public class TeamsUtils {
 			
 			public void run() {
 			
+				Map<UUID, Integer> ids = GameUtils.getIDs();
+				
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					
-					DisplayNametags.updateNametag(player);
+					DisplayNametags.updateNametag(player, ids);
 					
 				}
 			}
