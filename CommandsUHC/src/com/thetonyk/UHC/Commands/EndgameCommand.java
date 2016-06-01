@@ -276,6 +276,7 @@ public class EndgameCommand implements CommandExecutor {
 			
 		}
 		
+		Bukkit.broadcastMessage(" ");
 		Bukkit.broadcastMessage(Main.PREFIX + "The game is over!");
 		Bukkit.broadcastMessage(" ");
 		

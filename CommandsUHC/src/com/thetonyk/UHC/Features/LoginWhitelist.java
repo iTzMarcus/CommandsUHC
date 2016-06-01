@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
+import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PermissionsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
@@ -23,7 +24,7 @@ public class LoginWhitelist implements Listener {
 		if (GameUtils.reset) {
 			
 			event.setResult(Result.KICK_OTHER);
-			event.setKickMessage("§8⫸ §7Server is currently resetting the game §8⫷");
+			event.setKickMessage(Main.PREFIX + "Server is currently resetting the game");
 			return;
 			
 		}
@@ -43,18 +44,18 @@ public class LoginWhitelist implements Listener {
 				
 			if (status == Status.TELEPORT || status == Status.PLAY || status == Status.END) {
 				
-				event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cThe UHC has already begun.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+				event.setKickMessage(Main.PREFIX + "You are not whitelisted\n" + Main.PREFIX + "§cThe UHC has already begun.");
 				return;
 				
 			}
-				
-			event.setKickMessage("§8⫸ §7You are not whitelisted §8⫷\n\n§cNo scheduled UHC.\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+			
+			event.setKickMessage(Main.PREFIX + "You are not whitelisted\n" + Main.PREFIX + "§cNo scheduled UHC.");
 		
 		}
 		
 		if (GameUtils.getPlayersCount() >= GameUtils.getSlots()) {
 			
-			event.disallow(Result.KICK_FULL, "§8⫸ §7The server is currently full. §8⫷\n\n§7The UHC Arena is available at: §acommandspvp.com §7!");
+			event.disallow(Result.KICK_FULL, Main.PREFIX + "§cThe server is currently full.");
 			return;
 			
 		}

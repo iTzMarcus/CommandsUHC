@@ -21,7 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayTimers;
-import com.thetonyk.UHC.Features.LogoutDQ;
+import com.thetonyk.UHC.Features.DQLogout;
 
 public class GameUtils {
 	
@@ -710,7 +710,7 @@ public class GameUtils {
 		DisplayTimers.time = 0;
 		DisplayTimers.pvpTime = 900;
 		DisplayTimers.meetupTime = 3600;
-		LogoutDQ.reset();
+		DQLogout.reset();
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			

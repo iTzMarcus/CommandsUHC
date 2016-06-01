@@ -17,7 +17,7 @@ public class LogoutPlayer implements Listener {
 	
 	@EventHandler
 	public void onLeave(PlayerQuitEvent event) {
-
+		
 		Player player = event.getPlayer();
 		UUID uuid = player.getUniqueId();
 		

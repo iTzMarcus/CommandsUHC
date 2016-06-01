@@ -23,7 +23,7 @@ import com.thetonyk.UHC.Utils.PlayerUtils;
 import com.thetonyk.UHC.Utils.TeamsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
-public class LogoutDQ implements Listener {
+public class DQLogout implements Listener {
 
 	private static Map<UUID, BukkitRunnable> offlineTimers = new HashMap<UUID, BukkitRunnable>();
 	private static Map<UUID, Long> offlineTime = new HashMap<UUID, Long>();
@@ -69,7 +69,7 @@ public class LogoutDQ implements Listener {
 			
 			if (Bukkit.getPlayer(player) != null) continue;
 				
-			LogoutDQ.startTimer(Bukkit.getOfflinePlayer(player));
+			DQLogout.startTimer(Bukkit.getOfflinePlayer(player));
 			
 		}
 		

@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.DisplayTimers;
-import com.thetonyk.UHC.Features.LogoutDQ;
+import com.thetonyk.UHC.Features.DQLogout;
 
 public class WhitelistCommand implements CommandExecutor, TabCompleter {
 	
@@ -119,7 +119,7 @@ public class WhitelistCommand implements CommandExecutor, TabCompleter {
 			
 			for (OfflinePlayer player : Bukkit.getWhitelistedPlayers()) {
 				
-				int offlineTime = LogoutDQ.offlineSince(player.getUniqueId());
+				int offlineTime = DQLogout.offlineSince(player.getUniqueId());
 				
 				sender.sendMessage("§8⫸ §7'" + (player.isOnline() ? "§a" : "§c") + "" + player.getName() + "§7'" + (offlineTime > 0 ? " §8- §7" + DisplayTimers.getFormatedTime(offlineTime) : ""));
 				
