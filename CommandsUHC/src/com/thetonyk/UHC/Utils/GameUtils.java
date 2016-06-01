@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -687,6 +688,50 @@ public class GameUtils {
 		}
 		
 		return alives;
+		
+	}
+	
+	public static Map<UUID, Integer> getIDs() {
+		
+		List<UUID> players = new ArrayList<UUID>(GameUtils.getPlayers().keySet());
+		
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			
+			if (players.contains(online.getUniqueId())) continue;
+			
+			players.add(online.getUniqueId());
+			
+		}
+		
+		List<String> rawPlayers = new ArrayList<String>();
+		
+		for (UUID uuid : players) {
+			
+			rawPlayers.add(uuid.toString());
+			
+		}
+		
+		Map<UUID, Integer> ids = new HashMap<UUID, Integer>();
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT id, uuid FROM users WHERE uuid in (" + StringUtils.join(rawPlayers, ',') + ") AND server = '" + GameUtils.getServer() + "';");
+			
+			while (req.next()) {
+				
+				ids.put(UUID.fromString(req.getString("uuid")), req.getInt("id"));
+				
+			}
+			
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[Game] Error to get id of the uhc on server" + GameUtils.getServer() + ".");
+			
+		}
+		
+		return ids;
 		
 	}
 	
