@@ -129,3 +129,6 @@ commands:
     respawn:
         description: Respawn a player
         usage: /respawn
+    dq:
+        description: DQ a player
+        usage: /dq

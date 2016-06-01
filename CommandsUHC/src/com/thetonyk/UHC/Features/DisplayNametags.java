@@ -56,7 +56,7 @@ public class DisplayNametags implements Listener {
 		
 		UUID uuid = player.getUniqueId();
 		String fixedRank = PlayerUtils.getRank(uuid).getPrefix();
-		if (fixedRank.length() > 12) fixedRank.replaceAll("§8", "");
+		if (fixedRank.length() > 12) fixedRank = fixedRank.replaceAll("§8", "");
 		String prefix = fixedRank + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
 		String teamDisplayName = TeamsUtils.getTeam(uuid) == null ? player.getName() : TeamsUtils.getTeam(uuid);
 		String teamName = TeamsUtils.getTeam(uuid) == null ? String.valueOf(ids.get(uuid)) : TeamsUtils.getTeam(uuid) + "-" + String.valueOf(ids.get(uuid));
@@ -77,7 +77,7 @@ public class DisplayNametags implements Listener {
 	
 			UUID playerUUID = players.getUniqueId();
 			String playerFixedRank = PlayerUtils.getRank(playerUUID).getPrefix();
-			if (playerFixedRank.length() > 12) playerFixedRank.replaceAll("§8", "");
+			if (playerFixedRank.length() > 12) playerFixedRank = playerFixedRank.replaceAll("§8", "");
 			String playerPrefix = playerFixedRank + ((TeamsUtils.getTeam(playerUUID) != null) ? TeamsUtils.getTeamPrefix(playerUUID) : "§7");
 			String playerTeamDisplayName = TeamsUtils.getTeam(playerUUID) == null ? players.getName() : TeamsUtils.getTeam(playerUUID);
 			String playerTeamName = TeamsUtils.getTeam(playerUUID) == null ? String.valueOf(ids.get(playerUUID)) : TeamsUtils.getTeam(playerUUID) + "-" + String.valueOf(ids.get(playerUUID));

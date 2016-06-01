@@ -38,7 +38,7 @@ public class GameUtils {
 	private static Map<UUID, Integer> kills = GameUtils.getKillsSQL();
 	
 	public static String getServer() {
-		
+
 		return Main.uhc.getConfig().getString("server");
 		
 	}

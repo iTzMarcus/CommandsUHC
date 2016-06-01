@@ -9,6 +9,7 @@ import com.thetonyk.UHC.Commands.AcceptCommand;
 import com.thetonyk.UHC.Commands.BorderCommand;
 import com.thetonyk.UHC.Commands.ButcherCommand;
 import com.thetonyk.UHC.Commands.ClearCommand;
+import com.thetonyk.UHC.Commands.DQCommand;
 import com.thetonyk.UHC.Commands.EndgameCommand;
 import com.thetonyk.UHC.Commands.FeedCommand;
 import com.thetonyk.UHC.Commands.FlyCommand;
@@ -150,6 +151,7 @@ public class Main extends JavaPlugin {
 		this.getCommand("list").setExecutor(new ListCommand());
 		this.getCommand("text").setExecutor(new TextCommand());
 		this.getCommand("respawn").setExecutor(new RespawnCommand());
+		this.getCommand("dq").setExecutor(new DQCommand());
 		
 		PluginManager manager = Bukkit.getPluginManager();
 		

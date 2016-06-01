@@ -52,6 +52,9 @@ public class DeathRespawn implements Listener {
 		event.setRespawnLocation(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		player.setGameMode(GameMode.ADVENTURE);
 		player.setMaxHealth(20.0);
+		
+		if (GameUtils.getDeath(player.getUniqueId())) return;
+		
 		player.sendMessage(Main.PREFIX + "Thanks for playing! Please don't rage or insult please.");
 		
 		ComponentBuilder text = Main.getPrefixComponent().append("Follow us on Twitter ").color(GRAY).append("@CommandsPVP").color(AQUA).italic(true);
