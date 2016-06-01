@@ -55,19 +55,16 @@ public class DisplayNametags implements Listener {
 		String fixedRank = PlayerUtils.getRank(uuid).getPrefix();
 		if (fixedRank.length() > 12) fixedRank.replaceAll("§8", "");
 		String prefix = fixedRank + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7");
+		String teamName = TeamsUtils.getTeam(uuid) == null ? player.getName() : TeamsUtils.getTeam(uuid);
 		
 		for (Player players : Bukkit.getOnlinePlayers()) {
 			
 			Scoreboard scoreboard = players.getScoreboard();
 			Team team = scoreboard.getTeam(player.getName());
 			
-			if (team == null) {
-				
-				team = scoreboard.registerNewTeam(player.getName());
-				team.setDisplayName(player.getName());
-				
-			}
+			if (team == null) team = scoreboard.registerNewTeam(player.getName());
 			
+			team.setDisplayName(teamName);
 			team.setPrefix(prefix);
 			team.setSuffix("§7");
 			team.addEntry(player.getName());
@@ -81,13 +78,9 @@ public class DisplayNametags implements Listener {
 			if (playerFixedRank.length() > 12) playerFixedRank.replaceAll("§8", "");
 			String playerPrefix = playerFixedRank + ((TeamsUtils.getTeam(playerUUID) != null) ? TeamsUtils.getTeamPrefix(playerUUID) : "§7");
 			
-			if (team == null) {
-				
-				team = scoreboard.registerNewTeam(players.getName());
-				team.setDisplayName(players.getName());
-				
-			}
+			if (team == null) team = scoreboard.registerNewTeam(players.getName());
 			
+			team.setDisplayName(TeamsUtils.getTeam(playerUUID) == null ? players.getName() : TeamsUtils.getTeam(playerUUID));
 			team.setPrefix(playerPrefix);
 			team.setSuffix("§7");
 			team.addEntry(players.getName());
