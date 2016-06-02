@@ -247,7 +247,7 @@ public class PlayerUtils {
 	
 	public static int getChatVisibility (Player player) {
 		
-		int chatVisibility = 0;
+		int chatVisibility = 1;
 		
 		try {
 			
@@ -269,7 +269,7 @@ public class PlayerUtils {
 	
 	public static int getMentionsState (Player player) {
 		
-		int mentionsState = 0;
+		int mentionsState = 1;
 		
 		try {
 			

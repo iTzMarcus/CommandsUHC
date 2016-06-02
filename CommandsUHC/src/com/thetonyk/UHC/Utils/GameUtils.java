@@ -713,6 +713,8 @@ public class GameUtils {
 		
 		Map<UUID, Integer> ids = new HashMap<UUID, Integer>();
 		
+		if (players.isEmpty()) return ids;
+		
 		try {
 			
 			ResultSet req = DatabaseUtils.sqlQuery("SELECT id, uuid FROM users WHERE uuid IN (" + StringUtils.join(rawPlayers, ',') + ");");

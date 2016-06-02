@@ -295,7 +295,7 @@ public class EndgameCommand implements CommandExecutor {
 				int kills = GameUtils.getKills().containsKey(winner) ? GameUtils.getKills().get(winner) : 0;
 				total += kills;
 				
-				Bukkit.broadcastMessage("8⫸ " + (TeamsUtils.getTeam(winner) == null ? "§7" : TeamsUtils.getTeamPrefix(winner)) + PlayerUtils.getName(PlayerUtils.getId(winner)) + " §8(§a" + kills + " §7kill(s)§8)");
+				Bukkit.broadcastMessage("§8⫸ " + (TeamsUtils.getTeam(winner) == null ? "§7" : TeamsUtils.getTeamPrefix(winner)) + PlayerUtils.getName(PlayerUtils.getId(winner)) + " §8(§a" + kills + " §7kill(s)§8)");
 			
 			}
 			

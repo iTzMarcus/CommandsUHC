@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.github.paperspigot.Title;
 
+import com.thetonyk.UHC.Utils.DisplayUtils;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.PermissionsUtils;
 import com.thetonyk.UHC.Utils.PlayerUtils;
@@ -45,13 +46,14 @@ public class LoginPlayer implements Listener {
 		
 		Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 		player.setScoreboard(scoreboard);
+		DisplayUtils.showCoord(player);
 		player.setNoDamageTicks(0);
 		
 		event.setJoinMessage("§7[§a+§7] " + PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + player.getName());
 		
 		if ((status == Status.TELEPORT || status == Status.PLAY || status == Status.END) && (!GameUtils.getDeath(uuid) || GameUtils.getSpectate(uuid))) return;
 			
-		Title title = new Title("§aUHC by CommandsPVP", "§7UHC §aFFA §7⋯ Nether §aOFF §7⋯ CutClean §aON", 0, 40, 10);
+		Title title = new Title("§aUHC by CommandsPVP", "§7UHC §acTo2 §7⋯ Nether §aOFF §7⋯ CutClean §aOFF", 0, 40, 10);
 		player.sendTitle(title);
 		
 		Location spawn = Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5);

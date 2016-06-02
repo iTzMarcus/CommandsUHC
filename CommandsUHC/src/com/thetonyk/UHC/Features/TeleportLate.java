@@ -140,11 +140,9 @@ public class TeleportLate implements Listener {
 		UUID uuid = player.getUniqueId();
 		Status status = GameUtils.getStatus();
 		
-		if (status != Status.PLAY || GameUtils.getSpectate(uuid) || GameUtils.getDeath(uuid)) return;
+		if (status != Status.PLAY || GameUtils.getSpectate(uuid) || GameUtils.getDeath(uuid) || !player.isWhitelisted()) return;
 		
 		if (!GameUtils.getTeleported(uuid)) {
-			
-			player.setWhitelisted(true);
 			
 			if (status == Status.TELEPORT || status == Status.PLAY) GameUtils.addPlayer(uuid);
 			

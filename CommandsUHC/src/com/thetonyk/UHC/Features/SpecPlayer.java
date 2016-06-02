@@ -40,6 +40,7 @@ public class SpecPlayer implements Listener {
 	public static void enable(UUID uuid) {
 		
 		if (!GameUtils.getPlayers().containsKey(uuid)) GameUtils.addPlayer(uuid);
+		
 		GameUtils.setSpectate(uuid, true);
 		
 		if (TeamsUtils.invitations.containsKey(uuid)) TeamsUtils.invitations.remove(uuid);

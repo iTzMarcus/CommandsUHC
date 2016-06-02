@@ -14,6 +14,7 @@ import com.thetonyk.UHC.Main;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.PacketPlayOutEntityStatus;
 
 public class DisplayUtils {
 	
@@ -63,6 +64,22 @@ public class DisplayUtils {
 			}
 				
 		});
+		
+	}
+	
+	public static void hideCoord (Player player) {
+		
+		PacketPlayOutEntityStatus packet = new PacketPlayOutEntityStatus(((CraftPlayer) player).getHandle(), (byte) 22);
+		
+		((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+		
+	}
+	
+	public static void showCoord (Player player) {
+		
+		PacketPlayOutEntityStatus packet = new PacketPlayOutEntityStatus(((CraftPlayer) player).getHandle(), (byte) 23);
+		
+		((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
 		
 	}
 	
