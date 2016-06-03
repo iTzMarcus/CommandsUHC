@@ -17,7 +17,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
@@ -71,7 +71,7 @@ public class SelectorInventory implements Listener {
 		
 		Player player = (Player) event.getWhoClicked();
 		ItemStack item = event.getCurrentItem();
-		InventoryAction action = event.getAction();
+		ClickType click = event.getClick();
 		
 		if (item == null || !item.hasItemMeta() || !item.getItemMeta().hasDisplayName()) return;
 		
@@ -133,7 +133,7 @@ public class SelectorInventory implements Listener {
 			
 		}
 		
-		if (action != InventoryAction.PICKUP_ALL && action != InventoryAction.PICKUP_HALF) return;
+		if (click != ClickType.LEFT && click != ClickType.RIGHT && click != ClickType.MIDDLE) return;
 		
 		player.closeInventory();
 		
@@ -149,16 +149,24 @@ public class SelectorInventory implements Listener {
 		
 		}
 		
-		if (action == InventoryAction.PICKUP_ALL) {
+		if (click == ClickType.LEFT) {
 			
 			player.teleport(clicked);
 			return;
 			
 		}
 		
-		if (action == InventoryAction.PICKUP_HALF) {
+		if (click == ClickType.RIGHT) {
 			
 			player.openInventory(PlayerInventory.getInventory(clicked.getUniqueId()));
+			return;
+			
+		}
+		
+		if (click == ClickType.MIDDLE) {
+			
+			
+			player.setSpectatorTarget(clicked);
 			return;
 			
 		}
@@ -354,6 +362,7 @@ public class SelectorInventory implements Listener {
 							headMeta.setDisplayName("§8⫸ " + name + " §8⫷");
 							lore.add(" ");
 							lore.add("§8⫸ §6Left-click §7to teleport");
+							lore.add("§8⫸ §6Middle-click §7to enter into him");
 							lore.add("§8⫸ §6Right-click §7to see inventory");
 							lore.add(" ");
 							headMeta.setLore(lore);
