@@ -8,24 +8,20 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Packets.PacketHandler;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.ChatMessage;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayInUpdateSign;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
 
 public class SignGUIUtils {
 	
 	private EntityPlayer entityPlayer;
-	private PacketAdapter protocolListener;
+	private PacketHandler packetsListener;
 	private Listener listener;
 	
 	public SignGUIUtils (Player player, Callback<String[]> callback) {
@@ -37,33 +33,37 @@ public class SignGUIUtils {
 		
 		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutOpenSignEditor(new BlockPosition(0, 0, 0)));
 		
-		protocolListener = new PacketAdapter(Main.uhc, ListenerPriority.NORMAL, PacketType.Play.Client.UPDATE_SIGN) {
+		packetsListener = new PacketHandler() {
 			
 			@Override
-			public void onPacketReceiving(PacketEvent event) {
+			public Object onPacketIn(Player player, Object packet) {
 				
-				if (event.getPacketType() != PacketType.Play.Client.UPDATE_SIGN) return;
+				if (!(packet instanceof PacketPlayInUpdateSign)) super.onPacketIn(player, packet);
 				
-				if (!event.getPlayer().getUniqueId().equals(entityPlayer.getUniqueID())) return;
+				if (!player.getUniqueId().equals(entityPlayer.getUniqueID())) return super.onPacketIn(player, packet);
 				
-				WrappedChatComponent[] lines = event.getPacket().getChatComponentArrays().getValues().get(0);
+				PacketPlayInUpdateSign nmsPacket = (PacketPlayInUpdateSign) packet;
+				
+				IChatBaseComponent[] lines = nmsPacket.b();
 				
 				String[] rawLines = new String[4];
 				
 				for (int i = 0; i < lines.length; i++) {
 					
-					rawLines[i] = lines[i].getJson().length() < 1 ? "" : lines[i].getJson().substring(1, lines[i].getJson().length() - 1);
+					String line = IChatBaseComponent.ChatSerializer.a(lines[i]);
+					
+					rawLines[i] = line.length() < 1 ? "" : line.substring(1, line.length() - 1);
 					
 				}
 				
 				callback.onConfirm(rawLines);
 				delete();
 				
+				return super.onPacketIn(player, packet);
+				
 			}
 				
 		};
-		
-		ProtocolLibrary.getProtocolManager().addPacketListener(protocolListener);
 		
 		listener = new Listener() {
 			
@@ -83,7 +83,7 @@ public class SignGUIUtils {
 	
 	public void delete() {
 		
-		ProtocolLibrary.getProtocolManager().removePacketListener(protocolListener);
+		packetsListener.delete();
 		HandlerList.unregisterAll(listener);
 		
 	}

@@ -1,20 +1,24 @@
 package com.thetonyk.UHC.Utils;
 
+import java.lang.reflect.Field;
+
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.util.CraftIconCache;
 import org.bukkit.entity.Player;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.WrappedServerPing;
-import com.thetonyk.UHC.Main;
+import com.mojang.authlib.GameProfile;
+import com.thetonyk.UHC.Packets.PacketHandler;
 
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityStatus;
+import net.minecraft.server.v1_8_R3.PacketPlayOutLogin;
+import net.minecraft.server.v1_8_R3.PacketStatusOutServerInfo;
+import net.minecraft.server.v1_8_R3.ServerPing;
+import net.minecraft.server.v1_8_R3.ServerPing.ServerData;
+import net.minecraft.server.v1_8_R3.ServerPing.ServerPingPlayerSample;
 
 public class DisplayUtils {
 	
@@ -30,40 +34,78 @@ public class DisplayUtils {
 	
 	public static void redditHearts() {
 		
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(Main.uhc, ListenerPriority.NORMAL, PacketType.Play.Server.LOGIN) {
-					
+		new PacketHandler() {
+			
 			@Override
-			public void onPacketSending(PacketEvent event) {
+			public Object onPacketOut(Player player, Object packet) {
 				
-				if (event.getPacketType() != PacketType.Play.Server.LOGIN) return;
+				if (!(packet instanceof PacketPlayOutLogin)) return super.onPacketOut(player, packet);
+				
+				PacketPlayOutLogin nmsPacket = (PacketPlayOutLogin) packet;
+				
+				try {
 					
-				event.getPacket().getBooleans().write(0, true);
+					Field hardcore = nmsPacket.getClass().getDeclaredField("b");
+					hardcore.setAccessible(true);
+					hardcore.setBoolean(nmsPacket, true);
+					hardcore.setAccessible(false);
+					
+				} catch (Exception exception) {
+					
+					exception.printStackTrace();
+				
+				}
+				
+				return super.onPacketOut(player, packet);
 				
 			}
-				
-		});
+			
+		};
 		
 	}
 	
 	public static void playersCount() {
 		
-		ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(Main.uhc, ListenerPriority.NORMAL, PacketType.Status.Server.OUT_SERVER_INFO) {
+		int players = GameUtils.getPlayersCount();
+		int max = GameUtils.getSlots();
+		
+		new PacketHandler() {
 			
 			@Override
-			public void onPacketSending(PacketEvent event) {
+			public Object onPacketOut(Player player, Object packet) {
 				
-				if (event.getPacketType() != PacketType.Status.Server.OUT_SERVER_INFO) return;
+				if (!(packet instanceof PacketStatusOutServerInfo)) return super.onPacketOut(player, packet);
+				
+				PacketStatusOutServerInfo nmsPacket = (PacketStatusOutServerInfo) packet;
+				ServerPing oldPing = null;
+				
+				try {
 					
-				int players = GameUtils.getPlayersCount();
+					Field serverPing = nmsPacket.getClass().getDeclaredField("b");
+					serverPing.setAccessible(true);
+					oldPing = (ServerPing) serverPing.get(nmsPacket);
+					serverPing.setAccessible(false);
+					
+				} catch (Exception exception) {
+					
+					exception.printStackTrace();
 				
-				WrappedServerPing count = event.getPacket().getServerPings().read(0);
-				count.setPlayersOnline(players);
+				}
 				
-				event.getPacket().getServerPings().write(0, count);
+				ServerPing ping = new ServerPing();
+				ServerPingPlayerSample counter = new ServerPingPlayerSample(max, players);
+				counter.a(new GameProfile[0]);
+				
+				ping.setFavicon(((CraftIconCache) Bukkit.getServerIcon()).value);
+				ping.setMOTD(oldPing.a());
+				ping.setPlayerSample(counter);
+				ping.setServerInfo(new ServerData(oldPing.c().a(), oldPing.c().b()));
+				
+				return super.onPacketOut(player, new PacketStatusOutServerInfo(ping));
 				
 			}
-				
-		});
+			
+		};
 		
 	}
 	
