@@ -1,7 +1,12 @@
 package com.thetonyk.UHC.Utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -20,7 +25,8 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
 public class SignGUIUtils {
 	
 	private EntityPlayer entityPlayer;
-	private PacketAdapter listener;
+	private PacketAdapter protocolListener;
+	private Listener listener;
 	
 	public SignGUIUtils (Player player, Callback<String[]> callback) {
 		
@@ -31,8 +37,7 @@ public class SignGUIUtils {
 		
 		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutOpenSignEditor(new BlockPosition(0, 0, 0)));
 		
-		
-		listener = new PacketAdapter(Main.uhc, ListenerPriority.NORMAL, PacketType.Play.Client.UPDATE_SIGN) {
+		protocolListener = new PacketAdapter(Main.uhc, ListenerPriority.NORMAL, PacketType.Play.Client.UPDATE_SIGN) {
 			
 			@Override
 			public void onPacketReceiving(PacketEvent event) {
@@ -42,11 +47,12 @@ public class SignGUIUtils {
 				if (!event.getPlayer().getUniqueId().equals(entityPlayer.getUniqueID())) return;
 				
 				WrappedChatComponent[] lines = event.getPacket().getChatComponentArrays().getValues().get(0);
+				
 				String[] rawLines = new String[4];
 				
 				for (int i = 0; i < lines.length; i++) {
 					
-					rawLines[i] = lines[i].getJson().substring(1, lines[i].getJson().length() - 1);
+					rawLines[i] = lines[i].getJson().length() < 1 ? "" : lines[i].getJson().substring(1, lines[i].getJson().length() - 1);
 					
 				}
 				
@@ -57,19 +63,35 @@ public class SignGUIUtils {
 				
 		};
 		
-		ProtocolLibrary.getProtocolManager().addPacketListener(listener);
+		ProtocolLibrary.getProtocolManager().addPacketListener(protocolListener);
+		
+		listener = new Listener() {
+			
+			@EventHandler
+			public void onQuit(PlayerQuitEvent event) {
+				
+				callback.onDisconnect();
+				delete();
+				
+			}
+			
+		};
+		
+		Bukkit.getPluginManager().registerEvents(listener, Main.uhc);
 		
 	}
 	
 	public void delete() {
 		
-		ProtocolLibrary.getProtocolManager().removePacketListener(listener);
+		ProtocolLibrary.getProtocolManager().removePacketListener(protocolListener);
+		HandlerList.unregisterAll(listener);
 		
 	}
 	
 	public interface Callback<T> {
 		
 		void onConfirm(String[] lines);
+		void onDisconnect();
 		
 	}
 
