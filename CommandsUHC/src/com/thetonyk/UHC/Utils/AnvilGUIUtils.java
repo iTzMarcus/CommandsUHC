@@ -13,19 +13,23 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Packets.PacketHandler;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.ChatMessage;
 import net.minecraft.server.v1_8_R3.ContainerAnvil;
 import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.PacketPlayInCustomPayload;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
+import net.minecraft.server.v1_8_R3.PacketPlayOutWindowData;
 
 public class AnvilGUIUtils {
 	
 	private EntityPlayer entityPlayer;
 	private AnvilContainer container;
 	private Listener listener;
+	private PacketHandler packetsListener;
 	private Inventory inventory;
 
 	public AnvilGUIUtils (Player player, String explain, Callback<String> callback) {
@@ -39,6 +43,7 @@ public class AnvilGUIUtils {
 		int c = this.entityPlayer.nextContainerCounter();
 		
 		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutOpenWindow(c, "minecraft:anvil", new ChatMessage("Anvil"), 0));
+		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutWindowData(c, 0, 3));
 		
 		this.entityPlayer.activeContainer = container;
 		this.entityPlayer.activeContainer.windowId = c;
@@ -100,11 +105,29 @@ public class AnvilGUIUtils {
 		
 		Bukkit.getPluginManager().registerEvents(listener, Main.uhc);
 		
+		packetsListener = new PacketHandler() {
+			
+			@Override
+			public Object onPacketIn(Player player, Object packet) {
+				
+				if (!(packet instanceof PacketPlayInCustomPayload)) return super.onPacketIn(player, packet);
+				
+				if (((CraftPlayer) player).getHandle().activeContainer != container) return super.onPacketIn(player, packet);
+				
+				((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutWindowData(container.windowId, 0, 0));
+				
+				return super.onPacketIn(player, packet);
+				
+			}
+			
+		};
+		
 	}
 		
 	private void delete() {
 		
 		HandlerList.unregisterAll(listener);
+		packetsListener.delete();
 		
 	}
 	
