@@ -8,37 +8,64 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import com.google.gson.Gson;
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Packets.PacketHandler;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
-import net.minecraft.server.v1_8_R3.ChatMessage;
+import net.minecraft.server.v1_8_R3.Blocks;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.IBlockData;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.PacketPlayInUpdateSign;
+import net.minecraft.server.v1_8_R3.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
+import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateSign;
 
 public class SignGUIUtils {
 	
 	private EntityPlayer entityPlayer;
 	private PacketHandler packetsListener;
 	private Listener listener;
+	private Gson gson = new Gson();
 	
 	public SignGUIUtils (Player player, Callback<String[]> callback) {
 		
+		this(player, new String[0], callback);
+		
+	}
+	
+	public SignGUIUtils (Player player, String[] text, Callback<String[]> callback) {
+		
 		this.entityPlayer = ((CraftPlayer) player).getHandle();
 		
-		IChatBaseComponent[] text = new IChatBaseComponent[4];
-		text[0] = new ChatMessage("Test;");
+		IBlockData oldBlock = this.entityPlayer.world.getType(new BlockPosition(0, 0, 0));
+		IChatBaseComponent[] nmsText = new IChatBaseComponent[4];
 		
+		for (int i = 0; i < nmsText.length; i++) {
+			
+			nmsText[i] = IChatBaseComponent.ChatSerializer.a(gson.toJson(i < text.length ? text[i] : ""));
+			
+		}
+		
+		PacketPlayOutBlockChange nmsPacket = new PacketPlayOutBlockChange(this.entityPlayer.world, new BlockPosition(0, 0, 0));
+		nmsPacket.block = Blocks.WALL_SIGN.getBlockData();
+		
+		this.entityPlayer.playerConnection.sendPacket(nmsPacket);
+		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutUpdateSign(this.entityPlayer.world, new BlockPosition(0, 0, 0), nmsText));
 		this.entityPlayer.playerConnection.sendPacket(new PacketPlayOutOpenSignEditor(new BlockPosition(0, 0, 0)));
+		
+		nmsPacket = new PacketPlayOutBlockChange(this.entityPlayer.world, new BlockPosition(0, 0, 0));
+		nmsPacket.block = oldBlock;
+		
+		this.entityPlayer.playerConnection.sendPacket(nmsPacket);
 		
 		packetsListener = new PacketHandler() {
 			
 			@Override
 			public Object onPacketIn(Player player, Object packet) {
 				
-				if (!(packet instanceof PacketPlayInUpdateSign)) super.onPacketIn(player, packet);
+				if (!(packet instanceof PacketPlayInUpdateSign)) return super.onPacketIn(player, packet);
 				
 				if (!player.getUniqueId().equals(entityPlayer.getUniqueID())) return super.onPacketIn(player, packet);
 				
@@ -50,9 +77,7 @@ public class SignGUIUtils {
 				
 				for (int i = 0; i < lines.length; i++) {
 					
-					String line = IChatBaseComponent.ChatSerializer.a(lines[i]);
-					
-					rawLines[i] = line.length() < 1 ? "" : line.substring(1, line.length() - 1);
+					rawLines[i] = lines[i].getText();
 					
 				}
 				
