@@ -90,7 +90,13 @@ public class WorldUtils {
 
 	public static Boolean exist(String world) {
 		
-		return worlds.containsKey(world);
+		for (String name : worlds.keySet()) {
+			
+			if (name.equalsIgnoreCase(world)) return true;
+			
+		}
+		
+		return false;
 		
 	}
 	
