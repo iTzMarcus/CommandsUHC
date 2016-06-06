@@ -38,6 +38,7 @@ public abstract class Option {
 		}
 		
 		this.state = true;
+		onEnable();
 		
 	}
 	
@@ -50,6 +51,7 @@ public abstract class Option {
 		}
 		
 		this.state = false;
+		onDisable();
 		
 	}
 	
@@ -58,5 +60,8 @@ public abstract class Option {
 		return state;
 		
 	}
+	
+	public void onEnable() {};
+	public void onDisable() {};
 
 }
