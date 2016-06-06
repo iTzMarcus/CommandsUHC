@@ -29,13 +29,13 @@ public class SignGUIUtils {
 	private Listener listener;
 	private Gson gson = new Gson();
 	
-	public SignGUIUtils (Player player, Callback<String[]> callback) {
+	public SignGUIUtils (Player player, SignCallback<String[]> callback) {
 		
 		this(player, new String[0], callback);
 		
 	}
 	
-	public SignGUIUtils (Player player, String[] text, Callback<String[]> callback) {
+	public SignGUIUtils (Player player, String[] text, SignCallback<String[]> callback) {
 		
 		this.entityPlayer = ((CraftPlayer) player).getHandle();
 		
@@ -113,7 +113,7 @@ public class SignGUIUtils {
 		
 	}
 	
-	public interface Callback<T> {
+	public interface SignCallback<T> {
 		
 		void onConfirm(String[] lines);
 		void onDisconnect();

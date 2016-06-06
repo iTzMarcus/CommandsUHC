@@ -32,7 +32,7 @@ public class AnvilGUIUtils {
 	private PacketHandler packetsListener;
 	private Inventory inventory;
 
-	public AnvilGUIUtils (Player player, String explain, Callback<String> callback) {
+	public AnvilGUIUtils (Player player, String explain, AnvilCallback<String> callback) {
 	
 		this.entityPlayer = ((CraftPlayer) player).getHandle();
 		this.container = new AnvilContainer(this.entityPlayer);
@@ -148,9 +148,9 @@ public class AnvilGUIUtils {
         
     }
 	
-	public static interface Callback<T> {
+	public static interface AnvilCallback<T> {
 		
-		void onConfirm(String done);
+		void onConfirm(String text);
 		void onClose();
 		
 	}

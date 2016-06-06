@@ -22,9 +22,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Utils.AnvilGUIUtils;
+import com.thetonyk.UHC.Utils.AnvilGUIUtils.AnvilCallback;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.SignGUIUtils;
-import com.thetonyk.UHC.Utils.SignGUIUtils.Callback;
+import com.thetonyk.UHC.Utils.SignGUIUtils.SignCallback;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class WorldInventory implements Listener {
@@ -36,7 +38,8 @@ public class WorldInventory implements Listener {
 	private Boolean end;
 	private long seed;
 	private String lastName;
-	private List<UUID> inSign = new ArrayList<UUID>();
+	private String lastSeed;
+	private List<UUID> inGUI = new ArrayList<UUID>();
 	
 	public WorldInventory() {
 		
@@ -47,6 +50,7 @@ public class WorldInventory implements Listener {
 		this.nether = false;
 		this.end = false;
 		this.seed = 0;
+		this.lastSeed = null;
 		update();
 		
 		Bukkit.getPluginManager().registerEvents(this, Main.uhc);
@@ -90,7 +94,18 @@ public class WorldInventory implements Listener {
 		ItemStack size = ItemsUtils.createItem(Material.EMPTY_MAP, "§8⫸ §7Size: §a" + this.size, 1, 0);
 		ItemStack nether = ItemsUtils.createItem(Material.NETHERRACK, "§8⫸ §7Nether: " + (this.nether ? "§aEnabled" : "§cDisabled"), 1, 0);
 		ItemStack end = ItemsUtils.createItem(Material.ENDER_STONE, "§8⫸ §7The End: " + (this.end ? "§aEnabled" : "§cDisabled"), 1, 0);
-		ItemStack seed = ItemsUtils.createItem(Material.GRASS, "§8⫸ §7Seed: §a" + (this.seed == 0 ? "§cRandom" : this.seed), 1, 0);
+		
+		if (this.seed == 0 && this.lastSeed != null) {
+			
+			lore.add(" ");
+			lore.add("§8⫸ §7Last entered seed: §c" + this.lastSeed);
+			lore.add("§8⫸ §7This seed is incorrect.");
+			lore.add(" ");
+			
+		}
+		
+		ItemStack seed = ItemsUtils.createItem(Material.GRASS, "§8⫸ §7Seed: §a" + (this.seed == 0 ? "§cRandom" : this.seed), 1, 0, lore);
+		lore.clear();
 		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §cCancel", 1, 14);
 
 		if (!valid) {
@@ -143,7 +158,7 @@ public class WorldInventory implements Listener {
 			
 			public void run() {
 				
-				if (inSign.contains(player.getUniqueId())) inSign.remove(player.getUniqueId());
+				if (inGUI.contains(player.getUniqueId())) inGUI.remove(player.getUniqueId());
 				
 				if (inventory.getViewers().size() < 1) cancel();
 				
@@ -162,7 +177,7 @@ public class WorldInventory implements Listener {
 		
 		if (!event.getInventory().equals(this.inventory)) return;
 		
-		if (inSign.contains(player.getUniqueId())) return;
+		if (inGUI.contains(player.getUniqueId())) return;
 		
 		new BukkitRunnable() {
 		
@@ -193,12 +208,12 @@ public class WorldInventory implements Listener {
 		
 		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Name: §6")) {
 			
-			this.inSign.add(player.getUniqueId());
+			inGUI.add(player.getUniqueId());
 			
 			String[] text = new String[this.name == null && this.lastName == null ? 0 : 1];
 			if (text.length > 0) text[0] = this.name == null ? this.lastName : this.name;
 			
-			new SignGUIUtils(player, text, new Callback<String[]>() {
+			new SignGUIUtils(player, text, new SignCallback<String[]>() {
 
 				@Override
 				public void onConfirm(String[] lines) {
@@ -213,7 +228,7 @@ public class WorldInventory implements Listener {
 								
 								public void run() {
 									
-									inSign.remove(player.getUniqueId());
+									inGUI.remove(player.getUniqueId());
 								
 								}
 								
@@ -282,7 +297,86 @@ public class WorldInventory implements Listener {
 			
 		}
 		
-		
+		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Seed: §a")) {
+			
+			inGUI.add(player.getUniqueId());
+			
+			new AnvilGUIUtils(player, this.seed == 0 && this.lastSeed == null ? "Seed..." : this.seed == 0 ? this.lastSeed : String.valueOf(this.seed), new AnvilCallback<String>(){
+
+				@Override
+				public void onConfirm(String text) {
+					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							player.openInventory(getInventory());
+							
+							new BukkitRunnable() {
+								
+								public void run() {
+									
+									inGUI.remove(player.getUniqueId());
+								
+								}
+								
+							}.runTaskLater(Main.uhc, 1);
+						
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+					if (text.length() < 1) return;
+					
+					long longSeed = 0;
+					
+					try {
+						
+						longSeed = Long.parseLong(text);
+						
+					} catch (Exception exception) {
+						
+						lastSeed = text;
+						seed = 0;
+						update();
+						return;
+						
+					}
+					
+					seed = longSeed;
+					lastSeed = null;
+					update();
+					
+				}
+
+				@Override
+				public void onClose() {
+					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							player.openInventory(getInventory());
+							
+							new BukkitRunnable() {
+								
+								public void run() {
+									
+									inGUI.remove(player.getUniqueId());
+								
+								}
+								
+							}.runTaskLater(Main.uhc, 1);
+						
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+				}
+				
+			});
+			
+		}
 		
 		if (item.getItemMeta().getDisplayName().equalsIgnoreCase("§8⫸ §cCancel")) {
 			
