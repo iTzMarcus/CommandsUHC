@@ -34,11 +34,13 @@ public class TimeleftCommand implements CommandExecutor {
 			
 		}
 		
-		int finalHeal = 45 - DisplayTimers.time;
+		int time = DisplayTimers.getTime();
+		int finalHeal = 45 - time;
 		int pvp = DisplayTimers.getTimeLeftPVP();
 		int meetup = DisplayTimers.getTimeLeftMeetup();
 		
-		sender.sendMessage(Main.PREFIX + "Times left:");
+		sender.sendMessage(Main.PREFIX + "Time left:");
+		sender.sendMessage("§8⫸ §7Since the game has started: §a" + DisplayTimers.getFormatedTime(time) + "§7.");
 		sender.sendMessage("§8⫸ §7Final Heal: §a" + (finalHeal > 0 ? DisplayTimers.getFormatedTime(finalHeal) : "Already given") + "§7.");
 		sender.sendMessage("§8⫸ §7PVP: §a" + (pvp > 0 ? DisplayTimers.getFormatedTime(pvp) : "ON") + "§7.");
 		sender.sendMessage("§8⫸ §7Meetup: §a" + (meetup > 0 ? DisplayTimers.getFormatedTime(meetup) : "Now") + "§7.");

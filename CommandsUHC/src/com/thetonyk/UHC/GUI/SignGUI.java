@@ -1,4 +1,4 @@
-package com.thetonyk.UHC.Utils;
+package com.thetonyk.UHC.GUI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -22,20 +22,20 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutBlockChange;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenSignEditor;
 import net.minecraft.server.v1_8_R3.PacketPlayOutUpdateSign;
 
-public class SignGUIUtils {
+public class SignGUI {
 	
 	private EntityPlayer entityPlayer;
 	private PacketHandler packetsListener;
 	private Listener listener;
 	private Gson gson = new Gson();
 	
-	public SignGUIUtils (Player player, SignCallback<String[]> callback) {
+	public SignGUI (Player player, SignCallback<String[]> callback) {
 		
 		this(player, new String[0], callback);
 		
 	}
 	
-	public SignGUIUtils (Player player, String[] text, SignCallback<String[]> callback) {
+	public SignGUI (Player player, String[] text, SignCallback<String[]> callback) {
 		
 		this.entityPlayer = ((CraftPlayer) player).getHandle();
 		

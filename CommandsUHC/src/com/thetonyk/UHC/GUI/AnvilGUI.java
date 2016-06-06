@@ -1,4 +1,4 @@
-package com.thetonyk.UHC.Utils;
+package com.thetonyk.UHC.GUI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Packets.PacketHandler;
+import com.thetonyk.UHC.Utils.ItemsUtils;
 
 import net.minecraft.server.v1_8_R3.BlockPosition;
 import net.minecraft.server.v1_8_R3.ChatMessage;
@@ -24,7 +25,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayInCustomPayload;
 import net.minecraft.server.v1_8_R3.PacketPlayOutOpenWindow;
 import net.minecraft.server.v1_8_R3.PacketPlayOutWindowData;
 
-public class AnvilGUIUtils {
+public class AnvilGUI {
 	
 	private EntityPlayer entityPlayer;
 	private AnvilContainer container;
@@ -32,7 +33,7 @@ public class AnvilGUIUtils {
 	private PacketHandler packetsListener;
 	private Inventory inventory;
 
-	public AnvilGUIUtils (Player player, String explain, AnvilCallback<String> callback) {
+	public AnvilGUI (Player player, String explain, AnvilCallback<String> callback) {
 	
 		this.entityPlayer = ((CraftPlayer) player).getHandle();
 		this.container = new AnvilContainer(this.entityPlayer);

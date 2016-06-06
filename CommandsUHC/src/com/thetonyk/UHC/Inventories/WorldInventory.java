@@ -20,13 +20,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.github.paperspigot.Title;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Utils.AnvilGUIUtils;
-import com.thetonyk.UHC.Utils.AnvilGUIUtils.AnvilCallback;
+import com.thetonyk.UHC.GUI.AnvilGUI;
+import com.thetonyk.UHC.GUI.SignGUI;
+import com.thetonyk.UHC.GUI.AnvilGUI.AnvilCallback;
+import com.thetonyk.UHC.GUI.NumberGUI;
+import com.thetonyk.UHC.GUI.NumberGUI.NumberCallback;
+import com.thetonyk.UHC.GUI.SignGUI.SignCallback;
 import com.thetonyk.UHC.Utils.ItemsUtils;
-import com.thetonyk.UHC.Utils.SignGUIUtils;
-import com.thetonyk.UHC.Utils.SignGUIUtils.SignCallback;
 import com.thetonyk.UHC.Utils.WorldUtils;
 
 public class WorldInventory implements Listener {
@@ -154,6 +157,8 @@ public class WorldInventory implements Listener {
 		
 		Player player = event.getPlayer();
 		
+		if (!inventory.getViewers().contains(player)) return;
+		
 		new BukkitRunnable() {
 			
 			public void run() {
@@ -213,7 +218,7 @@ public class WorldInventory implements Listener {
 			String[] text = new String[this.name == null && this.lastName == null ? 0 : 1];
 			if (text.length > 0) text[0] = this.name == null ? this.lastName : this.name;
 			
-			new SignGUIUtils(player, text, new SignCallback<String[]>() {
+			new SignGUI(player, text, new SignCallback<String[]>() {
 
 				@Override
 				public void onConfirm(String[] lines) {
@@ -279,7 +284,77 @@ public class WorldInventory implements Listener {
 			
 		}
 		
-		
+		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Size: §a")) {
+			
+			inGUI.add(player.getUniqueId());
+			
+			NumberGUI gui = new NumberGUI("Set size", this.size, 1000, 100, 2000, 10000, 100, new NumberCallback<Integer>() {
+
+				@Override
+				public void onConfirm(int newSize) {
+					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							player.openInventory(getInventory());
+							
+							new BukkitRunnable() {
+								
+								public void run() {
+									
+									inGUI.remove(player.getUniqueId());
+								
+								}
+								
+							}.runTaskLater(Main.uhc, 1);
+						
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+					size = newSize;
+					update();
+					
+				}
+
+				@Override
+				public void onCancel() {
+					
+					new BukkitRunnable() {
+						
+						public void run() {
+							
+							player.openInventory(getInventory());
+							
+							new BukkitRunnable() {
+								
+								public void run() {
+									
+									inGUI.remove(player.getUniqueId());
+								
+								}
+								
+							}.runTaskLater(Main.uhc, 1);
+						
+						}
+						
+					}.runTaskLater(Main.uhc, 1);
+					
+				}
+
+				@Override
+				public void onDisconnect() {
+					
+					cancel();
+					
+				}
+				
+			});
+			
+			player.openInventory(gui.getInventory());
+			
+		}
 		
 		if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Nether: ")) {
 			
@@ -301,7 +376,7 @@ public class WorldInventory implements Listener {
 			
 			inGUI.add(player.getUniqueId());
 			
-			new AnvilGUIUtils(player, this.seed == 0 && this.lastSeed == null ? "Seed..." : this.seed == 0 ? this.lastSeed : String.valueOf(this.seed), new AnvilCallback<String>(){
+			new AnvilGUI(player, this.seed == 0 && this.lastSeed == null ? "Seed..." : this.seed == 0 ? this.lastSeed : String.valueOf(this.seed), new AnvilCallback<String>(){
 
 				@Override
 				public void onConfirm(String text) {
@@ -397,13 +472,28 @@ public class WorldInventory implements Listener {
 			Bukkit.broadcastMessage("§8⫸ §7Nether: " + (nether ? "§aEnabled" : "§cDisabled"));
 			Bukkit.broadcastMessage("§8⫸ §7End: " + (end ? "§aEnabled" : "§cDisabled"));
 			
+			Title title = new Title("§cWorld Creation", "§7The server is currently freezed", 0, 1200, 0);
+			
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				
+				online.sendTitle(title);
+				
+			}
+			
 			WorldUtils.createWorld(this.name, Environment.NORMAL, this.seed, WorldType.NORMAL, this.size);
 			
 			if (nether) WorldUtils.createWorld(this.name + "_nether", Environment.NETHER, this.seed, WorldType.NORMAL, this.size);	
 			
 			if (end) WorldUtils.createWorld(this.name + "_end", Environment.THE_END, this.seed, WorldType.NORMAL, this.size);	
 			
-			player.sendMessage(Main.PREFIX + "The world '§6" + this.name + "§7' has been created.");
+			Bukkit.broadcastMessage(Main.PREFIX + "The world '§6" + this.name + "§7' has been created.");
+			
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				
+				online.hideTitle();
+				
+			}
+
 			return;
 			
 		}

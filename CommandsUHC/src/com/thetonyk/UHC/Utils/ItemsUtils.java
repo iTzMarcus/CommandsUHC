@@ -74,6 +74,17 @@ public class ItemsUtils {
 		
 	}
 	
+	public static ItemStack getSkull(String name, List<String> lore, String texture) {
+		
+		ItemStack skull = getSkull(name, texture);
+		ItemMeta meta = skull.getItemMeta();
+		meta.setLore(lore);
+		skull.setItemMeta(meta);
+		
+		return skull;
+		
+	}
+	
 	public static ItemStack getSkull(String name, String texture) {
 		
 		ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
