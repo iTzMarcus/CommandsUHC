@@ -14,13 +14,14 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
+import com.thetonyk.UHC.Utils.GameUtils;
 
-public class NetherOption extends Option implements Listener {
+public class EndOption extends Option implements Listener {
 	
-	public NetherOption() {
+	public EndOption() {
 		
-		name = "Nether";
-		icon = new ItemStack(Material.NETHERRACK);
+		name = "The End";
+		icon = new ItemStack(Material.ENDER_STONE);
 		
 		try {
 			
@@ -28,7 +29,7 @@ public class NetherOption extends Option implements Listener {
 			
 		} catch (IdenticalStatesException exception) {
 			
-			Bukkit.getLogger().severe("[NetherOption] " + exception.getMessage());
+			Bukkit.getLogger().severe("[EndOption] " + exception.getMessage());
 			
 		}
 		
@@ -52,7 +53,7 @@ public class NetherOption extends Option implements Listener {
 		
 		for (BlockFace face : BlockFace.values()) {
 			
-			if (fromLocation.getBlock().getRelative(face).getType() != Material.PORTAL) continue;
+			if (fromLocation.getBlock().getRelative(face).getType() != Material.ENDER_PORTAL) continue;
 			
 			portal = true;
 			break;
@@ -60,6 +61,13 @@ public class NetherOption extends Option implements Listener {
 		}
 		
 		if (!portal) return;
+		
+		if (from.getEnvironment() == Environment.THE_END) {
+			
+			if (GameUtils.getWorld() != null && Bukkit.getWorld(GameUtils.getWorld()) != null) event.setTo(Bukkit.getWorld(GameUtils.getWorld()).getSpawnLocation());
+			else event.setTo(Bukkit.getWorld("lobby").getSpawnLocation());
+			
+		}
 		
 		Location toLocation = getPortal(fromLocation, from, agent);
 		
@@ -83,7 +91,14 @@ public class NetherOption extends Option implements Listener {
 			
 		}
 		
-		if (fromLocation.getBlock().getType() != Material.PORTAL) return;
+		if (fromLocation.getBlock().getType() != Material.ENDER_PORTAL) return;
+		
+		if (from.getEnvironment() == Environment.THE_END) {
+			
+			if (GameUtils.getWorld() != null && Bukkit.getWorld(GameUtils.getWorld()) != null) event.setTo(Bukkit.getWorld(GameUtils.getWorld()).getSpawnLocation());
+			else event.setTo(Bukkit.getWorld("lobby").getSpawnLocation());
+			
+		}
 		
 		Location toLocation = getPortal(fromLocation, from, agent);
 		
@@ -101,40 +116,29 @@ public class NetherOption extends Option implements Listener {
 			
 			if (!from.getName().endsWith("_nether")) return null;
 			
-			to = Bukkit.getWorld(from.getName().substring(0, from.getName().length() - 7));
+			to = Bukkit.getWorld(from.getName().substring(0, from.getName().length() - 7) + "_end");
 			
 		} else if (from.getEnvironment() == Environment.NORMAL) {
 			
-			to = Bukkit.getWorld(from.getName() + "_nether");
+			to = Bukkit.getWorld(from.getName() + "_end");
 			
 		} else return null;
 		
 		if (to == null) return null;
 		
-		Location toLocation = null;
+		Location toLocation = agent.findOrCreate(new Location(to, 100, 50, 100));
 		
-		if (from.getEnvironment() == Environment.NETHER) toLocation = agent.findOrCreate(new Location(to, fromLocation.getX() * 8, fromLocation.getY() * 8, fromLocation.getZ() * 8));
-		else toLocation = agent.findOrCreate(new Location(to, fromLocation.getX() * 0.125, fromLocation.getY() * 0.125, fromLocation.getZ() * 0.125));
-		
-		double size = to.getWorldBorder().getSize();
-		double posRadius = size / 2;
-		double negRadius = size - (size * 1.5);
-		double x = toLocation.getX();
-		double z = toLocation.getZ();
-		
-		if (x > posRadius - 30 || x < negRadius + 30 || z > posRadius - 30  || z < negRadius + 30) {
+		for (int x = toLocation.getBlockX() - 1; x < toLocation.getBlockX() + 2; x++) {
 			
-			double newX = toLocation.getX();
-			double newZ = toLocation.getZ();
-			
-			if (x > posRadius - 30 || x < negRadius + 30) newX = x > posRadius - 30 ? posRadius - 50 : negRadius + 50;
-			if (z > posRadius - 30 || z < negRadius + 30) newZ = z > posRadius - 30 ? posRadius - 50 : negRadius + 50;
-			
-			
-			agent.setCreationRadius(30);
-			agent.setSearchRadius(30);
-			
-			toLocation = agent.findOrCreate(new Location(to, newX, toLocation.getY(), newZ));
+			for (int y = toLocation.getBlockY() - 1; y < toLocation.getBlockY() + 3; y++) {
+				
+				for (int z = toLocation.getBlockZ() - 1; z < toLocation.getBlockZ() + 2; z++) {
+					
+					to.getBlockAt(x, y, z).setType(y == toLocation.getBlockY() - 1 ? Material.OBSIDIAN : Material.AIR);
+					
+				}
+				
+			}
 			
 		}
 		

@@ -7,50 +7,43 @@ import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
 
 public abstract class Option {
 	
-	private Boolean state = false;
-	private String name;
-	private ItemStack icon;
+	private static Boolean state = false;
+	protected static String name;
+	protected static ItemStack icon;
 	
-	public Option(String name, ItemStack icon) {
+	public static ItemStack getIcon() {
 		
-		this.name = name;
-		this.icon = icon;
+		ItemStack item = icon.clone();
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName("§8⫸ §6" + name + " §8⫷");
+		item.setItemMeta(meta);
+		
+		return item;
 		
 	}
 	
-	public ItemStack getIcon() {
+	public static void enable() throws IdenticalStatesException {
 		
-		ItemStack icon = this.icon.clone();
-		ItemMeta meta = icon.getItemMeta();
-		meta.setDisplayName("§8⫸ §6" + this.name + " §8⫷");
-		icon.setItemMeta(meta);
-		
-		return icon;
-		
-	}
-	
-	public void enable() throws IdenticalStatesException {
-		
-		if (this.state) {
+		if (state) {
 			
 			throw new IdenticalStatesException("This feature is already enabled.");
 			
 		}
 		
-		this.state = true;
+		state = true;
 		onEnable();
 		
 	}
 	
-	public void disable() throws IdenticalStatesException {
+	public static void disable() throws IdenticalStatesException {
 		
-		if (!this.state) {
+		if (!state) {
 			
 			throw new IdenticalStatesException("This feature is already disabled.");
 			
 		}
 		
-		this.state = false;
+		state = false;
 		onDisable();
 		
 	}
@@ -61,7 +54,7 @@ public abstract class Option {
 		
 	}
 	
-	public void onEnable() {};
-	public void onDisable() {};
+	public static void onEnable() {};
+	public static void onDisable() {};
 
 }
