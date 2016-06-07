@@ -1,4 +1,4 @@
-package com.thetonyk.UHC.Features;
+package com.thetonyk.UHC.Features.Options;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
