@@ -29,7 +29,7 @@ public class DeathMessage implements Listener {
 		
 		event.setDeathMessage(null);
 		
-		if (status != Status.PLAY || GameUtils.getDeath(uuid)) return;
+		if (status != Status.PLAY || GameUtils.getDeath(uuid) || GameUtils.getSpectate(uuid)) return;
 		
 		String victimName = PlayerUtils.getRank(uuid).getPrefix() + ((TeamsUtils.getTeam(uuid) != null) ? TeamsUtils.getTeamPrefix(uuid) : "§7") + name + "§7";
 		String killerName = killer == null ? null : PlayerUtils.getRank(killer.getUniqueId()).getPrefix() + ((TeamsUtils.getTeam(killer.getUniqueId()) != null) ? TeamsUtils.getTeamPrefix(killer.getUniqueId()) : "§7") + killer.getName() + "§7";		

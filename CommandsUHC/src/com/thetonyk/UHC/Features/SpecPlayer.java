@@ -19,6 +19,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -72,11 +73,11 @@ public class SpecPlayer implements Listener {
 		
 		LoginPlayer.updateVisibility();
 		
+		spectator.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		PlayerUtils.clearInventory(spectator);
 		PlayerUtils.clearEffects(spectator);
 		spectator.setGameMode(GameMode.ADVENTURE);
 		spectator.setPlayerListName(null);
-		spectator.teleport(Bukkit.getWorld("lobby").getSpawnLocation().add(0.5, 0, 0.5));
 		DisplayNametags.updateNametag(spectator, GameUtils.getIDs());
 		
 	}
@@ -259,6 +260,35 @@ public class SpecPlayer implements Listener {
 			return;
 			
 		}
+		
+	}
+	
+	@EventHandler
+	public void onMove(PlayerMoveEvent event) {
+		
+		Player player = event.getPlayer();
+		UUID uuid = player.getUniqueId();
+		Location location = event.getTo();
+		World world = player.getWorld();
+		double radius = world.getWorldBorder().getSize() / 2;
+		
+		if (!GameUtils.getSpectate(uuid)) return;
+		
+		if (location.getY() <= 1) {
+		
+			event.setCancelled(true);
+			return;
+			
+		}
+		
+		if (location.getX() < radius && location.getX() > -radius && location.getZ() < radius && location.getZ() > -radius) return;
+		
+		Location teleport = player.getLocation();
+		
+		if (location.getX() > radius - 5 || location.getX() < -radius + 5) teleport.setX(location.getX()  > 0 ? radius - 5 : radius + 5);
+		if (location.getZ() > radius - 5 || location.getZ() < -radius + 5) teleport.setZ(location.getZ()  > 0 ? radius - 5 : radius + 5);
+		
+		player.teleport(teleport);
 		
 	}
 
