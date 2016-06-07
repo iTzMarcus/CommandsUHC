@@ -66,6 +66,7 @@ import com.thetonyk.UHC.Features.SpecInfo;
 import com.thetonyk.UHC.Features.SpecPlayer;
 import com.thetonyk.UHC.Features.TeleportProtection;
 import com.thetonyk.UHC.Features.Options.EndOption;
+import com.thetonyk.UHC.Features.Options.GoldenHeadOption;
 import com.thetonyk.UHC.Features.Options.NetherOption;
 import com.thetonyk.UHC.Features.TeamsInvitations;
 import com.thetonyk.UHC.Features.DisplayNametags;
@@ -191,6 +192,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new TeamsInvitations(), this);
 		
 		manager.registerEvents(new EndOption(), this);
+		manager.registerEvents(new GoldenHeadOption(), this);
 		manager.registerEvents(new NetherOption(), this);
 		
 		manager.registerEvents(new InviteInventory(), this);
