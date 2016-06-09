@@ -14,8 +14,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
-
 public class NetherOption implements Listener {
 	
 	private static Boolean state = false;
@@ -31,25 +29,17 @@ public class NetherOption implements Listener {
 		
 	}
 	
-	public static void enable() throws IdenticalStatesException {
+	public static void enable() {
 		
-		if (state) {
-			
-			throw new IdenticalStatesException("This feature is already enabled.");
-			
-		}
+		if (state) return;
 		
 		state = true;
 		
 	}
 	
-	public static void disable() throws IdenticalStatesException {
+	public static void disable() {
 		
-		if (!state) {
-			
-			throw new IdenticalStatesException("This feature is already disabled.");
-			
-		}
+		if (!state) return;
 		
 		state = false;
 		

@@ -69,11 +69,11 @@ public class NumberGUI implements Listener {
 		lore.add("§8⫸ §7Currently: §a" + this.currently);
 		lore.add(" ");
 		
-		ItemStack bigAdd = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.bigAdd, 10, 5, lore);
+		ItemStack bigAdd = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.bigAdd, 2, 5, lore);
 		ItemStack add = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.add, 1, 5, lore);
 		ItemStack reset = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Reset", 1, 4, lore);
 		ItemStack remove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.add, 1, 14, lore);
-		ItemStack bigRemove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.bigAdd, 10, 14, lore);
+		ItemStack bigRemove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.bigAdd, 2, 14, lore);
 		
 		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §cCancel", 1, 14);
 		ItemStack confirm = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §aConfirm", 1, 5);

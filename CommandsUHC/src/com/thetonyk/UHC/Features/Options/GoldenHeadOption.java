@@ -24,7 +24,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
-import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
@@ -50,25 +49,17 @@ public class GoldenHeadOption implements Listener {
 		
 	}
 	
-	public static void enable() throws IdenticalStatesException {
+	public static void enable() {
 		
-		if (state) {
-			
-			throw new IdenticalStatesException("This feature is already enabled.");
-			
-		}
+		if (state) return;
 		
 		state = true;
 		
 	}
 	
-	public static void disable() throws IdenticalStatesException {
+	public static void disable() {
 		
-		if (!state) {
-			
-			throw new IdenticalStatesException("This feature is already disabled.");
-			
-		}
+		if (!state) return;
 		
 		state = false;
 		

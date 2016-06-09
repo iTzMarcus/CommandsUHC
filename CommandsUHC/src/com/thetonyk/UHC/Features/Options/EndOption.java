@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
 import com.thetonyk.UHC.Utils.GameUtils;
 
 public class EndOption implements Listener {
@@ -32,25 +31,17 @@ public class EndOption implements Listener {
 		
 	}
 	
-	public static void enable() throws IdenticalStatesException {
+	public static void enable() {
 		
-		if (state) {
+		if (state) return;
 			
-			throw new IdenticalStatesException("This feature is already enabled.");
-			
-		}
-		
 		state = true;
 		
 	}
 	
-	public static void disable() throws IdenticalStatesException {
+	public static void disable() {
 		
-		if (!state) {
-			
-			throw new IdenticalStatesException("This feature is already disabled.");
-			
-		}
+		if (!state) return;
 		
 		state = false;
 		

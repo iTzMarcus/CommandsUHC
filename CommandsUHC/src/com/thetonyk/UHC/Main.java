@@ -75,6 +75,7 @@ import com.thetonyk.UHC.Features.DisplaySidebar;
 import com.thetonyk.UHC.Features.DisplayTab;
 import com.thetonyk.UHC.Features.DisplayTimers;
 import com.thetonyk.UHC.Features.HealthFood;
+import com.thetonyk.UHC.Inventories.ConfigInventory;
 import com.thetonyk.UHC.Inventories.InviteInventory;
 import com.thetonyk.UHC.Inventories.PlayerInventory;
 import com.thetonyk.UHC.Inventories.RulesInventory;
@@ -197,6 +198,7 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new NetherOption(), this);
 		
 		manager.registerEvents(new InviteInventory(), this);
+		manager.registerEvents(new ConfigInventory(), this);
 		manager.registerEvents(new PlayerInventory(), this);
 		manager.registerEvents(new RulesInventory(), this);
 		manager.registerEvents(new SelectorInventory(), this);
