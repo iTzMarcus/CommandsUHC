@@ -12,26 +12,64 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
 import com.thetonyk.UHC.Utils.GameUtils;
 
-public class EndOption extends Option implements Listener {
+public class EndOption implements Listener {
+	
+	private static Boolean state = false;
+	public static String name;
+	private static ItemStack icon;
 	
 	public EndOption() {
 		
 		name = "The End";
 		icon = new ItemStack(Material.ENDER_STONE);
 		
-		try {
+		state = true;
+		
+	}
+	
+	public static void enable() throws IdenticalStatesException {
+		
+		if (state) {
 			
-			enable();
-			
-		} catch (IdenticalStatesException exception) {
-			
-			Bukkit.getLogger().severe("[EndOption] " + exception.getMessage());
+			throw new IdenticalStatesException("This feature is already enabled.");
 			
 		}
+		
+		state = true;
+		
+	}
+	
+	public static void disable() throws IdenticalStatesException {
+		
+		if (!state) {
+			
+			throw new IdenticalStatesException("This feature is already disabled.");
+			
+		}
+		
+		state = false;
+		
+	}
+	
+	public static Boolean enabled() {
+		
+		return state;
+		
+	}
+	
+	public static ItemStack getIcon() {
+		
+		ItemStack item = icon.clone();
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName("§8⫸ §6" + name + " §8⫷");
+		item.setItemMeta(meta);
+		
+		return item;
 		
 	}
 	

@@ -18,17 +18,22 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Features.Exceptions.IdenticalStatesException;
 import com.thetonyk.UHC.Utils.GameUtils;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.GameUtils.Status;
 
-public class GoldenHeadOption extends Option implements Listener {
+public class GoldenHeadOption implements Listener {
 	
+	private static Boolean state = false;
+	public static String name;
+	private static ItemStack icon;
 	private static int regen;
 	private static BlockFace[] sortedFaces = {BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST};
 	
@@ -41,15 +46,48 @@ public class GoldenHeadOption extends Option implements Listener {
 		
 		regen = 8;
 		
-		try {
+		state = true;
+		
+	}
+	
+	public static void enable() throws IdenticalStatesException {
+		
+		if (state) {
 			
-			enable();
-			
-		} catch(Exception exception) {
-			
-			Bukkit.getLogger().severe("[GoldenHeadOption] " + exception.getMessage());
+			throw new IdenticalStatesException("This feature is already enabled.");
 			
 		}
+		
+		state = true;
+		
+	}
+	
+	public static void disable() throws IdenticalStatesException {
+		
+		if (!state) {
+			
+			throw new IdenticalStatesException("This feature is already disabled.");
+			
+		}
+		
+		state = false;
+		
+	}
+	
+	public static Boolean enabled() {
+		
+		return state;
+		
+	}
+	
+	public static ItemStack getIcon() {
+		
+		ItemStack item = icon.clone();
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName("§8⫸ §6" + name + " §8⫷");
+		item.setItemMeta(meta);
+		
+		return item;
 		
 	}
 	

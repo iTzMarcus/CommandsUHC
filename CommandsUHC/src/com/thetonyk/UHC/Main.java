@@ -95,6 +95,7 @@ public class Main extends JavaPlugin {
 	
 	public static final String NO_PERMS = "§fUnknown command.";
 	public static final String PREFIX = "§a§lUHC §8⫸ §7";
+	public static int channelId = 0;
 	
 	@Override
 	public void onEnable() {

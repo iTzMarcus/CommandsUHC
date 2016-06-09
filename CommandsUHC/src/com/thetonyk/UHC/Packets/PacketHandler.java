@@ -33,11 +33,13 @@ public class PacketHandler implements Listener {
 	ChannelInitializer<Channel> begin;
 	ChannelInitializer<Channel> end;
 	List<Channel> serverChannels = new ArrayList<Channel>();
+	int id;
 	
 	@SuppressWarnings("unchecked")
 	public PacketHandler() {
 		
 		Bukkit.getPluginManager().registerEvents(this, Main.uhc);
+		id = Main.channelId++;
 		
 		ServerConnection connection = MinecraftServer.getServer().getServerConnection();
 		
@@ -46,16 +48,16 @@ public class PacketHandler implements Listener {
 			@Override
 			protected void initChannel(Channel channel) throws Exception {
 				
-				ChannelHandler handler = channel.pipeline().get("CommandsPackets");
+				ChannelHandler handler = channel.pipeline().get("CommandsPackets-" + id);
 				
 				if (handler != null) {
 					
-					channel.pipeline().remove("CommandsPackets");
+					channel.pipeline().remove("CommandsPackets-" + id);
 					
 				}
 				
 				PacketInterceptor interceptor = new PacketInterceptor();
-				channel.pipeline().addBefore("packet_handler", "CommandsPackets", interceptor);
+				channel.pipeline().addBefore("packet_handler", "CommandsPackets-" + id, interceptor);
 				
 			}
 			
@@ -161,16 +163,16 @@ public class PacketHandler implements Listener {
 	private void addPlayer(Player player) {
 		
 		Channel channel = ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel;
-		ChannelHandler handler = channel.pipeline().get("CommandsPackets");
+		ChannelHandler handler = channel.pipeline().get("CommandsPackets-" + id);
 		
 		if (handler != null) {
 			
-			channel.pipeline().remove("CommandsPackets");
+			channel.pipeline().remove("CommandsPackets-" + id);
 			
 		}
 		
 		PacketInterceptor interceptor = new PacketInterceptor();
-		channel.pipeline().addBefore("packet_handler", "CommandsPackets", interceptor);
+		channel.pipeline().addBefore("packet_handler", "CommandsPackets-" + id, interceptor);
 		interceptor.player = player;
 		
 	}
@@ -185,9 +187,9 @@ public class PacketHandler implements Listener {
 			
 			Channel channel = ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel;
 			
-			if (channel.pipeline().get("CommandsPackets") == null) continue;
+			if (channel.pipeline().get("CommandsPackets-" + id) == null) continue;
 			
-			channel.pipeline().remove("CommandsPackets");
+			channel.pipeline().remove("CommandsPackets-" + id);
 			
 		}
 		
@@ -197,9 +199,9 @@ public class PacketHandler implements Listener {
 		
 		for (Channel channel : serverChannels) {
 			
-			if (channel.pipeline().get("CommandsPackets") == null) continue;
+			if (channel.pipeline().get("CommandsPackets-" + id) == null) continue;
 			
-			channel.pipeline().remove("CommandsPackets");
+			channel.pipeline().remove("CommandsPackets-" + id);
 			
 		}
 		
