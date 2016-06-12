@@ -203,8 +203,6 @@ public class Main extends JavaPlugin {
 		manager.registerEvents(new RulesInventory(), this);
 		manager.registerEvents(new SelectorInventory(), this);
 		manager.registerEvents(new TeamsInventory(), this);
-				
-		
 		
 	}
 	
