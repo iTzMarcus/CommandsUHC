@@ -36,7 +36,7 @@ public class DatabaseUtils {
     	
     	try {
     		
-    		connection = DriverManager.getConnection("jdbc:mysql://localhost/commandspvp", PassUtils.user, PassUtils.pass);
+    		connection = DriverManager.getConnection("jdbc:mysql://localhost/commandspvp", Main.uhc.getConfig().getString("SQLuser"), Main.uhc.getConfig().getString("SQLpass"));
     		
     	} catch (SQLException exception) {
     		

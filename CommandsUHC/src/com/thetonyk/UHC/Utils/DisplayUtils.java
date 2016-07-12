@@ -56,7 +56,7 @@ public class DisplayUtils {
 				
 				}
 				
-				return super.onPacketOut(player, packet);
+				return super.onPacketOut(player, nmsPacket);
 				
 			}
 			

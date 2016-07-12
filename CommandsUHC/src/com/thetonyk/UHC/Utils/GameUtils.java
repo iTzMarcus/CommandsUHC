@@ -36,6 +36,8 @@ public class GameUtils {
 	private static int slots = GameUtils.getSlotsSQL();
 	private static int pve = GameUtils.getPVESQL();
 	private static Map<UUID, Integer> kills = GameUtils.getKillsSQL();
+	private static TeamType teamType = GameUtils.getTeamTypeSQL();
+	private static int teamSize = GameUtils.getTeamSizeSQL();
 	
 	public static String getServer() {
 
@@ -46,6 +48,34 @@ public class GameUtils {
 	public enum Status {
 		
 		NONE, READY, OPEN, TELEPORT, PLAY, END;
+		
+	}
+	
+	public enum TeamType {
+		
+		CHOSEN("Chosen", "c"), RANDOM("Random", "r"), MYSTERY("Mystery", "m"), PICKED("Picked", "p"), CAPTAINS("Captains", "Cap"), AUCTION("Auction", "Auc");
+		
+		private String name;
+		private String syntax;
+		
+		private TeamType(String name, String syntax) {
+			
+			this.name = name;
+			this.syntax = syntax;
+			
+		}
+		
+		public String getName() {
+			
+			return this.name;
+			
+		}
+		
+		public String getSyntax() {
+			
+			return this.syntax;
+			
+		}
 		
 	}
 	
@@ -649,6 +679,100 @@ public class GameUtils {
 		DatabaseUtils.sqlInsert("UPDATE uhc SET kills = '" + gson.toJson(kills) + "' WHERE server = '" + GameUtils.getServer() + "';");
 		
 	}
+	
+	public static TeamType getTeamType() {
+		
+		return GameUtils.teamType != null ? GameUtils.teamType : GameUtils.getTeamTypeSQL();
+		
+	}
+	
+	private static TeamType getTeamTypeSQL() {
+		
+		String type = null;
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT teamType FROM uhc WHERE server = '" + GameUtils.getServer() + "';");
+			
+			if (req.next()) type = req.getString("teamType");
+			
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[Game] Error to get team type of the uhc on the server " + GameUtils.getServer() + ".");
+			
+		}
+		
+		TeamType teamType = null;
+		
+		try {
+			
+			teamType = TeamType.valueOf(type);
+			
+		} catch (Exception exception) {
+		
+			Bukkit.getLogger().severe("[Game] Error to parse team type '" + type + "' of the uhc on the server " + GameUtils.getServer() + ".");
+			
+		}
+	
+		return teamType;
+		
+	}
+	
+	public static void setTeamType(TeamType teamType) {
+		
+		GameUtils.teamType = teamType;
+		GameUtils.setTeamTypeSQL(teamType);
+		
+	}
+	
+	private static void setTeamTypeSQL(TeamType teamType) {
+		
+		DatabaseUtils.sqlInsert("UPDATE uhc SET teamType = '" + teamType.toString() + "' WHERE server = '" + GameUtils.getServer() + "';");
+		
+	}
+	
+	public static int getTeamSize() {
+		
+		return GameUtils.teamSize;
+		
+	}
+	
+	private static int getTeamSizeSQL() {
+		
+		int teamSize = 0;
+		
+		try {
+			
+			ResultSet req = DatabaseUtils.sqlQuery("SELECT teamSize FROM uhc WHERE server = '" + GameUtils.getServer() + "';");
+			
+			if (req.next()) teamSize = req.getInt("teamSize");
+			
+			req.close();
+			
+		} catch (SQLException exception) {
+			
+			Bukkit.getLogger().severe("[Game] Error to get team type of the uhc on the server " + GameUtils.getServer() + ".");
+			
+		}
+
+		return teamSize;
+		
+	}
+	
+	public static void setTeamType(int teamSize) {
+		
+		GameUtils.teamSize = teamSize;
+		GameUtils.setTeamSizeSQL(teamSize);
+		
+	}
+	
+	private static void setTeamSizeSQL(int teamSize) {
+		
+		DatabaseUtils.sqlInsert("UPDATE uhc SET teamSize = '" + teamSize + "' WHERE server = '" + GameUtils.getServer() + "';");
+		
+	}	
 	
 	private static void resetKills() {
 		
