@@ -116,7 +116,7 @@ public class Main extends JavaPlugin {
 		TeamsUtils.reload();
 		WorldUtils.loadAllWorlds();
 		
-		getConfig().options().copyDefaults(true);
+		getConfig().options().copyDefaults(false);
 		saveConfig();
 		
 		this.getCommand("gamemode").setExecutor(new GamemodeCommand());
