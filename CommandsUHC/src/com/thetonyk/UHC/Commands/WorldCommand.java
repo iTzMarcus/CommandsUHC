@@ -321,7 +321,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 			      
 			if (args.length < 2) {
 				
-				sender.sendMessage(Main.PREFIX + "Usage: /world tp <world>");
+				sender.sendMessage(Main.PREFIX + "Usage: /world game <world>");
 				return true;
 				
 			}
