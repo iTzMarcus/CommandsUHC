@@ -53,21 +53,13 @@ public class GameUtils {
 	
 	public enum TeamType {
 		
-		CHOSEN("Chosen", "c"), RANDOM("Random", "r"), MYSTERY("Mystery", "m"), PICKED("Picked", "p"), CAPTAINS("Captains", "Cap"), AUCTION("Auction", "Auc");
+		CHOSEN("c"), RANDOM("r"), MYSTERY("m"), PICKED("p"), CAPTAINS("Cap"), AUCTION("Auc");
 		
-		private String name;
 		private String syntax;
 		
-		private TeamType(String name, String syntax) {
+		private TeamType(String syntax) {
 			
-			this.name = name;
 			this.syntax = syntax;
-			
-		}
-		
-		public String getName() {
-			
-			return this.name;
 			
 		}
 		

@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
+import com.thetonyk.UHC.Features.SpecInfo;
 import com.thetonyk.UHC.GUI.SignGUI;
 import com.thetonyk.UHC.GUI.SignGUI.SignCallback;
 import com.thetonyk.UHC.Utils.GameUtils.TeamType;
@@ -88,7 +89,7 @@ public class GameInventory implements Listener {
 			
 			case BASIC:
 				
-				ItemStack team = ItemsUtils.createItem(Material.BANNER, "§8⫸ §7Teams: §6" + (this.teamType == null ? "FFA" : this.teamType.getName() + " Team of " + this.teamSize), 1, this.teamType == null ? 1 : 10);
+				ItemStack team = ItemsUtils.createItem(Material.BANNER, "§8⫸ §7Teams: §6" + (this.teamType == null ? "FFA" : SpecInfo.formatName(this.teamType.toString()) + (this.teamSize > 1 ? " Team of " + this.teamSize : "")), 1, this.teamType == null ? 1 : 10);
 				
 				this.inventory.setItem(10, team);
 				break;
@@ -127,7 +128,7 @@ public class GameInventory implements Listener {
 					
 					if (type == TeamType.AUCTION) continue;
 						
-					ItemStack item = ItemsUtils.createItem(Material.BANNER, "§8⫸ " + (this.teamType == type ? "§a" : "§c") + type.getName(), 1, this.teamType == type ? 10 : 1);
+					ItemStack item = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Type: " + (this.teamType == type ? "§a" : "§c") + SpecInfo.formatName(type.toString()), 1, this.teamType == type ? 3 : 11);
 					if (this.teamType == type) item = ItemsUtils.addGlow(item);
 					
 					this.inventory.setItem(slot, item);
@@ -221,11 +222,11 @@ public class GameInventory implements Listener {
 		}
 		
 		
-		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §c" + (this.page.isMain() ? "Cancel" : "Back"), 1, 14);
-		ItemStack valid = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §a" + (this.page.isMain() ? "Next" : "Confirm"), 1, 5);
+		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §c" + (this.page.main() == null ? "Cancel" : "Back"), 1, 14);
+		ItemStack valid = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §aNext", 1, 5);
 		
 		this.inventory.setItem(this.inventory.getSize() - 9, cancel);
-		this.inventory.setItem(this.inventory.getSize() - 1, valid);
+		if (this.page.main() == null) this.inventory.setItem(this.inventory.getSize() - 1, valid);
 		
 	}
 	
@@ -277,7 +278,69 @@ public class GameInventory implements Listener {
 				break;
 			case TEAMS:
 				
+				if (item.getItemMeta().getDisplayName().endsWith("FFA")) {
+					
+					this.teamType = null;
+					this.teamSize = 1;
+					update();
+					return;
+					
+				}
 				
+				if (item.getItemMeta().getDisplayName().endsWith("Auction")) {
+					
+					this.teamType = TeamType.AUCTION;
+					this.teamSize = 0;
+					update();
+					return;
+					
+				}
+
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Team of ")) {
+					
+					int size = 0;
+					String[] name = item.getItemMeta().getDisplayName().split(" ");
+					
+					try {
+						
+						size = Integer.parseInt(name[name.length - 1].substring(2));
+						
+					} catch (Exception exception) {
+						
+						return;
+						
+					}
+					
+					if (this.teamType == null || this.teamType == TeamType.AUCTION) this.teamType = TeamType.CHOSEN;
+					
+					this.teamSize = size;
+					update();
+					return;
+					
+				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Type: ")) {
+					
+					TeamType type = null;
+					String[] name = item.getItemMeta().getDisplayName().split(" ");
+					
+					try {
+						
+						type = TeamType.valueOf(name[name.length - 1].substring(2).toUpperCase());
+						
+					} catch (Exception exception) {
+						
+						break;
+						
+					}
+					
+					if (this.teamSize < 2) this.teamSize = 2;
+					
+					this.teamType = type;
+					update();
+					return;
+					
+				}
 				
 				break;
 			case SCHEDULE:
@@ -344,6 +407,12 @@ public class GameInventory implements Listener {
 				}
 				
 				break;
+		}
+		
+		if (item.getItemMeta().getDisplayName().equals("§8⫸ §cBack")) {
+			
+			changePage(this.page.main());
+			
 		}
 		
 	}
@@ -417,13 +486,13 @@ public class GameInventory implements Listener {
 	
 	private enum Page {
 		
-		BASIC("Config", 27, true), TEAMS("Teams", 54, false), SCHEDULE("Schedule", 27, true);
+		BASIC("Config", 27, null), TEAMS("Teams", 54, Page.BASIC), SCHEDULE("Schedule", 27, null);
 		
 		private String name;
 		private int size;
-		private Boolean main;
+		private Page main;
 		
-		private Page(String name, int size, Boolean main) {
+		private Page(String name, int size, Page main) {
 			
 			this.name = name;
 			this.size = size;
@@ -443,7 +512,7 @@ public class GameInventory implements Listener {
 			
 		}
 		
-		public Boolean isMain() {
+		public Page main() {
 			
 			return this.main;
 			
