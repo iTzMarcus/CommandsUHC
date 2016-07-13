@@ -467,7 +467,7 @@ public class SpecInfo implements Listener {
 		
 	}
 	
-	private static String formatName(String name) {
+	public static String formatName(String name) {
 		
 		String formated = "";
 		String[] convert = name.split("_");

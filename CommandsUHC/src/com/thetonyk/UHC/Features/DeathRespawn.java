@@ -64,6 +64,10 @@ public class DeathRespawn implements Listener {
 		
 		player.spigot().sendMessage(text.create());
 		
+		GameUtils.setDeath(player.getUniqueId(), true);
+		player.setWhitelisted(false);
+		LoginPlayer.updateVisibility();
+		
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
