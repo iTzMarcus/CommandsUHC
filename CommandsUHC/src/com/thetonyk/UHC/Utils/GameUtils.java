@@ -71,6 +71,33 @@ public class GameUtils {
 		
 	}
 	
+	public enum GameType {
+		
+		REDDIT("The UHC will be announced on Reddit and Twitter."), TWITTER("The UHC will be announced on Twitter only."), PRIVATE("This UHC will not be announced.");
+		
+		private static GameType[] values = values();
+		private String description;
+		
+		private GameType(String description) {
+			
+			this.description = description;
+			
+		}
+		
+		public GameType next() {
+			
+			return values[(this.ordinal() + 1) % values.length];
+			
+		}
+		
+		public String getDescription() {
+			
+			return this.description;
+			
+		}
+		
+	}
+	
 	public static Status getStatus() {
 		
 		return GameUtils.status != null ? GameUtils.status : GameUtils.getStatusSQL();

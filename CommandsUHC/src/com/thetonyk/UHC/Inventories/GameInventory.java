@@ -29,6 +29,7 @@ import com.thetonyk.UHC.GUI.NumberGUI;
 import com.thetonyk.UHC.GUI.NumberGUI.NumberCallback;
 import com.thetonyk.UHC.GUI.SignGUI;
 import com.thetonyk.UHC.GUI.SignGUI.SignCallback;
+import com.thetonyk.UHC.Utils.GameUtils.GameType;
 import com.thetonyk.UHC.Utils.GameUtils.TeamType;
 import com.thetonyk.UHC.Utils.ItemsUtils;
 import com.thetonyk.UHC.Utils.MatchesUtils;
@@ -46,6 +47,9 @@ public class GameInventory implements Listener {
 	private TeamType teamType;
 	private int teamSize;
 	private int slots;
+	private int pvp;
+	private int meetup;
+	private GameType game;
 	
 	public GameInventory() {
 		
@@ -58,6 +62,9 @@ public class GameInventory implements Listener {
 		this.teamType = null;
 		this.teamSize = 1;
 		this.slots = 150;
+		this.pvp = 20;
+		this.meetup = 60;
+		this.game = GameType.REDDIT;
 		
 		update();
 		
@@ -94,10 +101,39 @@ public class GameInventory implements Listener {
 			case BASIC:
 				
 				ItemStack team = ItemsUtils.createItem(Material.BANNER, "§8⫸ §7Teams: §6" + (this.teamType == null ? "FFA" : SpecInfo.formatName(this.teamType.toString()) + (this.teamSize > 1 ? " Team of " + this.teamSize : "")), (this.teamSize > 1 ? this.teamSize : 1), this.teamType == null ? 1 : 10);
-				ItemStack slots = ItemsUtils.createItem(Material.SKULL_ITEM, "§8⫸ §7Slots: §6" + this.slots, (int) Math.floor(this.slots / 10), 3);
+				ItemStack slots = ItemsUtils.createItem(Material.SKULL_ITEM, "§8⫸ §7Slots: §a" + this.slots, (int) Math.floor(this.slots / 10), 3);
+				ItemStack pvp = ItemsUtils.createItem(Material.IRON_SWORD, "§8⫸ §7PVP: §a" + this.pvp + "min", 1, 0);
+				pvp = ItemsUtils.hideFlags(pvp);
+				ItemStack meetup = ItemsUtils.createItem(Material.IRON_BARDING, "§8⫸ §7Meetup: §a" + this.meetup + "min", 1, 0);
+				
+				lore.add(" ");
+				
+				String line = "§8⫸ §7";
+				
+				for (String word : this.game.getDescription().split(" ")) {
+					
+					line += word + " ";
+					
+					if (line.split(" ").length >= 4) {
+						
+						lore.add(line);
+						line = "§8⫸ §7";
+						
+					}
+					
+				}
+				
+				if (line.length() > 7) lore.add(line);
+				
+				lore.add(" ");
+				ItemStack game = ItemsUtils.createItem(Material.PAPER, "§8⫸ §7Type: §6" + SpecInfo.formatName(this.game.toString()), 1, 0, lore);
+				lore.clear();
 				
 				this.inventory.setItem(11, team);
 				this.inventory.setItem(12, slots);
+				this.inventory.setItem(13, pvp);
+				this.inventory.setItem(14, meetup);
+				this.inventory.setItem(15, game);
 				break;
 			case TEAMS:
 				
@@ -281,8 +317,7 @@ public class GameInventory implements Listener {
 					
 				}
 				
-				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Slots: §6")) {
-					
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Slots: §a")) {
 					
 					NumberGUI gui = new NumberGUI("Slots", this.slots, 10, 1, 150, 200, 5, new NumberCallback<Integer>() {
 						
@@ -308,6 +343,74 @@ public class GameInventory implements Listener {
 					});
 					
 					player.openInventory(gui.getInventory());
+					return;
+					
+				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7PVP: §a")) {
+					
+					NumberGUI gui = new NumberGUI("PVP Time", this.pvp, 10, 1, 20, 180, 1, new NumberCallback<Integer>() {
+
+						@Override
+						public void onConfirm(int newPvp) {
+							
+							pvp = newPvp;
+							update();
+							player.openInventory(inventory);
+							
+						}
+
+						@Override
+						public void onCancel() {
+							
+							player.openInventory(inventory);
+							
+						}
+
+						@Override
+						public void onDisconnect() {}
+						
+					});
+					
+					player.openInventory(gui.getInventory());
+					return;
+					
+				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Meetup: §a")) {
+					
+					NumberGUI gui = new NumberGUI("Meetup Time", this.meetup, 10, 1, 60, 240, 1, new NumberCallback<Integer>() {
+
+						@Override
+						public void onConfirm(int newMeetup) {
+							
+							meetup = newMeetup;
+							update();
+							player.openInventory(inventory);
+							
+						}
+
+						@Override
+						public void onCancel() {
+							
+							player.openInventory(inventory);
+							
+						}
+
+						@Override
+						public void onDisconnect() {}
+						
+					});
+					
+					player.openInventory(gui.getInventory());
+					return;
+					
+				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Type: §6")) {
+					
+					this.game = this.game.next();
+					update();
 					return;
 					
 				}

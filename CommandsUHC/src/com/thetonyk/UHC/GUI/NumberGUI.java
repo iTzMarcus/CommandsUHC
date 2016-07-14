@@ -33,7 +33,7 @@ public class NumberGUI implements Listener {
 	
 	public NumberGUI(String title, int currently, int bigAdd, int add, int reset, int max, int min, NumberCallback<Integer> callback) {
 		
-		this.inventory = Bukkit.createInventory(null, 18, "§8⫸ §4" + title);
+		this.inventory = Bukkit.createInventory(null, 27, "§8⫸ §4" + title);
 		this.currently = currently;
 		this.bigAdd = bigAdd;
 		this.add = add;
@@ -69,22 +69,22 @@ public class NumberGUI implements Listener {
 		lore.add("§8⫸ §7Currently: §a" + this.currently);
 		lore.add(" ");
 		
-		ItemStack bigAdd = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.bigAdd, 2, 5, lore);
-		ItemStack add = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.add, 1, 5, lore);
+		ItemStack bigAdd = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.bigAdd, (this.bigAdd > 64 ? (int) Math.floor(this.bigAdd / 10) : this.bigAdd), 5, lore);
+		ItemStack add = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Add §a+" + this.add, (this.add > 64 ? (int) Math.floor(this.add / 10) : this.add), 5, lore);
 		ItemStack reset = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Reset", 1, 4, lore);
-		ItemStack remove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.add, 1, 14, lore);
-		ItemStack bigRemove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.bigAdd, 2, 14, lore);
+		ItemStack remove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.add, (this.add > 64 ? (int) Math.floor(this.add / 10) : this.add), 14, lore);
+		ItemStack bigRemove = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §7Remove §c-" + this.bigAdd, (this.bigAdd > 64 ? (int) Math.floor(this.bigAdd / 10) : this.bigAdd), 14, lore);
 		
 		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §cCancel", 1, 14);
 		ItemStack confirm = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §aConfirm", 1, 5);
 		
-		this.inventory.setItem(2, bigAdd);
-		this.inventory.setItem(3, add);
-		this.inventory.setItem(4, reset);
-		this.inventory.setItem(5, remove);
-		this.inventory.setItem(6, bigRemove);
-		this.inventory.setItem(9, cancel);
-		this.inventory.setItem(17, confirm);
+		this.inventory.setItem(11, bigAdd);
+		this.inventory.setItem(12, add);
+		this.inventory.setItem(13, reset);
+		this.inventory.setItem(14, remove);
+		this.inventory.setItem(15, bigRemove);
+		this.inventory.setItem(18, cancel);
+		this.inventory.setItem(26, confirm);
 		
 	}
 	
