@@ -25,6 +25,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.thetonyk.UHC.Main;
 import com.thetonyk.UHC.Features.SpecInfo;
+import com.thetonyk.UHC.GUI.NumberGUI;
+import com.thetonyk.UHC.GUI.NumberGUI.NumberCallback;
 import com.thetonyk.UHC.GUI.SignGUI;
 import com.thetonyk.UHC.GUI.SignGUI.SignCallback;
 import com.thetonyk.UHC.Utils.GameUtils.TeamType;
@@ -43,6 +45,7 @@ public class GameInventory implements Listener {
 	private Page page;
 	private TeamType teamType;
 	private int teamSize;
+	private int slots;
 	
 	public GameInventory() {
 		
@@ -53,7 +56,8 @@ public class GameInventory implements Listener {
 		this.format = new SimpleDateFormat("hh:MM");
 		this.format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		this.teamType = null;
-		this.teamSize = 0;
+		this.teamSize = 1;
+		this.slots = 150;
 		
 		update();
 		
@@ -89,9 +93,11 @@ public class GameInventory implements Listener {
 			
 			case BASIC:
 				
-				ItemStack team = ItemsUtils.createItem(Material.BANNER, "§8⫸ §7Teams: §6" + (this.teamType == null ? "FFA" : SpecInfo.formatName(this.teamType.toString()) + (this.teamSize > 1 ? " Team of " + this.teamSize : "")), 1, this.teamType == null ? 1 : 10);
+				ItemStack team = ItemsUtils.createItem(Material.BANNER, "§8⫸ §7Teams: §6" + (this.teamType == null ? "FFA" : SpecInfo.formatName(this.teamType.toString()) + (this.teamSize > 1 ? " Team of " + this.teamSize : "")), (this.teamSize > 1 ? this.teamSize : 1), this.teamType == null ? 1 : 10);
+				ItemStack slots = ItemsUtils.createItem(Material.SKULL_ITEM, "§8⫸ §7Slots: §6" + this.slots, (int) Math.floor(this.slots / 10), 3);
 				
-				this.inventory.setItem(10, team);
+				this.inventory.setItem(11, team);
+				this.inventory.setItem(12, slots);
 				break;
 			case TEAMS:
 				
@@ -271,6 +277,37 @@ public class GameInventory implements Listener {
 				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Teams: §6")) {
 					
 					changePage(Page.TEAMS);
+					return;
+					
+				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Slots: §6")) {
+					
+					
+					NumberGUI gui = new NumberGUI("Slots", this.slots, 10, 1, 150, 200, 5, new NumberCallback<Integer>() {
+						
+						@Override
+						public void onConfirm(int newSlots) {
+							
+							slots = newSlots;
+							update();
+							player.openInventory(inventory);
+							
+						}
+						
+						@Override
+						public void onCancel() {
+							
+							player.openInventory(inventory);
+							
+						}
+						
+						@Override
+						public void onDisconnect() {}
+						
+					});
+					
+					player.openInventory(gui.getInventory());
 					return;
 					
 				}
