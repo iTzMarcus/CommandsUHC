@@ -3,132 +3,94 @@ version: 0.1
 author: TheTonyk
 description: UHC plugin for CommandsPVP by TheTonyk.
 prefix: UHC
-softdepend: [ProtocolLib, Pregenerator]
+softdepend: [Pregenerator]
 main: com.thetonyk.UHC.Main
 
 commands:
     gamemode:
-        description: Change gamemode of players.
         usage: /gamemode
         aliases: [gm]
     rank:
-        description: Change ranks of players.
         usage: /rank
     world:
-        description: Manage worlds
-        usage: /wo"rld
+        usage: /world
         aliases: [w]
     pregen:
-        description: Pregenerate worlds
         usage: /pregen
     border:
-        description: Change size of world
         usage: /border
     team:
-        description: Manage teams
         usage: /team
     teleport:
-        description: Teleport players in world
         usage: /teleport
     invite:
-        description: Quick command for /team invite
         usage: /invite
     accept:
-        description: Quick command for /team accept
         usage: /accept
     pm:
-        description: Send new teams commands
         usage: /pm
     pmcoords:
-        description: Send new teams commands
         usage: /pmcoords
     pmores:
-        description: Send new teams commands
         usage: /pmores
     t:
-        description: Send messages to your team
         usage: /t
     tc:
-        description: Send coords to your team
         usage: /tc
         aliases: [tl]
     whitelist:
-        description: Manage the whitelist
         usage: /whitelist
         aliases: [wl, wh]
     butcher:
-        description: Kill all mobs
         usage: /butcher
     helpop:
-        description: Request help to staff
         usage: /helpop
         aliases: [ho]
     start:
-        description: Start the game
         usage: /start
     timeleft:
-        description: See the timers
         usage: /timeleft
         aliases: [time]
     rules:
-        description: See the rules
         usage: /rules
         aliases: [uhc]
     fly:
-        description: Toggle fly of player
         usage: /fly
     clear:
-        description: Clear inventory and xp of a player
         usage: /clear
     feed:
-        description: Feed a player
         usage: /feed
     heal:
-        description: Heal a player
         usage: /heal
     pvp:
-        description: Toggle pvp in a world
         usage: /pvp
     health:
-        description: See health of a player
         usage: /health
         aliases: [h, life]
     nosound:
-        description: Disable sounds
         usage: /nosound
     lag:
-        description: See perfomances of the server
         usage: /lag
         aliases: [ram, tps]
     give:
-        description: Give somethings to a player
         usage: /give
     spectate:
-        description: Toggle spec mode of players
         usage: /spectate
         aliases: [spec]
     tp:
-        description: Teleport players
         usage: /tp
     near:
-        description: See nearby players
         usage: /near
     specchat:
-        description: Send message to others spec
         usage: /specchat
         aliases: [sc, s]
     endgame:
-        description: End the game
         usage: /end
     list:
-        description: List alives players
         usage: /list
     text:
-        description: Spawn floating text
         usage: /text
     respawn:
-        description: Respawn a player
         usage: /respawn
     dq:
-        description: DQ a player
         usage: /dq
