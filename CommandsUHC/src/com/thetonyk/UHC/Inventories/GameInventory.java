@@ -264,7 +264,7 @@ public class GameInventory implements Listener {
 		}
 		
 		
-		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §c" + (this.page.main() == null ? "Cancel" : "Back"), 1, 14);
+		ItemStack cancel = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §c" + (this.page.ordinal() < 1 ? "Cancel" : "Back"), 1, 14);
 		ItemStack valid = ItemsUtils.createItem(Material.STAINED_CLAY, "§8⫸ §aNext", 1, 5);
 		
 		this.inventory.setItem(this.inventory.getSize() - 9, cancel);
@@ -551,7 +551,24 @@ public class GameInventory implements Listener {
 		
 		if (item.getItemMeta().getDisplayName().equals("§8⫸ §cBack")) {
 			
-			changePage(this.page.main());
+			Page page = this.page.main() != null ? this.page.main() : this.page.previous();
+			
+			changePage(page);
+			return;
+			
+		}
+		
+		if (item.getItemMeta().getDisplayName().equals("§8⫸ §cCancel")) {
+			
+			cancel();
+			return;
+			
+		}
+		
+		if (item.getItemMeta().getDisplayName().equals("§8⫸ §aNext")) {
+			
+			changePage(this.page.next());
+			return;
 			
 		}
 		
@@ -603,24 +620,13 @@ public class GameInventory implements Listener {
 		
 		this.inventory = Bukkit.createInventory(null, page.getSize(), TITLE_PREFIX + page.getName());
 		this.page = page;
+		update();
 		
-		for (final HumanEntity viewer : viewers) {
+		for (HumanEntity viewer : viewers) {
 			
-			viewer.closeInventory();
-			
-			new BukkitRunnable() {
-				
-				public void run() {
-					
-					viewer.openInventory(inventory);
-					
-				}
-				
-			}.runTaskLater(Main.uhc, 1);
+			viewer.openInventory(inventory);
 			
 		}
-		
-		update();
 		
 	}
 	
@@ -628,6 +634,7 @@ public class GameInventory implements Listener {
 		
 		BASIC("Config", 27, null), TEAMS("Teams", 54, Page.BASIC), SCHEDULE("Schedule", 27, null);
 		
+		private static Page[] values = values();
 		private String name;
 		private int size;
 		private Page main;
@@ -637,6 +644,34 @@ public class GameInventory implements Listener {
 			this.name = name;
 			this.size = size;
 			this.main = main;
+			
+		}
+		
+		public Page next() {
+			
+			Page next = this;
+			
+			do {
+				
+				next = values[(next.ordinal() + 1) % values.length];
+				
+			} while (next.main != null);
+			
+			return next;
+			
+		}
+		
+		public Page previous() {
+			
+			Page next = this;
+			
+			do {
+				
+				next = values[(next.ordinal() - 1) % values.length];
+				
+			} while (next.main != null);
+			
+			return next;
 			
 		}
 		
