@@ -38,7 +38,7 @@ import com.thetonyk.UHC.Utils.MatchesUtils.MatchesCallback;
 
 public class GameInventory implements Listener {
 	
-	private static String TITLE_PREFIX = "§8⫸ §4Host§8: §7";
+	private static String TITLE_PREFIX = "§8⫸ §4Host§8: §8";
 	private Inventory inventory;
 	private String hour;
 	private long time;
@@ -57,7 +57,7 @@ public class GameInventory implements Listener {
 		this.inventory = Bukkit.createInventory(null, this.page.getSize(), TITLE_PREFIX + this.page.getName());
 		this.hour = null;
 		this.time = 0;
-		this.format = new SimpleDateFormat("hh:MM");
+		this.format = new SimpleDateFormat("dd/MM HH:mm");
 		this.format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		this.teamType = null;
 		this.teamSize = 1;
@@ -129,11 +129,98 @@ public class GameInventory implements Listener {
 				ItemStack game = ItemsUtils.createItem(Material.PAPER, "§8⫸ §7Type: §6" + SpecInfo.formatName(this.game.toString()), 1, 0, lore);
 				lore.clear();
 				
-				this.inventory.setItem(11, team);
-				this.inventory.setItem(12, slots);
-				this.inventory.setItem(13, pvp);
-				this.inventory.setItem(14, meetup);
-				this.inventory.setItem(15, game);
+				Boolean valid = true;
+				
+				if (this.time < 1 && this.hour != null) {
+					
+					lore.add(" ");
+					lore.add("§8⫸ §7Last entered hour: §c" + this.hour);
+					lore.add(" ");
+					
+					if (!isValid(this.hour)){
+						
+						lore.add("§8⫸ §7This hour is not valid.");
+						lore.add(" ");
+						valid = false;
+						
+					} else {
+						
+						long parsedTime = getTime(this.hour);
+						Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+						int nowDay = calendar.get(Calendar.DAY_OF_MONTH);
+						int nowMonth = calendar.get(Calendar.MONTH);
+						calendar.setTimeInMillis(parsedTime);
+						int minutes = calendar.get(Calendar.MINUTE);
+						int day = calendar.get(Calendar.DAY_OF_MONTH);
+						int month = calendar.get(Calendar.MONTH);
+						
+						if (minutes != 0 && minutes != 15 && minutes != 30 && minutes != 45) {
+							
+							lore.add("§8⫸ §7You can only schedule UHC at these times:");
+							lore.add("§8⫸ §6XX:00 §8| §6XX:15 §8| §6XX:30 §8| §6XX:45");
+							lore.add(" ");
+							valid = false;
+							
+						}
+						
+						if (month > nowMonth + 1 || (month > nowMonth && day > nowDay)) {
+							
+							lore.add("§8⫸ §7UHC must be scheduled at maximum a month.");
+							lore.add(" ");
+							valid = false;
+							
+						}
+						
+						if ((parsedTime - 1800000) < new Date().getTime()) {
+							
+							lore.add("§8⫸ §7UHC must be scheduled at least 30min before.");
+							lore.add(" ");
+							valid = false;
+							
+						}
+						
+						if (uhcs == null) {
+							
+							lore.add("§8⫸ §7Checking others UHC on Reddit...");
+							lore.add(" ");
+							valid = false;
+							
+						}
+						else {
+							
+							for (Match uhc : uhcs) {
+								
+								if (parsedTime != uhc.getTime() * 1000) continue;
+								
+								lore.add("§8⫸ §cAn UHC is already scheduled at this hour.");
+								lore.add(" ");
+								valid = false;
+								break;
+								
+							}
+							
+						}
+						
+					}
+					
+				}
+				
+				if (valid && this.hour != null) {
+					
+					this.time = getTime(this.hour);
+					lore.clear();
+					
+				}
+				
+				ItemStack date = ItemsUtils.createItem(Material.WATCH, "§8⫸ §7Time: §6" + (this.time < 1 ? "§cNone" : this.format.format(new Date(this.time))), 1, 0, lore);
+				lore.clear();
+				
+				this.inventory.setItem(10, team);
+				this.inventory.setItem(11, slots);
+				this.inventory.setItem(12, pvp);
+				this.inventory.setItem(13, meetup);
+				this.inventory.setItem(14, game);
+				this.inventory.setItem(15, date);
 				break;
 			case TEAMS:
 				
@@ -181,84 +268,6 @@ public class GameInventory implements Listener {
 				break;
 			case SCHEDULE:
 				
-				Boolean valid = true;
-				
-				if (time < 1 && this.hour != null) {
-					
-					lore.add(" ");
-					lore.add("§8⫸ §7Last entered hour: §c" + hour);
-					lore.add(" ");
-					
-					if (!isValid(this.hour)){
-						
-						lore.add("§8⫸ §7This hour is not valid.");
-						lore.add(" ");
-						valid = false;
-						
-					} else {
-						
-						long parsedTime = getTime(this.hour);
-						Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
-						calendar.setTimeInMillis(parsedTime);
-						int minutes = calendar.get(Calendar.MINUTE);
-						
-						if (minutes != 0 && minutes != 15 && minutes != 30 && minutes != 45) {
-							
-							lore.add("§8⫸ §7You can only schedule UHC at these times:");
-							lore.add("§8⫸ §6XX:00 §8| §6XX:15 §8| §6XX:30 §8| §6XX:45");
-							lore.add(" ");
-							valid = false;
-							
-						}
-						
-						if ((parsedTime - 1800000) < new Date().getTime()) {
-							
-							lore.add("§8⫸ §7UHC must be scheduled at least 30min before.");
-							lore.add(" ");
-							valid = false;
-							
-						}
-						
-						if (uhcs == null) {
-							
-							lore.add(" ");
-							lore.add("§8⫸ §7Checking others UHC on Reddit...");
-							lore.add(" ");
-							valid = false;
-							
-						}
-						else {
-							
-							for (Match uhc : uhcs) {
-								
-								if (parsedTime != uhc.getTime() * 1000) continue;
-								
-								lore.add("§8⫸ §cAn UHC is already scheduled at this hour.");
-								lore.add(" ");
-								valid = false;
-								break;
-								
-							}
-							
-						}
-						
-					}
-					
-					lore.add(" ");
-					
-				}
-				
-				if (valid && this.hour != null) {
-					
-					time = getTime(this.hour);
-					lore.clear();
-					
-				}
-				
-				ItemStack hour = ItemsUtils.createItem(Material.WATCH, "§8⫸ §7Hour: §6" + (time < 1 ? "§cNone" : format.format(new Date(time))), 1, 0, lore);
-				lore.clear();
-				
-				inventory.setItem(11, hour);
 				break;
 			
 		}
@@ -414,6 +423,72 @@ public class GameInventory implements Listener {
 					return;
 					
 				}
+				
+				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Time: §6")) {
+					
+					String[] text = new String[1];
+					Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+					int hours = calendar.get(Calendar.HOUR_OF_DAY);
+					int minutes = calendar.get(Calendar.MINUTE);
+					
+					text[0] = (this.time < 1 && this.hour != null) ? this.hour : (hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes;
+					
+					new SignGUI(player, text, new SignCallback<String[]>() {
+		
+						@Override
+						public void onConfirm(String[] lines) {
+							
+							new BukkitRunnable() {
+								
+								public void run() {
+									
+									player.openInventory(getInventory());
+								
+								}
+								
+							}.runTaskLater(Main.uhc, 1);
+							
+							if (lines[0].length() + lines[1].length() + lines[2].length() + lines[3].length() < 1) return;
+							
+							String text = null;
+							
+							for (String line : lines) {
+								
+								if (line.length() < 1) continue;
+								
+								text = line;
+								break;
+								
+							}
+							
+							time = 0;
+							hour = text;
+							update();
+							
+							MatchesUtils.getUpcomingMatches(new MatchesCallback<List<Match>>() {
+		
+								@Override
+								public void onSuccess(List<Match> done) {
+									
+									update(done);
+									
+								}
+		
+								@Override
+								public void onFailure() {}
+								
+							});
+							
+						}
+		
+						@Override
+						public void onDisconnect() {}
+						
+					});
+					
+					return;
+					
+				}
 			
 				break;
 			case TEAMS:
@@ -484,67 +559,6 @@ public class GameInventory implements Listener {
 				
 				break;
 			case SCHEDULE:
-	
-				if (item.getItemMeta().getDisplayName().startsWith("§8⫸ §7Hour: §6")) {
-					
-					String[] text = new String[time < 1 && this.hour == null ? 0 : 1];
-					if (text.length > 0) text[0] = this.hour;
-					
-					new SignGUI(player, text, new SignCallback<String[]>() {
-		
-						@Override
-						public void onConfirm(String[] lines) {
-							
-							new BukkitRunnable() {
-								
-								public void run() {
-									
-									player.openInventory(getInventory());
-								
-								}
-								
-							}.runTaskLater(Main.uhc, 1);
-							
-							if (lines[0].length() + lines[1].length() + lines[2].length() + lines[3].length() < 1) return;
-							
-							String text = null;
-							
-							for (String line : lines) {
-								
-								if (line.length() < 1) continue;
-								
-								text = line;
-								break;
-								
-							}
-							
-							hour = text;
-							update();
-							
-							MatchesUtils.getUpcomingMatches(new MatchesCallback<List<Match>>() {
-		
-								@Override
-								public void onSuccess(List<Match> done) {
-									
-									update(done);
-									
-								}
-		
-								@Override
-								public void onFailure() {}
-								
-							});
-							
-						}
-		
-						@Override
-						public void onDisconnect() {}
-						
-					});
-					
-					return;
-					
-				}
 				
 				break;
 		}
@@ -574,10 +588,10 @@ public class GameInventory implements Listener {
 		
 	}
 	
-	private Boolean isValid(String hour) {
+	private Boolean isValid(String time) {
 		
-		Pattern pattern = Pattern.compile("^[0-9]{1,2}(:|h|H)[0-9]{0,2}$");
-		Matcher matcher = pattern.matcher(hour);
+		Pattern pattern = Pattern.compile("^([0-9]{1,2}\\/[0-9]{1,2} )?[0-9]{1,2}(:|h|H)[0-9]{0,2}$");
+		Matcher matcher = pattern.matcher(time);
 		
 		return matcher.matches();
 		
@@ -585,30 +599,55 @@ public class GameInventory implements Listener {
 	
 	private long getTime(String hour) {
 		
+		int day = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH).get(Calendar.DAY_OF_MONTH);
+		int month = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH).get(Calendar.MONTH);
+		
+		if (hour.contains(" ")) {
+			
+			String date = hour.split(" ")[0];
+			hour = hour.split(" ")[1];
+			
+			Pattern pattern = Pattern.compile("/");
+			Matcher matcher = pattern.matcher(date);
+			
+			matcher.find();
+			
+			day = Integer.parseInt(date.substring(0, matcher.start()));
+			month = Integer.parseInt(date.substring(matcher.start() + 1)) - 1;
+			
+		}
+		
 		Pattern pattern = Pattern.compile("(:|h|H)");
 		Matcher matcher = pattern.matcher(hour);
 		
 		int hours = 0;
 		int minutes = 0;
 		
-		while (matcher.find()) {
+		matcher.find();
 			
-			hours = Integer.parseInt(hour.substring(0, matcher.start()));
-			if (hour.length() > matcher.start() + 1) minutes = Integer.parseInt(hour.substring(matcher.start() + 1));
-			break;
-			
-		}
+		hours = Integer.parseInt(hour.substring(0, matcher.start()));
+		if (hour.length() > matcher.start() + 1) minutes = Integer.parseInt(hour.substring(matcher.start() + 1));
 		
 		SimpleDateFormat format = new SimpleDateFormat("dd MM HH:mm zzz");
 		format.setTimeZone(TimeZone.getTimeZone("UTC"));
 		
 		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH);
+		calendar.set(Calendar.MONTH, month);
+		calendar.set(Calendar.DAY_OF_MONTH, day);
 		calendar.set(Calendar.HOUR_OF_DAY, hours);
 		calendar.set(Calendar.MINUTE, minutes);
 		calendar.set(Calendar.SECOND, 0);
 		calendar.set(Calendar.MILLISECOND, 0);
 		
-		if (calendar.getTimeInMillis() < new Date().getTime()) calendar.set(Calendar.DAY_OF_MONTH, new GregorianCalendar(TimeZone.getTimeZone("UTC"), Locale.ENGLISH).get(Calendar.DAY_OF_MONTH) + 1);
+		if (!hour.contains(" ") && calendar.getTimeInMillis() < new Date().getTime()) calendar.set(Calendar.DAY_OF_MONTH, day + 1);
+		
+		if (calendar.getActualMaximum(Calendar.DAY_OF_MONTH) < day + 1) {
+			
+			calendar.set(Calendar.DAY_OF_MONTH, 1);
+			calendar.set(Calendar.MONTH, month == 12 ? 1 : month + 1);
+			if (month == 12) calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) + 1);
+			
+		}
 		
 		return calendar.getTimeInMillis();
 		
