@@ -1,7 +1,7 @@
-name: CommandsUHC
+name: Lucifer
 version: 0.1
-author: TheTonyk
-description: UHC plugin for CommandsPVP by TheTonyk.
+author: LuciferUHC
+description: LuciferUHC's UHC Plugin
 prefix: UHC
 softdepend: [Pregenerator]
 main: com.thetonyk.UHC.Main
